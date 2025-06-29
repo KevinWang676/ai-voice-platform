@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is the simplified codebase of the all-in-one voice platform currently used by over **17,000** users. Please feel free to explore the official website at https://www.doingdream.com/
+This is the simplified codebase of the all-in-one voice platform currently used by over **17,000** users. The official website, developed by Kevin Wang, is available at https://www.doingdream.com/
 
 DoingDream AI is a comprehensive AI-powered platform featuring:
 - **Story Generation**: AI-powered story creation and ending generation
