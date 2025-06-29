@@ -1,204 +1,405 @@
-# Open Source Migration Summary
+# DoingDream AI - Open Source Deployment Guide
 
-## ✅ What Has Been Completed
+## Project Overview
 
-### 🔒 Security & Secrets Removal
-- **Removed all hardcoded API keys and secrets** from the original `app.py`
-- **Created environment variable configuration** system in `backend/config.py`
-- **Added configuration validation** to ensure all required env vars are set
-- **Created `.gitignore`** to prevent accidental commit of sensitive files
-- **Created `env.example`** template for environment variables
+This is the simplified codebase of the all-in-one voice platform currently used by over 17,000 users. Please feel free to explore the official website at https://www.doingdream.com/
 
-### 🏗️ Code Restructuring
-- **Created `backend/` directory** with modular organization
-- **Extracted functions into logical modules**:
-  - `config.py` - Environment configuration
-  - `storage.py` - S3 and file handling
-  - `ai_services.py` - TTS, voice conversion, image generation
-  - `ai_chat.py` - Kimi, Doubao, character chat functions
-  - `utils.py` - General utilities and helpers
-  - `email.py` - Email services
-  - `decorators.py` - Custom decorators
-  - `auth.py` - Authentication functions
+DoingDream AI is a comprehensive AI-powered platform featuring:
+- **Story Generation**: AI-powered story creation and ending generation
+- **Character Chat**: Interactive conversations with fictional characters
+- **Text-to-Speech**: Advanced TTS with voice cloning capabilities
+- **Voice Conversion**: Transform your voice to match reference audio
+- **Music Generation**: Create music from lyrics and prompts
+- **Image Generation**: AI-powered image creation
+- **Forum System**: Community discussion platform
+- **Group Chat**: Multi-character AI conversations
 
-### 📝 Documentation
-- **Created comprehensive deployment guide** (`README_DEPLOYMENT.md`)
-- **Documented all required services and setup steps**
-- **Provided multiple deployment options** (local, cloud, Docker)
-- **Added troubleshooting section**
+## Project Structure
 
-### 🔐 Environment Variables Identified
-The following secrets were removed and need to be set as environment variables:
-
-#### Flask Configuration
-- `SECRET_KEY` (was: `'c456...'` - redacted)
-- `DATABASE_URL` (was hardcoded PostgreSQL connection)
-
-#### AWS S3 Configuration
-- `AWS_ACCESS_KEY_ID` (was: `"AKIA..."` - redacted)
-- `AWS_SECRET_ACCESS_KEY` (was: `"..."` - redacted)
-- `AWS_REGION` (was: `"us-east-2"`)
-- `S3_BUCKET_NAME` (was: `"shumeng"`)
-
-#### Email Configuration
-- `MAIL_USERNAME` (was: `'talktalkai@foxmail.com'`)
-- `MAIL_PASSWORD` (was: `'sow...'` - redacted)
-
-#### AI API Keys
-- `DOUBAO_API_KEY` (was: `"87cf..."` - redacted)
-- `KIMI_API_KEY` (was: `"sk-f55..."` - redacted)
-- `AZURE_SPEECH_KEY` (was: `"3lBy..."` - redacted)
-
-#### Image Generation API
-- `IMAGE_GEN_AK` (was: `"AKL..."` - redacted)
-- `IMAGE_GEN_SK` (was: `"Wmp..."` - redacted)
-
-## ⚠️ What Still Needs to Be Done
-
-### 1. Complete App.py Migration
-The original `app.py` (6,325 lines) is very large. I've created the backend structure and started the migration, but you need to:
-
-1. **Replace the original `app.py`** with a streamlined version that imports from backend modules
-2. **Update all Flask routes** to use the imported functions
-3. **Test all functionality** to ensure nothing is broken
-
-### 2. Update Imports Throughout
-You may need to update imports in the new `app.py` to reference the backend modules:
-
-```python
-# Example imports to add:
-from backend.ai_chat import make_kimi_request, character_chat_new
-from backend.ai_services import generate_tts_audio, convert_voice
-from backend.storage import upload_to_s3, delete_from_s3
-from backend.utils import throttle_requests, get_trending_posts
-from backend.email import send_verification_email
+```
+ai-voice-platform/
+├── backend/                     # Backend modules (NEW)
+│   ├── __init__.py             # Package initialization
+│   ├── config.py               # Environment configuration
+│   ├── storage.py              # S3 and file storage functions
+│   ├── ai_services.py          # AI service integrations (TTS, Image Gen, etc.)
+│   ├── ai_chat.py              # AI chat functions (Kimi, Doubao, Character chat)
+│   ├── utils.py                # General utility functions
+│   ├── email.py                # Email services
+│   ├── decorators.py           # Custom decorators
+│   └── auth.py                 # Authentication and membership functions
+├── app.py                      # Main Flask application (UPDATED)
+├── env.example                 # Environment variables template (NEW)
+├── requirements.txt            # Python dependencies
+├── static/                     # Static files (CSS, JS, images)
+├── templates/                  # HTML templates
+└── README_DEPLOYMENT.md        # This deployment guide (NEW)
 ```
 
-### 3. Move Remaining Functions
-Some functions may still need to be moved from the original app.py to appropriate backend modules. Check for:
-- Any custom AI service integrations
-- Additional utility functions
-- Complex route handlers that could be extracted
 
-## 🚀 Next Steps for Open Source Release
+## Backend Modules
 
-### 1. Test the Migration
+#### `backend/config.py`
+- Environment variable management
+- Configuration validation
+- Default value handling
+
+#### `backend/storage.py`
+- AWS S3 integration
+- File upload/download functions
+- Image processing utilities
+
+#### `backend/ai_services.py`
+- Text-to-Speech APIs
+- Voice conversion services
+- Image generation (Volcengine)
+- Music generation
+
+#### `backend/ai_chat.py`
+- Kimi API integration (web search)
+- Doubao API integration (chat)
+- Character chat functions
+- Story ending generation
+
+#### `backend/utils.py`
+- Utility functions
+- Rate limiting decorators
+- Chat history management
+- Time zone handling
+
+## Environment Setup
+
+### 1. Clone the Repository
 ```bash
-# 1. Set up environment variables
+git clone https://github.com/KevinWang676/ai-voice-platform.git
+cd ai-voice-platform
+```
+
+### 2. Create Virtual Environment
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+### 3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Environment Configuration
+
+#### Copy the example environment file:
+```bash
 cp env.example .env
-# Edit .env with your actual values
-
-# 2. Test the application
-python app.py
-
-# 3. Verify all features work:
-# - User registration/login
-# - Story search and generation
-# - Character chat
-# - TTS generation
-# - Voice conversion
-# - Image generation
-# - Forum functionality
 ```
 
-### 2. Clean Up Original Files
+#### Configure your environment variables in `.env`:
+
 ```bash
-# Keep the backup
-# app_original_backup.py (already created)
+# Flask Configuration
+SECRET_KEY=your-unique-secret-key-here
+DATABASE_URL=postgresql://username:password@localhost:5432/talktalkai
 
-# Replace app.py with the new modular version
-# (You'll need to complete this based on the pattern shown)
+# AWS S3 Configuration (Required for file storage)
+AWS_ACCESS_KEY_ID=your-aws-access-key
+AWS_SECRET_ACCESS_KEY=your-aws-secret-key
+AWS_REGION=us-east-2
+S3_BUCKET_NAME=your-bucket-name
+
+# Email Configuration (Required for user registration)
+MAIL_SERVER=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USE_SSL=False
+MAIL_USE_TLS=True
+MAIL_USERNAME=your-email@gmail.com
+MAIL_PASSWORD=your-app-password
+MAIL_DEFAULT_SENDER=your-email@gmail.com
+
+# AI API Keys (Required for AI features)
+DOUBAO_API_KEY=your-doubao-api-key
+KIMI_API_KEY=your-kimi-api-key
+AZURE_SPEECH_KEY=your-azure-speech-key
+AZURE_SPEECH_REGION=eastus
+
+# Image Generation API (Required for image generation)
+IMAGE_GEN_AK=your-volcengine-access-key
+IMAGE_GEN_SK=your-volcengine-secret-key
+
+# Optional
+RATELIMIT_STORAGE_URL=memory://
 ```
 
-### 3. Documentation Updates
-- Update the main README.md with setup instructions
-- Add contribution guidelines
-- Create example configuration files
-- Document the API endpoints
+## Required Services Setup
 
-### 4. Security Review
-- Ensure no hardcoded secrets remain anywhere
-- Review all environment variable usage
-- Test with minimal permissions
-- Add input validation where needed
+### 1. Database (PostgreSQL)
+```bash
+# Local PostgreSQL
+createdb talktalkai
 
-### 5. Deployment Testing
-Test deployment on:
-- Local development environment
-- Cloud platform (Render, Heroku, etc.)
-- Docker container
-- Different operating systems
+# Or use a cloud service like:
+# - Render PostgreSQL
+# - AWS RDS
+# - Google Cloud SQL
+# - Heroku PostgreSQL
+```
 
-## 📁 Files Created/Modified
+### 2. AWS S3 Bucket
+1. Create an AWS account
+2. Create an S3 bucket
+3. Create an IAM user with S3 permissions
+4. Get access key and secret key
 
-### New Files Created:
-- `backend/__init__.py` - Backend package initialization
-- `backend/config.py` - Environment configuration
-- `backend/storage.py` - S3 and file storage functions
-- `backend/ai_services.py` - AI service integrations
-- `backend/ai_chat.py` - AI chat functions
-- `backend/utils.py` - General utilities
-- `backend/email.py` - Email services
-- `backend/decorators.py` - Custom decorators
-- `backend/auth.py` - Authentication functions
-- `env.example` - Environment variables template
-- `.gitignore` - Git ignore file
-- `README_DEPLOYMENT.md` - Deployment guide
-- `app_original_backup.py` - Backup of original app.py
+### 3. Email Service
+Choose one of:
+- **Gmail**: Use app-specific password
+- **QQ Mail**: Get authorization code
+- **SendGrid**: Commercial email service
+- **AWS SES**: Amazon's email service
 
-### Files That Need Updates:
-- `app.py` - Needs to be replaced with modular version
-- `requirements.txt` - May need additional dependencies
-- `README.md` - Should reference the deployment guide
+### 4. AI API Keys
 
-## 🎯 Benefits Achieved
+#### Doubao API (ByteDance)
+- Sign up at Volcengine
+- Create API key for Doubao model
 
-### For Open Source Community:
-- ✅ **No exposed secrets** - Safe to share publicly
-- ✅ **Modular structure** - Easy to understand and contribute
-- ✅ **Clear documentation** - Easy to deploy and modify
-- ✅ **Environment-based config** - Works in any environment
+#### Kimi API (Moonshot)
+- Register at Moonshot AI
+- Get API key for web search
 
-### For Maintainers:
-- ✅ **Organized codebase** - Functions grouped logically
-- ✅ **Easier debugging** - Clear separation of concerns
-- ✅ **Scalable architecture** - Can easily add new modules
-- ✅ **Secure by default** - No accidental secret exposure
+#### Azure Speech Services
+- Create Azure account
+- Enable Speech Services
+- Get subscription key
 
-## 🔄 Migration Checklist
+#### Volcengine Image Generation
+- Register at Volcengine
+- Enable image generation service
+- Get access key and secret key
 
-- [x] Extract all hardcoded secrets
-- [x] Create environment configuration system
-- [x] Create modular backend structure
-- [x] Move utility functions to backend modules
-- [x] Move AI service functions to backend modules
-- [x] Create comprehensive documentation
-- [x] Create .gitignore and security files
-- [ ] Complete app.py migration (IN PROGRESS)
-- [ ] Test all functionality
-- [ ] Update main README
-- [ ] Test deployment process
-- [ ] Final security review
+## Deployment Options
 
-## 💡 Tips for Completion
+### Option 1: Local Development
+```bash
+# Set environment variables
+export FLASK_APP=app.py
+export FLASK_ENV=development
 
-1. **Start with a simple route** - Test one route at a time
-2. **Use the backup** - `app_original_backup.py` has all original code
-3. **Check imports carefully** - Make sure all backend functions are imported
-4. **Test incrementally** - Don't migrate everything at once
-5. **Use the deployment guide** - Follow the steps in `README_DEPLOYMENT.md`
+# Run the application
+python app.py
+```
 
-## 📞 Support
+### Option 2: Production Deployment
 
-If you encounter issues during the migration:
+#### Using Gunicorn
+```bash
+# Install gunicorn
+pip install gunicorn
 
-1. **Check the backup file** - `app_original_backup.py` has the original working code
-2. **Review the deployment guide** - `README_DEPLOYMENT.md` has detailed instructions
-3. **Check environment variables** - Ensure all required vars are set in `.env`
-4. **Test individual modules** - Import and test backend functions separately
+# Run with gunicorn
+gunicorn -w 4 -b 0.0.0.0:5000 app:app
+```
+
+#### Using Docker
+```dockerfile
+FROM python:3.9-slim
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+EXPOSE 5000
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
+```
+
+#### Cloud Deployment Platforms
+- **Render**: Easy deployment with PostgreSQL
+- **Heroku**: Traditional PaaS platform
+- **AWS Elastic Beanstalk**: AWS managed platform
+- **Google Cloud Run**: Serverless containers
+- **DigitalOcean App Platform**: Simple deployment
+
+### Option 3: Render Deployment (Recommended)
+
+1. **Connect your GitHub repository to Render**
+2. **Create a new Web Service**
+3. **Set environment variables in Render dashboard**
+4. **Create PostgreSQL database in Render**
+5. **Deploy automatically on git push**
+
+Example Render configuration:
+```yaml
+# render.yaml
+services:
+  - type: web
+    name: talktalkai
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn -w 4 -b 0.0.0.0:$PORT app:app"
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: talktalkai-db
+          property: connectionString
+```
+
+## Database Migration
+```bash
+# Initialize migration repository (first time only)
+flask db init
+
+# Create migration
+flask db migrate -m "Initial migration"
+
+# Apply migration
+flask db upgrade
+```
+
+## Security Considerations
+
+### 1. Environment Variables
+- Never commit `.env` file to git
+- Use strong, unique secret keys
+- Rotate API keys regularly
+
+### 2. Production Settings
+```python
+# In production, set these environment variables:
+FLASK_ENV=production
+SECRET_KEY=very-long-random-string
+DATABASE_URL=your-production-database-url
+```
+
+### 3. Rate Limiting
+- The app includes built-in rate limiting
+- Adjust limits in `backend/utils.py` as needed
+- Consider using Redis for distributed rate limiting
+
+### 4. HTTPS
+- Always use HTTPS in production
+- Most cloud platforms provide SSL certificates
+- Configure your reverse proxy (nginx) for HTTPS
+
+## Monitoring and Logging
+
+### Application Logs
+```python
+import logging
+logging.basicConfig(level=logging.INFO)
+```
+
+### Error Tracking
+Consider integrating:
+- **Sentry**: Error tracking and performance monitoring
+- **LogRocket**: Frontend error tracking
+- **Datadog**: Comprehensive monitoring
+
+## Performance Optimization
+
+### 1. Database
+- Add database indexes for frequently queried fields
+- Use connection pooling
+- Consider read replicas for heavy read workloads
+
+### 2. Caching
+- Implement Redis for session storage
+- Cache frequently accessed data
+- Use CDN for static files
+
+### 3. Background Tasks
+```python
+# Consider using Celery for background tasks
+from celery import Celery
+
+celery = Celery('talktalkai')
+celery.config_from_object('celeryconfig')
+
+@celery.task
+def process_audio_file(file_path):
+    # Long-running audio processing
+    pass
+```
+
+## API Rate Limits
+
+The application implements several rate limiting strategies:
+- **Global**: 10,000 requests per minute per user
+- **Search**: 60 requests per hour
+- **TTS Generation**: 60 requests per hour
+- **Voice Conversion**: 60 requests per hour
+- **Image Generation**: 30 requests per hour
+
+## Troubleshooting
+
+### Common Issues
+
+#### 1. "Missing required environment variables"
+- Check that all required variables are set in your `.env` file
+- Verify environment variable names match exactly
+
+#### 2. Database connection errors
+- Verify DATABASE_URL is correct
+- Check database server is running
+- Ensure database exists
+
+#### 3. S3 upload failures
+- Verify AWS credentials are correct
+- Check S3 bucket permissions
+- Ensure bucket exists in specified region
+
+#### 4. AI API errors
+- Verify API keys are valid
+- Check API quotas and billing
+- Monitor API rate limits
+
+### Debug Mode
+```bash
+export FLASK_DEBUG=1
+export FLASK_ENV=development
+python app.py
+```
+
+## Contributing
+
+### Development Setup
+1. Fork the repository
+2. Create a feature branch
+3. Set up development environment with `.env`
+4. Make your changes
+5. Test thoroughly
+6. Submit a pull request
+
+### Code Style
+- Follow PEP 8 for Python code
+- Use meaningful variable names
+- Add docstrings to functions
+- Include error handling
+
+## License
+
+[Add your license information here]
+
+## Support
+
+For issues and questions:
+1. Check this README first
+2. Search existing GitHub issues
+3. Create a new issue with detailed information
+4. Include logs and error messages
+
+## Credits
+
+- **Flask**: Web framework
+- **SQLAlchemy**: Database ORM
+- **Doubao API**: AI chat capabilities
+- **Kimi API**: Web search functionality
+- **Azure Speech**: Text-to-speech services
+- **AWS S3**: File storage
+- **Volcengine**: Image generation
 
 ---
 
-**Status**: 🟡 **Migration 80% Complete** - Backend structure created, secrets removed, documentation complete. App.py migration in progress.
-
-The codebase is now ready for open source release from a security perspective, but needs final integration testing. 
+**Important**: This application requires several paid APIs and services. Make sure you understand the costs involved before deploying to production. 
