@@ -4,6 +4,8 @@
 
 This is the simplified codebase of the all-in-one voice platform currently used by over **17,000** users. The official website, developed by Kevin Wang, is available at https://www.doingdream.com/
 
+Please feel free to follow Kevin's Bilibili account at [永远满仓的Kevin](https://space.bilibili.com/501495851)
+
 DoingDream AI is a comprehensive AI-powered platform featuring:
 - **Story Generation**: AI-powered story creation and ending generation
 - **Character Chat**: Interactive conversations with fictional characters
