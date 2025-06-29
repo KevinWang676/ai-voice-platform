@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient Definitions -->
+  <defs>
+    <linearGradient id="dogGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ecdcb7"/>
+      <stop offset="100%" stop-color="#d9c299"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Circular Face -->
+  <circle cx="256" cy="256" r="240" fill="url(#dogGradient)"/>
+
+  <!-- Ears -->
+  <path d="M156,136 C100,180 100,280 156,320 
+           Q176,336 190,300 
+           Q160,260 156,136"
+        fill="#b38b6d"/>
+  <path d="M356,136 C412,180 412,280 356,320
+           Q336,336 322,300
+           Q352,260 356,136"
+        fill="#b38b6d"/>
+
+  <!-- Eyes -->
+  <circle cx="196" cy="220" r="22" fill="#fff"/>
+  <circle cx="196" cy="220" r="10" fill="#000"/>
+  <circle cx="316" cy="220" r="22" fill="#fff"/>
+  <circle cx="316" cy="220" r="10" fill="#000"/>
+
+  <!-- Nose -->
+  <ellipse cx="256" cy="280" rx="20" ry="14" fill="#333"/>
+
+  <!-- Muzzle -->
+  <ellipse cx="256" cy="300" rx="50" ry="30" fill="#fff"/>
+  <ellipse cx="256" cy="300" rx="25" ry="15" fill="#ecdcb7"/>
+
+  <!-- Mouth -->
+  <path d="M236,320 Q256,340 276,320" fill="none" stroke="#333" stroke-width="3"/>
+</svg>

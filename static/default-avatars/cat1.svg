@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient Definitions -->
+  <defs>
+    <linearGradient id="catGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7c488"/>
+      <stop offset="100%" stop-color="#f0a36f"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Circular Face -->
+  <circle cx="256" cy="256" r="240" fill="url(#catGradient)"/>
+
+  <!-- Ears -->
+  <polygon points="156,116 196,76 236,116" fill="#f0a36f"/>
+  <polygon points="356,116 316,76 276,116" fill="#f0a36f"/>
+
+  <!-- Inner Ears -->
+  <polygon points="166,116 196,96 226,116" fill="#ffc0cb"/>
+  <polygon points="346,116 316,96 286,116" fill="#ffc0cb"/>
+
+  <!-- Eyes -->
+  <circle cx="196" cy="216" r="24" fill="white"/>
+  <circle cx="196" cy="216" r="12" fill="black"/>
+  <circle cx="316" cy="216" r="24" fill="white"/>
+  <circle cx="316" cy="216" r="12" fill="black"/>
+
+  <!-- Nose -->
+  <polygon points="246,256 266,256 256,276" fill="pink"/>
+
+  <!-- Whiskers -->
+  <line x1="150" y1="256" x2="220" y2="256" stroke="#333" stroke-width="3"/>
+  <line x1="292" y1="256" x2="362" y2="256" stroke="#333" stroke-width="3"/>
+  <line x1="150" y1="276" x2="220" y2="286" stroke="#333" stroke-width="3"/>
+  <line x1="292" y1="286" x2="362" y2="276" stroke="#333" stroke-width="3"/>
+
+  <!-- Mouth -->
+  <path d="M246,300 Q256,310 266,300" fill="none" stroke="#333" stroke-width="3"/>
+</svg>

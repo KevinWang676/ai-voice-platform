@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient Definitions -->
+  <defs>
+    <linearGradient id="lionGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8b551"/>
+      <stop offset="100%" stop-color="#f39c12"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Circular Face -->
+  <circle cx="256" cy="256" r="240" fill="url(#lionGradient)"/>
+
+  <!-- Mane (outer ring) -->
+  <circle cx="256" cy="256" r="220" fill="none" stroke="#d35400" stroke-width="40"/>
+
+  <!-- Eyes -->
+  <circle cx="196" cy="220" r="18" fill="#2c3e50"/>
+  <circle cx="316" cy="220" r="18" fill="#2c3e50"/>
+
+  <!-- Nose -->
+  <polygon points="246,260 266,260 256,280" fill="#2c3e50"/>
+
+  <!-- Muzzle -->
+  <ellipse cx="256" cy="290" rx="40" ry="25" fill="#fff"/>
+  <ellipse cx="256" cy="290" rx="20" ry="12" fill="#f8b551"/>
+
+  <!-- Mouth -->
+  <path d="M236,305 Q256,320 276,305" fill="none" stroke="#2c3e50" stroke-width="3"/>
+</svg>

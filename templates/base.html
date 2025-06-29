@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google Analytics tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-584FXGMJ57"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-584FXGMJ57');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSRF token would go here if Flask-WTF was configured -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><g transform='translate(256,256) scale(1.1) translate(-256,-256)'><path fill='%2387CEEB' d='M411.1,217.9c-9.7-43.5-48.4-76.2-94.6-76.2c-28.6,0-54.3,12.9-71.9,33.2c-9.2-3.2-19.1-5-29.4-5 c-32.1,0-58.4,24.7-62.3,56.5c-0.6,0-1.2,0-1.8,0c-38.6,0-70.1,31.6-70.1,70.1c0,38.5,31.5,70,70.1,70h229.9 c38.5,0,70.1-31.5,70.1-70C480,248.9,449.8,217.9,411.1,217.9z'/></g></svg>">
+    <title>TalkTalkAI - Create What You Love</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF6B6B;
+            --secondary-color: #4ECDC4;
+            --accent-color: #FFE66D;
+            --text-color: #2C3E50;
+            --bg-color: #F7F9FC;
+            --chat-bg: #FFFFFF;
+            --message-user: #E3F2FD;
+            --message-ai: #F5F5F5;
+        }
+        
+        body {
+            font-family: 'Noto Serif SC', "PingFang SC", "Microsoft YaHei", serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.8;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding-top: 0.3rem;
+            padding-bottom: 0.3rem;
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding: 0.3rem 0;
+        }
+        
+        .brand-subtitle {
+            font-size: 1.05rem;
+            color: #FF6B6B;
+            font-weight: bold;
+            opacity: 0.8;
+            margin: 0;
+            padding: 0.3rem 0;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+        
+        .brand-subtitle2 {
+            font-size: 1rem;
+            color: #FF6B6B;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            position: relative;
+            overflow: hidden;
+            padding: 8rem 0;
+            margin-bottom: -6rem;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="2" cy="2" r="1" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            opacity: 0.3;
+            animation: float 20s linear infinite;
+        }
+        
+        @keyframes float {
+            from { transform: translate(0, 0); }
+            to { transform: translate(20px, 20px); }
+        }
+        
+        .chat-container {
+            background: var(--chat-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: -2rem;
+            position: relative;
+            z-index: 1;
+            min-height: 600px;
+        }
+        
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+        
+        .message {
+            margin-bottom: 1.5rem;
+            max-width: 80%;
+            position: relative;
+        }
+        
+        .message-user {
+            margin-left: auto;
+            background: var(--message-user);
+            border-radius: 20px 20px 5px 20px;
+            padding: 1rem 1.5rem;
+        }
+        
+        .message-ai {
+            margin-right: auto;
+            background: var(--message-ai);
+            border-radius: 20px 20px 20px 5px;
+            padding: 1rem 1.5rem;
+        }
+        
+        .chat-input {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            background: white;
+            border-radius: 0 0 20px 20px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 25px;
+            padding: 0.8rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .form-control {
+            border-radius: 15px;
+            padding: 0.8rem 1.2rem;
+            border: 2px solid #eee;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.2rem rgba(78, 205, 196, 0.25);
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            font-size: 2rem;
+        }
+        
+        .footer {
+            background: var(--text-color);
+            color: white;
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+        
+        .nav-link {
+            color: var(--text-color) !important;
+            font-weight: 500;
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255, 107, 107, 0.1);
+            color: var(--primary-color) !important;
+        }
+        
+        .points-display {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(120deg, #FFD700, #FFA500);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-decoration: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .points-display:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            color: white;
+        }
+        
+        .btn-membership {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(120deg, #4CAF50, #8BC34A);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-decoration: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-membership:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            color: white;
+        }
+        
+        .btn-membership.active {
+            background: linear-gradient(120deg, #4CAF50, #8BC34A);
+        }
+        
+        .loading-dots:after {
+            content: '.';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60% { content: '...'; }
+            80% { content: '....'; }
+            100% { content: '.....'; }
+        }
+
+        .fancy-poetry2 {
+            font-family: "STKaiti", "KaiTi", serif;
+            background: linear-gradient(120deg, #4568dc, #b06ab3);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.25rem;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            vertical-align: middle;
+            line-height: normal;
+            margin-bottom: 7px;
+        }
+
+        /* Special styling for the "Party" text with breathing animation */
+        .fancy-party {
+            font-family: "STKaiti", "KaiTi", serif;
+            background: linear-gradient(120deg, #FF5E62, #FF9966, #FFCC33);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.25rem;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            vertical-align: middle;
+            line-height: normal;
+            margin-bottom: 7px;
+            animation: partyBreathing 3s ease-in-out infinite;
+        }
+        
+        /* Special styling for the "VoiceChat" text with breathing animation */
+        .fancy-voice {
+            font-family: "STKaiti", "KaiTi", serif;
+            background: linear-gradient(120deg, #20c0f1, #0bd03f, #12f16f);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.25rem;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            vertical-align: middle;
+            line-height: normal;
+            margin-bottom: 7px;
+            animation: partyBreathing 3s ease-in-out infinite;
+        }
+
+        @keyframes partyBreathing {
+            0%, 100% {
+                opacity: 0.8;
+                transform: scale(1);
+                background-position: 0% 50%;
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+                background-position: 100% 50%;
+            }
+        }
+
+        .navbar-toggler {
+            border: none;
+            padding: 0.5rem;
+            color: var(--text-color);
+            background: transparent;
+        }
+        
+        .navbar-toggler:focus {
+            box-shadow: none;
+            outline: none;
+        }
+        
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(44, 62, 80, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+            width: 24px;
+            height: 24px;
+        }
+        
+        @media (max-width: 991.98px) {
+            .navbar-nav {
+                background: rgba(255, 255, 255, 0.98);
+                padding: 1rem;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                margin-top: 1rem;
+            }
+            
+            .nav-item {
+                margin: 0.5rem 0;
+            }
+            
+            .brand-subtitle {
+                display: none;
+            }
+            
+            .points-display {
+                position: absolute;
+                right: 70px;
+                top: 15px;
+                font-size: 0.8rem;
+                padding: 0.15rem 0.5rem;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-feather-alt me-2"></i>TalkTalkAI
+            </a>
+            {% if current_user.is_authenticated %}
+            <a href="#" class="points-display ms-3" data-bs-toggle="modal" data-bs-target="#pointsRulesModal">
+                <i class="fas fa-coins text-warning me-1"></i>
+                <span>Points: <span id="userPoints">{% if current_user.has_active_membership() %}∞{% else %}{{ max(0, current_user.points) }}{% endif %}</span></span>
+            </a>
+            
+            <!-- Membership status and activation button -->
+            <div class="membership-display ms-2">
+                <a href="#" class="btn-membership" data-bs-toggle="modal" data-bs-target="#membershipModal">
+                    <i class="fas fa-crown me-1" style="color: #FFD700;"></i>
+                    <span id="membershipIndicator" class="d-none">Membership</span>
+                    <span id="activateMembership">Membership</span>
+                </a>
+            </div>
+            {% endif %}
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-home me-1"></i>Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('text_to_speech_page') }}"><i class="fas fa-microphone me-1"></i><span class="fancy-party">DreamSpeech</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('character_chat_page') }}"><i class="fas fa-theater-masks me-1"></i><span class="fancy-voice">VoiceChat</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('voice_conversion_page') }}"><i class="fas fa-sync-alt me-1"></i><span class="fancy-poetry2">NewVoice</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('music_generation_page') }}"><i class="fas fa-music me-1"></i><span class="fancy-party">Melody</span></a>
+                    </li>
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item dropdown position-relative">
+                        {% if request.endpoint != 'index' %}
+                        <a class="nav-link" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bell"></i>
+                            <span id="notificationCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">
+                                0
+                            </span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown" style="width: 300px; max-height: 400px; overflow-y: auto;">
+                            <div class="dropdown-header d-flex justify-content-between align-items-center py-2 bg-light">
+                                <span><i class="fas fa-bell me-2"></i>Notifications</span>
+                                <button class="btn btn-sm btn-link text-muted p-0" id="markAllReadBtn">
+                                    <small>Mark all as read</small>
+                                </button>
+                            </div>
+                            <div class="dropdown-divider m-0"></div>
+                            <div id="notificationList" class="px-2">
+                                <!-- Notifications will be loaded here -->
+                            </div>
+                        </div>
+                        {% endif %}
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle me-1"></i>More
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="/likes"><i class="fas fa-book me-2"></i>My Dreams</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('group_chat_page') }}"><i class="fas fa-glass-cheers me-2"></i><span class="fancy-party">Party</span></a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('forum') }}"><i class="fas fa-comments me-2"></i><span class="fancy-poetry2">Community</span></a></li>
+                            <!--<li><a class="dropdown-item" href="/chat"><i class="fas fa-comment me-2"></i><span class="fancy-poetry2">Chat</span></a></li>-->
+                            <li><a class="dropdown-item" href="/settings"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login"><i class="fas fa-sign-in-alt me-1"></i>Login</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% block content %}{% endblock %}
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h4><i class="fas fa-feather-alt me-2"></i>TalkTalkAI</h4>
+                    <p class="mb-0 brand-subtitle2" style="margin-top: 10px; letter-spacing: 0.05em;">Create What You Love</p>
+                    <p class="mb-0" style="margin-top: 10px;">The universe is vast, there's always a dream for you</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="text-white text-decoration-none">Home</a></li>
+                        <li><a href="/login" class="text-white text-decoration-none">Login</a></li>
+                        <li><a href="https://www.bilibili.com/video/BV1Q2ZgYeEHu" target="_blank" class="text-white text-decoration-none">User Guide</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Follow Us</h5>
+                    <div class="social-links mt-3">
+                        <a href="https://www.youtube.com/@kevinwang676"><i class="fab fa-youtube"></i></a>
+                        <a href="https://discord.gg/uUryBx2rtv" target="_blank"><i class="fab fa-discord"></i></a>
+                        <p class="mb-0" style="margin-top: 10px;">Official Email: talktalkai@foxmail.com</p>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <p class="mb-0">© 2025 TalkTalkAI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Add the QR code modal -->
+    <div class="modal fade" id="weixinQRModal" tabindex="-1" aria-labelledby="weixinQRModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="weixinQRModalLabel">Scan the WeChat QR code to follow us~</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="{{ url_for('static', filename='qrcode.jpg') }}" alt="WeChat QR Code" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Points Rules Modal -->
+    <div class="modal fade" id="pointsRulesModal" tabindex="-1" aria-labelledby="pointsRulesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pointsRulesModalLabel">
+                        <i class="fas fa-coins me-2" style="color: #FFD700;"></i>TalkTalkAI Point Rules
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <h6 class="fw-bold">Current Points</h6>
+                        <div class="d-flex align-items-center">
+                            <div class="progress flex-grow-1 me-2" style="height: 20px;">
+                                <div class="progress-bar bg-warning" role="progressbar" 
+                                    {% if current_user.is_authenticated %}
+                                    {% if current_user.has_active_membership() %}
+                                    style="width: 100%;" 
+                                    aria-valuenow="30"
+                                    {% else %}
+                                    style="width: {{ (max(0, current_user.points) / 30) * 100 }}%;" 
+                                    aria-valuenow="{{ max(0, current_user.points) }}"
+                                    {% endif %}
+                                    {% else %}
+                                    style="width: 0%;" 
+                                    aria-valuenow="0"
+                                    {% endif %}
+                                    aria-valuemin="0" aria-valuemax="30">
+                                </div>
+                            </div>
+                            <span class="fw-bold">{% if current_user.is_authenticated %}{% if current_user.has_active_membership() %}∞{% else %}{{ max(0, current_user.points) }}{% endif %}/30{% else %}0/30{% endif %}</span>
+                        </div>
+                    </div>
+                    <h6 class="fw-bold">Point Rules:</h6>
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Daily Point Limit
+                            <span class="badge bg-primary rounded-pill">30 points</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Voice Clone (DreamSpeech)
+                            <span class="badge bg-info rounded-pill">5 points/use</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Voice Conversion (NewVoice)
+                            <span class="badge bg-success rounded-pill">3 points/use</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Music Generation (Melody)
+                            <span class="badge bg-warning rounded-pill">8 points/use</span>
+                        </li>
+                    </ul>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        The system will automatically reset 30 points for you every morning (China Time). If you run out of points, you need to wait until the next day to continue using the services.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add QQ QR Code Modal -->
+    <div class="modal fade" id="qqQRModal" tabindex="-1" aria-labelledby="qqQRModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="qqQRModalLabel">Scan the code to join the TalkTalkAI QQ group~</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="{{ url_for('static', filename='shumeng_qq.jpg') }}" alt="TalkTalkAI Official QQ Group QR Code" class="img-fluid" style="max-width: 300px;">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Membership Modal -->
+    <div class="modal fade" id="membershipModal" tabindex="-1" aria-labelledby="membershipModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(120deg, #FFB347, #FFCC33); color: white;">
+                    <h5 class="modal-title" id="membershipModalLabel">
+                        <i class="fas fa-crown me-2"></i>Membership Center
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="membershipInfo" class="mb-4">
+                        <div class="text-center mb-3">
+                            <div id="membershipStatusDisplay">
+                                <!-- Will be populated by JavaScript -->
+                                <div class="spinner-border text-warning" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="membership-benefits mb-4">
+                        <h5 class="mb-3"><i class="fas fa-gift me-2 text-warning"></i>Membership Benefits</h5>
+                        <ul class="list-group">
+                            <li class="list-group-item"><i class="fas fa-check-circle text-success me-2"></i>Unlimited use of all AI services, not subject to the daily 30-point limit</li>
+                            <li class="list-group-item"><i class="fas fa-check-circle text-success me-2"></i>DreamSpeech text length increased to a maximum of 1000 characters (non-member 200 characters)</li>
+                            <li class="list-group-item"><i class="fas fa-check-circle text-success me-2"></i>DreamSpeech supports 6 roles for voice clones, 1000 characters (non-members 2 roles, 200 characters)</li>
+                            <li class="list-group-item"><i class="fas fa-check-circle text-success me-2"></i>NewVoice audio length increased to 2 minutes (non-member 1 minute)</li>
+                            <li class="list-group-item"><i class="fas fa-check-circle text-success me-2"></i>Priority access to the latest features</li>
+                        </ul>
+                    </div>
+
+                    <div class="activation-section">
+                        <h5 class="mb-3"><i class="fas fa-key me-2 text-warning"></i>Activate Membership</h5>
+                        <p class="small text-muted mb-2">Please enter the activation code you purchased. It will take effect immediately after activation. Each activation code can only be activated once. Refresh the page after activation to enjoy all AI services.</p>
+                        
+                        <form id="activateKeyForm" action="/activate_membership" method="post">
+                            <!-- CSRF token would be included here if Flask-WTF was properly configured -->
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" id="activationKey" name="activation_key" placeholder="Enter activation code" required>
+                                <button class="btn btn-warning" type="submit" id="activateKeyBtn">
+                                    <i class="fas fa-check-circle me-1"></i>Activate
+                                </button>
+                            </div>
+                            <!-- Hidden iframe for form target to prevent page reload -->
+                            <iframe name="hiddenFrame" id="hiddenFrame" style="display:none"></iframe>
+                            <script>
+                                // Automatically trim any whitespace when pasting content
+                                document.getElementById('activationKey').addEventListener('paste', function(e) {
+                                    setTimeout(() => {
+                                        this.value = this.value.trim();
+                                    }, 0);
+                                });
+                                
+                                // Also trim when the form is submitted
+                                document.getElementById('activateKeyForm').addEventListener('submit', function() {
+                                    const keyInput = document.getElementById('activationKey');
+                                    keyInput.value = keyInput.value.trim();
+                                }, true);
+                            </script>
+                        </form>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>How to buy TalkTalkAI monthly membership?</strong><br>
+                            Please look for the only official Taobao store, click to go directly: <a href="https://item.taobao.com/item.htm?id=897631627459" target="_blank">TalkTalkAI Store</a>. You can also use the mobile Taobao <a href="#" data-bs-toggle="modal" data-bs-target="#taobaoQRModal">scan code to buy</a>. After purchase, the TalkTalkAI Store will automatically deliver the goods. Copy the activation code above, then click "Activate".
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Membership activation success modal -->
+    <div class="modal fade" id="activationSuccessModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-check-circle me-2"></i>Activation Successful
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="py-4">
+                        <i class="fas fa-crown text-warning" style="font-size: 4rem;"></i>
+                        <h4 class="mt-3" id="successMessage">Your membership has been successfully activated!</h4>
+                        <p class="text-muted" id="membershipDetails">Membership validity has been extended.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Start Experiencing</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Taobao QR Code Modal -->
+    <div class="modal fade" id="taobaoQRModal" tabindex="-1" aria-labelledby="taobaoQRModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="taobaoQRModalLabel">Taobao Scan to Buy</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="{{ url_for('static', filename='taobao.jpg') }}" alt="TalkTalkAI Taobao" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}
+    <script>
+    // Add notification handling functions
+    function updateNotificationCount() {
+        fetch('/notifications/count')
+            .then(response => response.json())
+            .then(data => {
+                const countBadge = document.getElementById('notificationCount');
+                if (data.count > 0) {
+                    countBadge.textContent = data.count;
+                    countBadge.style.display = 'inline-block';
+                } else {
+                    countBadge.style.display = 'none';
+                }
+            });
+    }
+
+    // Function to get post_id for a comment
+    async function getPostIdForComment(comment_id) {
+        try {
+            const response = await fetch(`/get_post_id_for_comment/${comment_id}`);
+            const data = await response.json();
+            return data.post_id;
+        } catch (error) {
+            console.error('Error getting post_id for comment:', error);
+            return null;
+        }
+    }
+
+    // Function to update points display
+    function updatePointsDisplay() {
+        const pointsElement = document.getElementById('userPoints');
+        if (pointsElement) {
+            fetch('/get_remaining_points')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show infinity symbol if user has active membership
+                        if (data.has_membership) {
+                            pointsElement.textContent = '∞';
+                            pointsElement.setAttribute('title', 'Member unlimited use');
+                        } else {
+                            pointsElement.textContent = data.points;
+                            pointsElement.removeAttribute('title');
+                        }
+                        
+                        // Update progress bar in modal if modal is open
+                        const progressBar = document.querySelector('#pointsRulesModal .progress-bar');
+                        if (progressBar) {
+                            if (data.has_membership) {
+                                progressBar.style.width = '100%';
+                                progressBar.setAttribute('aria-valuenow', data.daily_limit);
+                                
+                                const pointsTotal = document.querySelector('#pointsRulesModal .fw-bold:last-child');
+                                if (pointsTotal) {
+                                    pointsTotal.textContent = `∞/${data.daily_limit} (Member unlimited)`;
+                                }
+                            } else {
+                                // Ensure points value is never negative for display
+                                const pointsToDisplay = Math.max(0, data.points);
+                                const percentWidth = (pointsToDisplay / data.daily_limit) * 100;
+                                
+                                progressBar.style.width = `${percentWidth}%`;
+                                progressBar.setAttribute('aria-valuenow', pointsToDisplay);
+                                
+                                const pointsTotal = document.querySelector('#pointsRulesModal .fw-bold:last-child');
+                                if (pointsTotal) {
+                                    pointsTotal.textContent = `${pointsToDisplay}/${data.daily_limit}`;
+                                }
+                            }
+                        }
+                    }
+                })
+                .catch(error => console.error('Error fetching points:', error));
+        }
+    }
+
+    // Set up interval to update points
+    if (document.getElementById('userPoints')) {
+        // Update immediately on page load
+        updatePointsDisplay();
+        // Then update every minute
+        setInterval(updatePointsDisplay, 60000);
+    }
+
+    async function loadNotifications() {
+        try {
+            const response = await fetch('/notifications');
+            const data = await response.json();
+            const notificationList = document.getElementById('notificationList');
+            notificationList.innerHTML = '';
+            
+            if (data.notifications.length === 0) {
+                notificationList.innerHTML = '<div class="text-center py-3">No new messages</div>';
+                return;
+            }
+
+            // Create a map to store post IDs for comments to avoid multiple requests
+            const commentPostIds = new Map();
+            
+            // First, gather all comment IDs that need post IDs
+            const commentPromises = data.notifications
+                .filter(n => n.comment_id && !n.post_id)
+                .map(async n => {
+                    if (!commentPostIds.has(n.comment_id)) {
+                        try {
+                            const response = await fetch(`/get_post_id_for_comment/${n.comment_id}`);
+                            const data = await response.json();
+                            commentPostIds.set(n.comment_id, data.post_id);
+                        } catch (error) {
+                            console.error('Error fetching post ID:', error);
+                            commentPostIds.set(n.comment_id, null);
+                        }
+                    }
+                });
+            
+            // Wait for all post ID requests to complete
+            await Promise.all(commentPromises);
+            
+            // Now render all notifications
+            for (const notification of data.notifications) {
+                let message = '';
+                let link = '#';
+                let icon = '';
+                
+                switch (notification.type) {
+                    case 'follow':
+                        message = `${notification.sender.username} followed you`;
+                        link = `/user/${notification.sender.id}/profile`;
+                        icon = '<i class="fas fa-user-plus text-primary me-2"></i>';
+                        break;
+                    case 'like':
+                        if (notification.comment_id) {
+                            message = `${notification.sender.username} liked your comment`;
+                            const post_id = notification.post_id || commentPostIds.get(notification.comment_id);
+                            link = `/forum/post/${post_id}#comment-${notification.comment_id}`;
+                            icon = '<i class="fas fa-thumbs-up text-danger me-2"></i>';
+                        } else {
+                            message = `${notification.sender.username} liked your post`;
+                            link = `/forum/post/${notification.post_id}`;
+                            icon = '<i class="fas fa-thumbs-up text-danger me-2"></i>';
+                        }
+                        break;
+                    case 'comment':
+                        if (notification.comment_id) {
+                            message = `${notification.sender.username} replied to your comment`;
+                            const post_id = notification.post_id || commentPostIds.get(notification.comment_id);
+                            link = `/forum/post/${post_id}#comment-${notification.comment_id}`;
+                            icon = '<i class="fas fa-comment text-success me-2"></i>';
+                        } else {
+                            message = `${notification.sender.username} commented on your post`;
+                            link = `/forum/post/${notification.post_id}`;
+                            icon = '<i class="fas fa-comment text-success me-2"></i>';
+                        }
+                        break;
+                }
+                
+                const notificationHtml = `
+                    <a href="${link}" class="dropdown-item py-2 border-bottom" onclick="handleNotificationClick(event, '${link}')">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <img src="${notification.sender.avatar_url ? notification.sender.avatar_url : notification.sender.get_avatar()}" 
+                                     class="rounded-circle" 
+                                     width="40" height="40" 
+                                     alt="${notification.sender.username}"
+                                     style="object-fit: cover; border: 1px solid rgba(0, 0, 0, 0.1);"
+                                     onerror="this.onerror=null; this.src='/static/default_avatar.png';">
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <div class="text-wrap mb-1">${icon}${message}</div>
+                                <small class="text-muted">${new Date(new Date(notification.created_at).getTime() + 8 * 60 * 60 * 1000).toLocaleString()}</small>
+                            </div>
+                        </div>
+                    </a>
+                `;
+                notificationList.insertAdjacentHTML('beforeend', notificationHtml);
+            }
+        } catch (error) {
+            console.error('Error loading notifications:', error);
+            const notificationList = document.getElementById('notificationList');
+            notificationList.innerHTML = '<div class="text-center py-3 text-danger">Failed to load messages</div>';
+        }
+    }
+
+    // Function to handle notification clicks
+    function handleNotificationClick(event, link) {
+        event.preventDefault();
+        // Close the dropdown
+        const dropdownMenu = document.querySelector('.dropdown-menu');
+        if (dropdownMenu) {
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('notificationsDropdown'));
+            if (dropdown) {
+                dropdown.hide();
+            }
+        }
+        // Navigate to the link
+        window.location.href = link;
+    }
+
+    // Add styles for notification items
+    const style = document.createElement('style');
+    style.textContent = `
+        .dropdown-item:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        #notificationList .dropdown-item {
+            white-space: normal;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        #notificationList .dropdown-item:last-child {
+            border-bottom: none;
+        }
+        #notificationList .dropdown-menu {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .dropdown-header {
+            font-weight: 600;
+            color: #495057;
+        }
+        #markAllReadBtn {
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+        #markAllReadBtn:hover {
+            text-decoration: underline;
+        }
+        .notification-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Update notification count every minute
+    setInterval(updateNotificationCount, 60000);
+
+    // Load notifications when dropdown is opened
+    document.getElementById('notificationsDropdown')?.addEventListener('show.bs.dropdown', loadNotifications);
+
+    // Add handler for "Mark All as Read" button
+    document.getElementById('markAllReadBtn')?.addEventListener('click', async function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        try {
+            const response = await fetch('/mark_all_notifications_read', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Update UI to show all notifications as read
+                document.getElementById('notificationCount').style.display = 'none';
+                
+                // Update the notification list UI if needed
+                const notificationItems = document.querySelectorAll('#notificationList .dropdown-item');
+                notificationItems.forEach(item => {
+                    item.classList.add('text-muted');
+                    item.style.backgroundColor = 'rgba(0,0,0,0.02)';
+                });
+            }
+        } catch (error) {
+            console.error('Error marking notifications as read:', error);
+        }
+    });
+
+    // Initial load
+    if (document.getElementById('notificationCount')) {
+        updateNotificationCount();
+    }
+
+    // Check membership status when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get references to membership-related elements
+        const membershipIndicator = document.getElementById('membershipIndicator');
+        const activateMembership = document.getElementById('activateMembership');
+        const membershipStatusDisplay = document.getElementById('membershipStatusDisplay');
+        
+        // Set initial loading state for the membership status display
+        if (membershipStatusDisplay) {
+            membershipStatusDisplay.innerHTML = `
+                <div class="text-center mb-4">
+                    <div class="display-1 text-muted mb-2">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <h4 class="mb-2">Checking membership status...</h4>
+                    <p class="text-muted">Please wait a moment</p>
+                </div>
+            `;
+
+            // Always attempt to fetch membership status if the status display exists
+            // This indicates the user is on a page with the membership modal
+            globalCheckMembershipStatus();
+        }
+        
+        // Check if we have an activation success message in URL (from redirect after form submit)
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('activation_success') && urlParams.has('days_remaining')) {
+            const days = urlParams.get('days_remaining');
+            const message = urlParams.get('message') || 'Your membership has been successfully activated!';
+            
+            // Show success modal
+            document.getElementById('successMessage').textContent = message;
+            document.getElementById('membershipDetails').textContent = `Membership: ${days} days`;
+            
+            // Update membership display
+            updateMembershipDisplay(true, days);
+            
+            // Show success modal
+            const successModal = new bootstrap.Modal(document.getElementById('activationSuccessModal'));
+            successModal.show();
+            
+            // Clean up URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+        
+        // Set up the activation form
+        setupActivationForm();
+    });
+    
+    // Function to check membership status
+    function checkMembershipStatus() {
+        const membershipIndicator = document.getElementById('membershipIndicator');
+        const activateMembership = document.getElementById('activateMembership');
+        
+        fetch('/get_membership_status')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Update the status in the nav and modal
+                    updateMembershipDisplay(data.has_membership, data.days_remaining);
+                    // Set global variable for membership status (used by other pages)
+                    window.hasMembership = data.has_membership;
+                } else {
+                    // Handle error - display non-member status
+                    updateMembershipDisplay(false, 0);
+                    console.error('Membership status error:', data.message);
+                }
+            })
+            .catch(error => {
+                // Handle error - display non-member status
+                updateMembershipDisplay(false, 0);
+                console.error('Error fetching membership status:', error);
+            });
+    }
+    
+    // Create a globally unique named function that won't be overridden
+    // This ensures the membership status is checked even if pages define their own checkMembershipStatus
+    window.globalCheckMembershipStatus = function() {
+        // Call our membership status checker
+        checkMembershipStatus();
+    };
+
+    // Function to set up the activation form
+    function setupActivationForm() {
+        const activateKeyForm = document.getElementById('activateKeyForm');
+        if (activateKeyForm) {
+            // Set iframe as target to prevent page reload
+            activateKeyForm.target = "hiddenFrame";
+            
+            // Listen for iframe load events
+            const hiddenFrame = document.getElementById('hiddenFrame');
+            if (hiddenFrame) {
+                hiddenFrame.addEventListener('load', function() {
+                    try {
+                        const frameContent = hiddenFrame.contentDocument || hiddenFrame.contentWindow.document;
+                        const responseText = frameContent.body.innerText;
+                        if (responseText) {
+                            try {
+                                const responseData = JSON.parse(responseText);
+                                console.log('Frame response:', responseData);
+                                
+                                // Handle the activation response
+                                const activateBtn = document.getElementById('activateKeyBtn');
+                                if (activateBtn) {
+                                    activateBtn.disabled = false;
+                                    activateBtn.innerHTML = '<i class="fas fa-check-circle me-1"></i>Activate';
+                                }
+                                
+                                handleActivationResponse(responseData, activateBtn, '');
+                            } catch (e) {
+                                console.error('Error parsing iframe response:', e);
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Error accessing iframe content:', e);
+                    }
+                });
+            }
+            
+            activateKeyForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const activationKey = document.getElementById('activationKey').value.trim();
+                const activateBtn = document.getElementById('activateKeyBtn');
+                
+                if (!activationKey) {
+                    alert('Please enter activation code');
+                    return;
+                }
+                
+                // Disable button and show loading
+                activateBtn.disabled = true;
+                activateBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Activating...';
+                
+                // Log activation attempt
+                console.log('Attempting to activate key:', activationKey);
+                
+                // Create form data
+                const formData = new FormData(activateKeyForm);
+                
+                // Get CSRF token if available
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                
+                // Try alternate method if CSRF token doesn't exist
+                let csrfTokenAlt = '';
+                try {
+                    // Look for the CSRF token in cookies
+                    const csrfCookie = document.cookie.split('; ').find(row => row.startsWith('csrf_token='));
+                    if (csrfCookie) {
+                        csrfTokenAlt = csrfCookie.split('=')[1];
+                    }
+                } catch (error) {
+                    console.error('Error getting CSRF token from cookie:', error);
+                }
+                
+                // Try JSON request first (more common in Flask applications)
+                fetch('/activate_membership', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': csrfToken || csrfTokenAlt || ''
+                    },
+                    body: JSON.stringify({ activation_key: activationKey }),
+                    credentials: 'same-origin'
+                })
+                .then(response => {
+                    console.log('JSON response status:', response.status);
+                    if (response.ok) {
+                        return response.json();
+                    } else if (response.status === 415 || response.status === 400) {
+                        // Unsupported media type, try with FormData instead
+                        throw new Error('Try FormData');
+                    } else {
+                        throw new Error(`Server responded with status: ${response.status}`);
+                    }
+                })
+                .then(data => {
+                    console.log('JSON response data:', data);
+                    handleActivationResponse(data, activateBtn, activationKey);
+                })
+                .catch(error => {
+                    console.error('JSON request error:', error);
+                    
+                    if (error.message === 'Try FormData') {
+                        // Fallback to FormData if JSON didn't work
+                        console.log('Retrying with FormData submission...');
+                        
+                        fetch('/activate_membership', {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRFToken': csrfToken || csrfTokenAlt || ''
+                            },
+                            body: formData,
+                            credentials: 'same-origin'
+                        })
+                        .then(response => {
+                            console.log('FormData response status:', response.status);
+                            if (!response.ok) {
+                                throw new Error(`Server responded with status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log('FormData response data:', data);
+                            handleActivationResponse(data, activateBtn, activationKey);
+                        })
+                        .catch(error => {
+                            console.error('Error activating membership (FormData):', error);
+                            
+                            // Last resort: Instead of direct form submission, use fetch with URL-encoded form data
+                            console.log('Trying URL-encoded form data as last resort');
+                            
+                            // Reset button state
+                            activateBtn.disabled = false;
+                            activateBtn.innerHTML = '<i class="fas fa-check-circle me-1"></i>Activate';
+                            
+                            // Create URLSearchParams
+                            const urlEncodedData = new URLSearchParams();
+                            urlEncodedData.append('activation_key', activationKey);
+                            
+                            // Try one more fetch with different content type
+                            fetch('/activate_membership', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'X-CSRFToken': csrfToken || csrfTokenAlt || ''
+                                },
+                                body: urlEncodedData,
+                                credentials: 'same-origin'
+                            })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error(`Server responded with status: ${response.status}`);
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                console.log('URLEncoded response data:', data);
+                                handleActivationResponse(data, activateBtn, activationKey);
+                            })
+                            .catch(finalError => {
+                                console.error('Final attempt failed:', finalError);
+                                alert('Cannot connect to the server, please check your network connection and try again');
+                            });
+                        });
+                    } else {
+                        console.error('Error activating membership (JSON):', error);
+                        activateBtn.disabled = false;
+                        activateBtn.innerHTML = '<i class="fas fa-check-circle me-1"></i>Activate';
+                        alert('An error occurred during activation, please try again later (JSON)');
+                    }
+                });
+            });
+        }
+    }
+    
+    // Function to handle activation response
+    function handleActivationResponse(data, activateBtn, activationKey) {
+        // Reset form button
+        activateBtn.disabled = false;
+        activateBtn.innerHTML = '<i class="fas fa-check-circle me-1"></i>Activate';
+        
+        if (data.success) {
+            console.log('Activation successful:', data);
+            
+            // Show success modal
+            document.getElementById('successMessage').textContent = data.message || 'Your membership has been successfully activated!';
+            document.getElementById('membershipDetails').textContent = `Membership: ${data.days_remaining} days`;
+            
+            // Hide membership modal and show success modal
+            const membershipModal = bootstrap.Modal.getInstance(document.getElementById('membershipModal'));
+            membershipModal.hide();
+            
+            // Show success modal
+            const successModal = new bootstrap.Modal(document.getElementById('activationSuccessModal'));
+            successModal.show();
+            
+            // Update membership display
+            updateMembershipDisplay(true, data.days_remaining);
+            
+            // Clear the input
+            document.getElementById('activationKey').value = '';
+        } else {
+            // Show error message
+            console.error('Activation failed:', data);
+            alert(data.message || 'Activation failed, please check if the activation code is correct');
+        }
+    }
+    
+    // Ensure modal always has content even if JS fails
+    document.getElementById('membershipModal')?.addEventListener('show.bs.modal', function() {
+        const membershipStatusDisplay = document.getElementById('membershipStatusDisplay');
+        
+        // Show a loading spinner and then check membership status
+        if (membershipStatusDisplay) {
+            membershipStatusDisplay.innerHTML = `
+                <div class="text-center mb-4">
+                    <div class="display-1 text-muted mb-2">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <h4 class="mb-2">Checking membership status...</h4>
+                    <p class="text-muted">Please wait a moment</p>
+                </div>
+            `;
+            
+            // Always check status when modal is opened to ensure it's up to date
+            globalCheckMembershipStatus();
+        }
+    });
+
+    // Function to update membership display in the navbar and modal
+    function updateMembershipDisplay(hasMembership, daysRemaining) {
+        const membershipIndicator = document.getElementById('membershipIndicator');
+        const activateMembership = document.getElementById('activateMembership');
+        const membershipStatusDisplay = document.getElementById('membershipStatusDisplay');
+        const btnMembership = document.querySelector('.btn-membership');
+        
+        if (hasMembership) {
+            // Update nav button
+            if (membershipIndicator) {
+                membershipIndicator.innerHTML = `<i class="fas fa-crown text-warning me-1"></i> Membership: ${daysRemaining} days`;
+                membershipIndicator.classList.remove('d-none');
+            }
+            if (activateMembership) {
+                activateMembership.classList.add('d-none');
+            }
+            if (btnMembership) {
+                btnMembership.classList.add('active');
+            }
+            
+            // Update modal content
+            if (membershipStatusDisplay) {
+                membershipStatusDisplay.innerHTML = `
+                    <div class="text-center mb-4">
+                        <div class="display-1 text-warning mb-2">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <h4 class="mb-2">Membership Activated</h4>
+                        <div class="bg-light rounded py-2 px-3 d-inline-block">
+                            <i class="fas fa-calendar-alt me-2 text-primary"></i>
+                            Membership: <span class="fw-bold text-primary">${daysRemaining}</span> days
+                        </div>
+                    </div>
+                `;
+            }
+        } else {
+            // Update nav button for non-members
+            if (membershipIndicator) {
+                membershipIndicator.classList.add('d-none');
+            }
+            if (activateMembership) {
+                activateMembership.classList.remove('d-none');
+            }
+            if (btnMembership) {
+                btnMembership.classList.remove('active');
+            }
+            
+            // Update modal content for non-members
+            if (membershipStatusDisplay) {
+                membershipStatusDisplay.innerHTML = `
+                    <div class="text-center mb-4">
+                        <h4 class="mb-3">Membership Special Offer: 5.9 USD/Month</h4>
+                        <p class="text-muted">Activate membership to enjoy unlimited use of all services without point restrictions</p>
+                    </div>
+                `;
+            }
+        }
+    }
+
+    // Call the global membership check function immediately after script load
+    // This ensures it runs on all pages that include this script, even if they override checkMembershipStatus
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        // Document already loaded - run immediately
+        setTimeout(function() {
+            if (typeof window.globalCheckMembershipStatus === 'function') {
+                window.globalCheckMembershipStatus();
+            }
+        }, 100);
+    } else {
+        // Document still loading - wait for DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof window.globalCheckMembershipStatus === 'function') {
+                window.globalCheckMembershipStatus();
+            }
+        });
+    }
+    </script>
+    {% endblock %}
+</body>
+</html>

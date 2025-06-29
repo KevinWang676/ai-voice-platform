@@ -1,0 +1,959 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-584FXGMJ57"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-584FXGMJ57');
+</script>
+{% endblock %}
+
+<!-- Define pagination macro at the top -->
+{% macro render_pagination(pagination, tab_name) %}
+    {% if pagination.pages > 1 %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <!-- Previous page -->
+            {% if pagination.has_prev %}
+                <li class="page-item">
+                <a class="page-link" href="{{ url_for('my_stories', page=pagination.prev_num, tab=tab_name) }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link" aria-hidden="true">&laquo;</span>
+            </li>
+            {% endif %}
+
+            <!-- Page numbers -->
+            {% for page_num in pagination.iter_pages() %}
+                {% if page_num %}
+                    {% if page_num != pagination.page %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('my_stories', page=page_num, tab=tab_name) }}">{{ page_num }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ page_num }}</span>
+                    </li>
+                    {% endif %}
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            <!-- Next page -->
+            {% if pagination.has_next %}
+                <li class="page-item">
+                <a class="page-link" href="{{ url_for('my_stories', page=pagination.next_num, tab=tab_name) }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link" aria-hidden="true">&raquo;</span>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+{% endmacro %}
+
+{% block content %}
+<div class="main-content py-4">
+    <div class="container">
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link {% if not request.args.get('tab') or request.args.get('tab') == 'following' %}active{% endif %}" 
+                        id="following-tab" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#following" 
+                        type="button" 
+                        role="tab" 
+                        aria-controls="following" 
+                        aria-selected="{% if not request.args.get('tab') or request.args.get('tab') == 'following' %}true{% else %}false{% endif %}">
+                    <i class="fas fa-users me-2"></i>Following Feed
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link {% if request.args.get('tab') == 'likes' %}active{% endif %}" 
+                        id="likes-tab" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#likes" 
+                        type="button" 
+                        role="tab" 
+                        aria-controls="likes" 
+                        aria-selected="{% if request.args.get('tab') == 'likes' %}true{% else %}false{% endif %}">
+                    <i class="fas fa-heart me-2"></i>My Likes
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link {% if request.args.get('tab') == 'posts' %}active{% endif %}" 
+                        id="posts-tab" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#posts" 
+                        type="button" 
+                        role="tab" 
+                        aria-controls="posts" 
+                        aria-selected="{% if request.args.get('tab') == 'posts' %}true{% else %}false{% endif %}">
+                    <i class="fas fa-pen-to-square me-2"></i>My Posts
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="myTabContent">
+            <!-- Following Posts Tab -->
+            <div class="tab-pane fade {% if not request.args.get('tab') or request.args.get('tab') == 'following' %}show active{% endif %}" 
+                 id="following" role="tabpanel" aria-labelledby="following-tab">
+                {% if followed_posts.items %}
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                        {% for post in followed_posts.items %}
+                        <div class="col">
+                            <div class="forum-post-card animate__animated animate__fadeIn" data-post-id="{{ post.id }}">
+                                <div class="post-header">
+                                    <div class="user-profile">
+                                        <a href="{{ url_for('user_profile', user_id=post.user.id) }}" class="text-decoration-none">
+                                            <img src="{{ post.user.avatar_url if post.user.avatar_url else post.user.get_avatar() }}" 
+                                                 alt="{{ post.user.username }}" class="profile-image">
+                                        </a>
+                                        <div class="user-info">
+                                            <h5 class="username">{{ post.user.username }}</h5>
+                                            {% if post.user.bio %}
+                                            <p class="user-bio">{{ post.user.bio }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="post-meta text-muted mb-2">
+                                        <small>
+                                            <i class="fas fa-clock me-1"></i>{{ (post.created_at|add_hours).strftime('%m-%d %H:%M') }}
+                                            <span class="mx-2">·</span>
+                                            <i class="fas fa-eye me-1"></i>{{ post.views or 0 }} views
+                                            {% if post.is_private %}
+                                            <span class="mx-2">·</span>
+                                            <i class="fas fa-lock text-secondary" title="Private Post"></i>
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                    <h2 class="post-title">
+                                        <a href="{{ url_for('view_post', post_id=post.id) }}">
+                                            {{ post.title[:22] }}{{ '...' if post.title|length > 22 }}
+                                        </a>
+                                    </h2>
+                                    {% if post.cover_image %}
+                                    <div class="post-cover-image">
+                                        <a href="{{ url_for('view_post', post_id=post.id) }}">
+                                            <img src="{{ post.cover_image }}" 
+                                                 alt="Cover for {{ post.title }}"
+                                                 class="img-fluid rounded">
+                                        </a>
+                                    </div>
+                                    {% endif %}
+                                    <div class="post-tags">
+                                        {% for tag in post.tag_list[:6] %}
+                                        <span class="badge rounded-pill bg-light text-dark tag-badge">
+                                            <a href="{{ url_for('forum', tag=tag, sort='time') }}" class="text-decoration-none text-dark">
+                                            {% if tag == '小说' %}
+                                            <i class="fas fa-book me-1"></i>
+                                            {% elif tag == '电影' %}
+                                            <i class="fas fa-film me-1"></i>
+                                            {% elif tag == '电视剧' %}
+                                            <i class="fas fa-tv me-1"></i>
+                                            {% elif tag == '动漫' %}
+                                            <i class="fas fa-dragon me-1"></i>
+                                            {% elif tag == '漫画' %}
+                                            <i class="fas fa-image me-1"></i>
+                                            {% elif tag == '随想' %}
+                                            <i class="fas fa-feather-alt me-1"></i>
+                                            {% elif tag == '读后感' %}
+                                            <i class="fas fa-comment-dots me-1"></i>
+                                            {% elif tag == '新结局' %}
+                                            <i class="fas fa-magic me-1"></i>
+                                            {% elif tag == '角色畅聊' %}
+                                            <i class="fas fa-comments me-1"></i>
+                                            {% elif tag == '绘梦' %}
+                                            <i class="fas fa-paint-brush me-1"></i>
+                                            {% elif tag == '梦语' %}
+                                            <i class="fas fa-cloud-moon me-1"></i>
+                                            {% elif tag == '游戏' %}
+                                            <i class="fas fa-gamepad me-1"></i>
+                                            {% elif tag == '虐心' %}
+                                            <i class="fas fa-heart-broken me-1"></i>
+                                            {% elif tag == '意难平' %}
+                                            <i class="fas fa-cloud-rain me-1"></i>
+                                            {% elif tag == '意满离' %}
+                                            <i class="fas fa-sun me-1"></i>
+                                            {% elif tag == '青春校园' %}
+                                            <i class="fas fa-school me-1"></i>
+                                            {% elif tag == '恋爱' %}
+                                            <i class="fas fa-heartbeat me-1"></i>
+                                            {% elif tag == '霸道总裁' %}
+                                            <i class="fas fa-crown me-1"></i>
+                                            {% elif tag == '科幻' %}
+                                            <i class="fas fa-rocket me-1"></i>
+                                            {% elif tag == '职场' %}
+                                            <i class="fas fa-briefcase me-1"></i>
+                                            {% elif tag == '晋江' %}
+                                            <i class="fas fa-champagne-glasses me-1"></i>
+                                            {% elif tag == '树洞' %}
+                                            <i class="fas fa-tree me-1"></i>
+                                            {% elif tag == '悄悄话' %}
+                                            <i class="fas fa-comment-dots me-1"></i>
+                                            {% elif tag == '其他' %}
+                                            <i class="fas fa-ellipsis me-1"></i>
+                                            {% elif tag == 'BE' %}
+                                            <i class="fas fa-cloud-showers-heavy me-1"></i>
+                                            {% elif tag == 'HE' %}
+                                            <i class="fas fa-rainbow me-1"></i>
+                                            {% else %}
+                                            <i class="fas fa-tag me-1"></i>
+                                            {% endif %}
+                                            {{ tag }}
+                                            </a>
+                                        </span>
+                                        {% endfor %}
+                                        {% if post.tag_list|length > 6 %}
+                                        <span class="badge rounded-pill bg-light text-dark tag-badge more-tags">
+                                            <i class="fas fa-ellipsis-h me-1"></i>
+                                            More
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="post-content">
+                                    {{ post.content[:78] + '...' if post.content|length > 78 else post.content }}
+                                </div>
+                                <div class="post-footer">
+                                    <div class="interactions">
+                                        <button class="btn btn-like {% if current_user.is_authenticated and current_user.has_liked_post(post.id) %}liked{% endif %}"
+                                                onclick="handleLike('{{ post.id }}')"
+                                                type="button">
+                                            <i class="fas fa-heart"></i>
+                                            <span class="like-count">{{ post.likes|length }}</span>
+                                        </button>
+                                        <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-comment">
+                                            <i class="fas fa-comment"></i>
+                                            <span class="comment-count">{{ post.comments|length }}</span>
+                                        </a>
+                                        <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-read-more ms-auto">
+                                            Read More <i class="fas fa-arrow-right ms-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Pagination for followed posts -->
+                    {{ render_pagination(followed_posts, 'following') }}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-users fa-3x mb-3 text-muted"></i>
+                        <p class="lead mb-3">No posts from people you follow yet</p>
+                        <a href="{{ url_for('forum') }}" class="btn btn-primary">
+                            <i class="fas fa-search me-2"></i>Discover More Interesting People
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- My Posts Tab -->
+            <div class="tab-pane fade {% if request.args.get('tab') == 'posts' %}show active{% endif %}" 
+                 id="posts" role="tabpanel" aria-labelledby="posts-tab">
+                {% if user_posts.items %}
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                        {% for post in user_posts.items %}
+                        <div class="col">
+                            <div class="forum-post-card animate__animated animate__fadeIn" data-post-id="{{ post.id }}">
+                                <div class="post-header">
+                                    <div class="user-profile">
+                                        <a href="{{ url_for('user_profile', user_id=post.user.id) }}" class="text-decoration-none">
+                                            <img src="{{ post.user.avatar_url if post.user.avatar_url else post.user.get_avatar() }}" 
+                                                 alt="{{ post.user.username }}" class="profile-image">
+                                        </a>
+                                        <div class="user-info">
+                                            <h5 class="username">{{ post.user.username }}</h5>
+                                            {% if post.user.bio %}
+                                            <p class="user-bio">{{ post.user.bio }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="post-meta text-muted mb-2">
+                                        <small>
+                                            <i class="fas fa-clock me-1"></i>{{ (post.created_at|add_hours).strftime('%m-%d %H:%M') }}
+                                            <span class="mx-2">·</span>
+                                            <i class="fas fa-eye me-1"></i>{{ post.views or 0 }} views
+                                            {% if post.is_private %}
+                                            <span class="mx-2">·</span>
+                                            <i class="fas fa-lock text-secondary" title="Private Post"></i>
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                    <h2 class="post-title">
+                                        <a href="{{ url_for('view_post', post_id=post.id) }}">
+                                            {{ post.title[:22] }}{{ '...' if post.title|length > 22 }}
+                                        </a>
+                                    </h2>
+                                    {% if post.cover_image %}
+                                    <div class="post-cover-image">
+                                        <a href="{{ url_for('view_post', post_id=post.id) }}">
+                                            <img src="{{ post.cover_image }}" 
+                                                 alt="Cover for {{ post.title }}"
+                                                 class="img-fluid rounded">
+                                        </a>
+                                    </div>
+                                    {% endif %}
+                                    <div class="post-tags">
+                                        {% for tag in post.tag_list[:6] %}
+                                        <span class="badge rounded-pill bg-light text-dark tag-badge">
+                                            <a href="{{ url_for('forum', tag=tag, sort='time') }}" class="text-decoration-none text-dark">
+                                            {% if tag == '小说' %}
+                                            <i class="fas fa-book me-1"></i>
+                                            {% elif tag == '电影' %}
+                                            <i class="fas fa-film me-1"></i>
+                                            {% elif tag == '电视剧' %}
+                                            <i class="fas fa-tv me-1"></i>
+                                            {% elif tag == '动漫' %}
+                                            <i class="fas fa-dragon me-1"></i>
+                                            {% elif tag == '漫画' %}
+                                            <i class="fas fa-image me-1"></i>
+                                            {% elif tag == '随想' %}
+                                            <i class="fas fa-feather-alt me-1"></i>
+                                            {% elif tag == '读后感' %}
+                                            <i class="fas fa-comment-dots me-1"></i>
+                                            {% elif tag == '新结局' %}
+                                            <i class="fas fa-magic me-1"></i>
+                                            {% elif tag == '角色畅聊' %}
+                                            <i class="fas fa-comments me-1"></i>
+                                            {% elif tag == '绘梦' %}
+                                            <i class="fas fa-paint-brush me-1"></i>
+                                            {% elif tag == '梦语' %}
+                                            <i class="fas fa-cloud-moon me-1"></i>
+                                            {% elif tag == '游戏' %}
+                                            <i class="fas fa-gamepad me-1"></i>
+                                            {% elif tag == '虐心' %}
+                                            <i class="fas fa-heart-broken me-1"></i>
+                                            {% elif tag == '意难平' %}
+                                            <i class="fas fa-cloud-rain me-1"></i>
+                                            {% elif tag == '意满离' %}
+                                            <i class="fas fa-sun me-1"></i>
+                                            {% elif tag == '青春校园' %}
+                                            <i class="fas fa-school me-1"></i>
+                                            {% elif tag == '恋爱' %}
+                                            <i class="fas fa-heartbeat me-1"></i>
+                                            {% elif tag == '霸道总裁' %}
+                                            <i class="fas fa-crown me-1"></i>
+                                            {% elif tag == '科幻' %}
+                                            <i class="fas fa-rocket me-1"></i>
+                                            {% elif tag == '职场' %}
+                                            <i class="fas fa-briefcase me-1"></i>
+                                            {% elif tag == '晋江' %}
+                                            <i class="fas fa-champagne-glasses me-1"></i>
+                                            {% elif tag == '树洞' %}
+                                            <i class="fas fa-tree me-1"></i>
+                                            {% elif tag == '悄悄话' %}
+                                            <i class="fas fa-comment-dots me-1"></i>
+                                            {% elif tag == '其他' %}
+                                            <i class="fas fa-ellipsis me-1"></i>
+                                            {% elif tag == 'BE' %}
+                                            <i class="fas fa-cloud-showers-heavy me-1"></i>
+                                            {% elif tag == 'HE' %}
+                                            <i class="fas fa-rainbow me-1"></i>
+                                            {% else %}
+                                            <i class="fas fa-tag me-1"></i>
+                                            {% endif %}
+                                            {{ tag }}
+                                            </a>
+                                        </span>
+                                        {% endfor %}
+                                        {% if post.tag_list|length > 6 %}
+                                        <span class="badge rounded-pill bg-light text-dark tag-badge more-tags">
+                                            <i class="fas fa-ellipsis-h me-1"></i>
+                                            More
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="post-content">
+                                    {{ post.content[:78] + '...' if post.content|length > 78 else post.content }}
+                                </div>
+                                <div class="post-footer">
+                                    <div class="interactions">
+                                        <button class="btn btn-like {% if current_user.is_authenticated and current_user.has_liked_post(post.id) %}liked{% endif %}"
+                                                onclick="handleLike('{{ post.id }}')"
+                                                type="button">
+                                            <i class="fas fa-heart"></i>
+                                            <span class="like-count">{{ post.likes|length }}</span>
+                                        </button>
+                                        <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-comment">
+                                            <i class="fas fa-comment"></i>
+                                            <span class="comment-count">{{ post.comments|length }}</span>
+                                        </a>
+                                        <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-read-more ms-auto">
+                                            Read More <i class="fas fa-arrow-right ms-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Pagination for user posts -->
+                    {{ render_pagination(user_posts, 'posts') }}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-pen-to-square fa-3x mb-3 text-muted"></i>
+                        <p class="lead mb-3">You haven't posted anything yet</p>
+                        <a href="{{ url_for('create_post') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Create New Post
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Liked Posts Tab -->
+            <div class="tab-pane fade {% if request.args.get('tab') == 'likes' %}show active{% endif %}" 
+                 id="likes" role="tabpanel" aria-labelledby="likes-tab">
+                {% if liked_posts.items %}
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                        {% for post in liked_posts.items %}
+                        <div class="col">
+                            <div class="forum-post-card animate__animated animate__fadeIn" data-post-id="{{ post.id }}">
+                                <div class="post-header">
+                                    <div class="user-profile">
+                                        <a href="{{ url_for('user_profile', user_id=post.user.id) }}" class="text-decoration-none">
+                                            <img src="{{ post.user.avatar_url if post.user.avatar_url else post.user.get_avatar() }}" 
+                                                 alt="{{ post.user.username }}" class="profile-image">
+                                        </a>
+                                        <div class="user-info">
+                                            <h5 class="username">{{ post.user.username }}</h5>
+                                            {% if post.user.bio %}
+                                            <p class="user-bio">{{ post.user.bio }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="post-meta text-muted mb-2">
+                                        <small>
+                                            <i class="fas fa-clock me-1"></i>{{ (post.created_at|add_hours).strftime('%m-%d %H:%M') }}
+                                            <span class="mx-2">·</span>
+                                            <i class="fas fa-eye me-1"></i>{{ post.views or 0 }} views
+                                            {% if post.is_private %}
+                                            <span class="mx-2">·</span>
+                                            <i class="fas fa-lock text-secondary" title="Private Post"></i>
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                    <h2 class="post-title">
+                                        <a href="{{ url_for('view_post', post_id=post.id) }}">
+                                            {{ post.title[:22] }}{{ '...' if post.title|length > 22 }}
+                                        </a>
+                                    </h2>
+                                    {% if post.cover_image %}
+                                    <div class="post-cover-image">
+                                        <a href="{{ url_for('view_post', post_id=post.id) }}">
+                                            <img src="{{ post.cover_image }}" 
+                                                 alt="Cover for {{ post.title }}"
+                                                 class="img-fluid rounded">
+                                        </a>
+                                    </div>
+                                    {% endif %}
+                                    <div class="post-tags">
+                                        {% for tag in post.tag_list[:6] %}
+                                        <span class="badge rounded-pill bg-light text-dark tag-badge">
+                                            <a href="{{ url_for('forum', tag=tag, sort='time') }}" class="text-decoration-none text-dark">
+                                            {% if tag == '小说' %}
+                                            <i class="fas fa-book me-1"></i>
+                                            {% elif tag == '电影' %}
+                                            <i class="fas fa-film me-1"></i>
+                                            {% elif tag == '电视剧' %}
+                                            <i class="fas fa-tv me-1"></i>
+                                            {% elif tag == '动漫' %}
+                                            <i class="fas fa-dragon me-1"></i>
+                                            {% elif tag == '漫画' %}
+                                            <i class="fas fa-image me-1"></i>
+                                            {% elif tag == '随想' %}
+                                            <i class="fas fa-feather-alt me-1"></i>
+                                            {% elif tag == '读后感' %}
+                                            <i class="fas fa-comment-dots me-1"></i>
+                                            {% elif tag == '新结局' %}
+                                            <i class="fas fa-magic me-1"></i>
+                                            {% elif tag == '角色畅聊' %}
+                                            <i class="fas fa-comments me-1"></i>
+                                            {% elif tag == '绘梦' %}
+                                            <i class="fas fa-paint-brush me-1"></i>
+                                            {% elif tag == '梦语' %}
+                                            <i class="fas fa-cloud-moon me-1"></i>
+                                            {% elif tag == '游戏' %}
+                                            <i class="fas fa-gamepad me-1"></i>
+                                            {% elif tag == '虐心' %}
+                                            <i class="fas fa-heart-broken me-1"></i>
+                                            {% elif tag == '意难平' %}
+                                            <i class="fas fa-cloud-rain me-1"></i>
+                                            {% elif tag == '意满离' %}
+                                            <i class="fas fa-sun me-1"></i>
+                                            {% elif tag == '青春校园' %}
+                                            <i class="fas fa-school me-1"></i>
+                                            {% elif tag == '恋爱' %}
+                                            <i class="fas fa-heartbeat me-1"></i>
+                                            {% elif tag == '霸道总裁' %}
+                                            <i class="fas fa-crown me-1"></i>
+                                            {% elif tag == '科幻' %}
+                                            <i class="fas fa-rocket me-1"></i>
+                                            {% elif tag == '职场' %}
+                                            <i class="fas fa-briefcase me-1"></i>
+                                            {% elif tag == '晋江' %}
+                                            <i class="fas fa-champagne-glasses me-1"></i>
+                                            {% elif tag == '树洞' %}
+                                            <i class="fas fa-tree me-1"></i>
+                                            {% elif tag == '悄悄话' %}
+                                            <i class="fas fa-comment-dots me-1"></i>
+                                            {% elif tag == '其他' %}
+                                            <i class="fas fa-ellipsis me-1"></i>
+                                            {% elif tag == 'BE' %}
+                                            <i class="fas fa-cloud-showers-heavy me-1"></i>
+                                            {% elif tag == 'HE' %}
+                                            <i class="fas fa-rainbow me-1"></i>
+                                            {% else %}
+                                            <i class="fas fa-tag me-1"></i>
+                                            {% endif %}
+                                            {{ tag }}
+                                            </a>
+                                        </span>
+                                        {% endfor %}
+                                        {% if post.tag_list|length > 6 %}
+                                        <span class="badge rounded-pill bg-light text-dark tag-badge more-tags">
+                                            <i class="fas fa-ellipsis-h me-1"></i>
+                                            More
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="post-content">
+                                    {{ post.content[:78] + '...' if post.content|length > 78 else post.content }}
+                                </div>
+                                <div class="post-footer">
+                                    <div class="interactions">
+                                        <button class="btn btn-like {% if current_user.is_authenticated and current_user.has_liked_post(post.id) %}liked{% endif %}"
+                                                onclick="handleLike('{{ post.id }}')"
+                                                type="button">
+                                            <i class="fas fa-heart"></i>
+                                            <span class="like-count">{{ post.likes|length }}</span>
+                                        </button>
+                                        <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-comment">
+                                            <i class="fas fa-comment"></i>
+                                            <span class="comment-count">{{ post.comments|length }}</span>
+                                        </a>
+                                        <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-read-more ms-auto">
+                                            Read More <i class="fas fa-arrow-right ms-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Pagination for liked posts -->
+                    {{ render_pagination(liked_posts, 'likes') }}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-heart fa-3x mb-3 text-muted"></i>
+                        <p class="lead mb-3">You haven't liked any posts yet</p>
+                        <a href="{{ url_for('forum') }}" class="btn btn-primary">
+                            <i class="fas fa-search me-2"></i>Explore Posts in the Community
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.nav-tabs .nav-link {
+    color: #6c757d;
+    border: none;
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    margin-top: 4rem;
+}
+
+.nav-tabs .nav-link.active {
+    color: #0d6efd;
+    border-bottom: 2px solid #0d6efd;
+    background: none;
+}
+
+.story-section {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.forum-post-card {
+    background: linear-gradient(135deg, #fff6e0, #fff9e8);
+    border-radius: 15px;
+    padding: 1.8rem;
+    margin-bottom: 1.8rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.4s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.forum-post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.post-header {
+    margin-bottom: 1rem;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.profile-image {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin-right: 1rem;
+    object-fit: cover;
+}
+
+.user-info .username {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.user-info .user-bio {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.post-meta {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.post-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin: 0.8rem 0;
+}
+
+.post-title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.post-title a:hover {
+    color: #0d6efd;
+}
+
+.post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.tag-badge {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+    background-color: #f8f9fa;
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.tag-badge:hover {
+    background-color: #e9ecef;
+    transform: translateY(-2px);
+    cursor: pointer;
+}
+
+.tag-badge i {
+    color: var(--primary-color);
+}
+
+.tag-badge i.fa-book {
+    color: #8B4513;  /* Brown for novels */
+}
+
+.tag-badge i.fa-film {
+    color: #FF4500;  /* Orange-red for movies */
+}
+
+.tag-badge i.fa-tv {
+    color: #4169E1;  /* Royal blue for TV series */
+}
+
+.tag-badge i.fa-dragon {
+    color: #9932CC;  /* Purple for anime */
+}
+
+.tag-badge i.fa-image {
+    color: #20B2AA;  /* Light sea green for manga */
+}
+
+.tag-badge i.fa-feather-alt {
+    color: #6A5ACD;  /* Slate blue for thoughts */
+}
+
+.tag-badge i.fa-comment-dots {
+    color: #4682B4;  /* Steel blue for reviews */
+}
+
+.tag-badge i.fa-magic {
+    color: #9370DB;  /* Medium purple for new endings */
+}
+
+.tag-badge i.fa-comments {
+    color: #48D1CC;  /* Medium turquoise for character chats */
+}
+
+.tag-badge i.fa-cloud-moon {
+    color: #483D8B;  /* Dark slate blue for dream talk */
+}
+
+.tag-badge i.fa-gamepad {
+    color: #32CD32;  /* Lime green for games */
+}
+
+.tag-badge i.fa-heart-broken {
+    color: #DC143C;  /* Crimson for heartbreaking */
+}
+
+.tag-badge i.fa-cloud-rain {
+    color: #4682B4;  /* Steel blue for regret */
+}
+
+.tag-badge i.fa-sun {
+    color: #FFD700;  /* Gold for satisfaction */
+}
+
+.tag-badge i.fa-school {
+    color: #FF69B4;  /* Hot pink for campus */
+}
+
+.tag-badge i.fa-heartbeat {
+    color: #FF1493;  /* Deep pink for romance */
+}
+
+.tag-badge i.fa-crown {
+    color: #DAA520;  /* Goldenrod for CEO */
+}
+
+.tag-badge i.fa-rocket {
+    color: #4169E1;  /* Royal blue for sci-fi */
+}
+
+.tag-badge i.fa-briefcase {
+    color: #20B2AA;  /* Light sea green for workplace */
+}
+
+.tag-badge i.fa-champagne-glasses {
+    color: #FFD700;  /* Gold for Jinjiang */
+}
+
+.tag-badge i.fa-tree {
+    color: #228B22;  /* Forest green for tree hole */
+}
+
+.tag-badge i.fa-ellipsis {
+    color: #808080;  /* Gray for others */
+}
+
+.tag-badge i.fa-cloud-showers-heavy {
+    color: #4A5568;  /* Dark gray for bad ending */
+}
+
+.tag-badge i.fa-rainbow {
+    color: #F6AD55;  /* Warm orange for happy ending */
+}
+
+.post-content {
+    color: #000000;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.post-footer {
+    border-top: 1px solid rgba(0,0,0,0.05);
+    padding-top: 1rem;
+}
+
+.interactions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.btn-like, .btn-comment {
+    background: none;
+    border: none;
+    color: #666;
+    padding: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-like:hover, .btn-comment:hover {
+    color: #0d6efd;
+}
+
+.btn-like.liked {
+    color: #dc3545;
+}
+
+.btn-read-more {
+    color: #0d6efd;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-read-more:hover {
+    transform: translateX(5px);
+}
+
+.pagination {
+    margin-top: 2rem;
+}
+
+.pagination .page-link {
+    border: none;
+    color: #6c757d;
+    padding: 0.5rem 1rem;
+    margin: 0 0.2rem;
+    border-radius: 4px;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.pagination .page-link:hover {
+    background-color: #e9ecef;
+    color: #0d6efd;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.btn-group .btn {
+    margin: 0 0.25rem;
+}
+
+.post-cover-image {
+    margin: 1rem 0;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+}
+
+.post-cover-image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.post-cover-image:hover img {
+    transform: scale(1.05);
+}
+</style>
+
+<script>
+function handleLike(postId) {
+    fetch(`/like_post/${postId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            const likeButton = document.querySelector(`[data-post-id="${postId}"] .btn-like`);
+            const likeCount = likeButton.querySelector('.like-count');
+            
+            if (data.action === 'liked') {
+                likeButton.classList.add('liked');
+                likeCount.textContent = parseInt(likeCount.textContent) + 1;
+            } else {
+                likeButton.classList.remove('liked');
+                likeCount.textContent = parseInt(likeCount.textContent) - 1;
+            }
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all tab buttons
+    const tabButtons = document.querySelectorAll('[data-bs-toggle="tab"]');
+    
+    // Add click event listener to each tab button
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            // Get the tab ID without the '-tab' suffix
+            const tabId = this.id.replace('-tab', '');
+            
+            // Create a new URL with the updated tab parameter
+            const url = new URL(window.location.href);
+            url.searchParams.set('tab', tabId);
+            url.searchParams.delete('page'); // Reset page to 1 when switching tabs
+            
+            // Update browser history without reloading the page
+            window.history.pushState({}, '', url);
+        });
+    });
+    
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', function() {
+        const url = new URL(window.location.href);
+        const tab = url.searchParams.get('tab') || 'following';
+        const tabButton = document.querySelector(`#${tab}-tab`);
+        if (tabButton) {
+            const bsTab = new bootstrap.Tab(tabButton);
+            bsTab.show();
+        }
+    });
+
+    // Set initial tab state based on URL parameter
+    const url = new URL(window.location.href);
+    const tab = url.searchParams.get('tab') || 'following';
+    const tabButton = document.querySelector(`#${tab}-tab`);
+    if (tabButton) {
+        const bsTab = new bootstrap.Tab(tabButton);
+        bsTab.show();
+    }
+});
+</script>
+
+{% endblock %} 

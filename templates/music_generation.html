@@ -1,0 +1,1015 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/7.7.3/wavesurfer.min.css" rel="stylesheet">
+<style>
+body {
+    background: linear-gradient(135deg, #fff3d4, #fff8e5) !important;
+}
+
+.music-container {
+    background: none;
+    border-radius: 30px;
+    padding: 3rem;
+    margin-top: 6rem;
+    box-shadow: none;
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+.music-title {
+    font-size: 4.8rem;
+    font-weight: 300;
+    background: linear-gradient(120deg, 
+        #FF8C00,
+        #FF9E4F,
+        #FFC261,
+        #FFD77B,
+        #FFED95
+    );
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-top: -20px;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    position: relative;
+    letter-spacing: 0em;
+    transform: translateZ(0);
+    will-change: transform;
+    animation: gradientFlow 15s ease infinite, gentleBreathing 4s ease-in-out infinite;
+    transform-origin: center center;
+}
+
+.music-subtitle {
+    text-align: center;
+    font-size: 1.3rem;
+    margin: 1.5rem 0 2.5rem;
+    font-weight: bold;
+    background: linear-gradient(120deg, #FF8C00, #FF6B6B);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0.95;
+}
+
+@keyframes gradientFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes gentleBreathing {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.03);
+    }
+}
+
+.input-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+}
+
+.input-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.audio-player-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.waveform-container {
+    background: rgba(255, 140, 0, 0.05);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.audio-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.audio-btn {
+    background: linear-gradient(135deg, #FF8C00, #FF7043);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.audio-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.play-btn {
+    background: linear-gradient(135deg, #FF8C00, #FF7043);
+}
+
+.download-btn {
+    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+}
+
+.generate-btn {
+    background: linear-gradient(135deg, #8ae463, #e9ec87);
+    color: rgb(241, 99, 99);
+    border: none;
+    border-radius: 30px;
+    padding: 1rem 2.5rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-top: 1rem;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.generate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.generate-btn:disabled {
+    opacity: 0.7;
+    transform: none;
+    box-shadow: none;
+}
+
+.loading-wave {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    height: 50px;
+}
+
+.loading-bar {
+    width: 8px;
+    height: 32px;
+    background: linear-gradient(135deg, #FF8C00, #FF7043);
+    border-radius: 4px;
+    animation: loadingWave 1.5s ease-in-out infinite;
+}
+
+.loading-bar:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.loading-bar:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.loading-bar:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+.loading-bar:nth-child(5) {
+    animation-delay: 0.4s;
+}
+
+@keyframes loadingWave {
+    0%, 100% {
+        transform: scaleY(0.5);
+    }
+    50% {
+        transform: scaleY(1);
+    }
+}
+
+.char-counter {
+    font-size: 0.9rem;
+    color: #777;
+    text-align: right;
+}
+
+.info-text {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.text-area-container {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.textarea-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 150px;
+    font-family: monospace;
+    line-height: 1.5;
+}
+
+.sample-button {
+    font-size: 0.85rem;
+    padding: 0.25rem 0.75rem;
+    background: linear-gradient(135deg, #FF8C00, #FF7043);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sample-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.prompt-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.prompt-tag {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.75rem;
+    background: rgba(255, 140, 0, 0.1);
+    color: #FF8C00;
+    border: 1px solid rgba(255, 140, 0, 0.3);
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.prompt-tag:hover {
+    background: rgba(255, 140, 0, 0.2);
+    transform: translateY(-1px);
+}
+
+@media (min-width: 768px) {
+    .music-title {
+        font-family: "STKaiti", "KaiTi", "Kaiti SC", "Kaiti TC", "KaiTi_GB2312", "KaiTi_GB", "楷体", "华文楷体";
+    }
+}
+
+@media (max-width: 768px) {
+    .music-title {
+        font-size: 3.2rem;
+        margin-top: -15px;
+        margin-bottom: 1rem;
+        font-weight: 500;
+    }
+    
+    .music-subtitle {
+        font-size: 1.1rem;
+        padding: 0 1rem;
+        margin: 1rem 0 2rem;
+    }
+    
+    .music-container {
+        padding: 1.5rem;
+        margin-top: 4rem;
+    }
+    
+    .input-card {
+        padding: 1.5rem;
+    }
+    
+    .audio-player-card {
+        padding: 1.5rem;
+    }
+    
+    .waveform-container {
+        padding: 1rem;
+    }
+    
+    .audio-controls {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .audio-btn {
+        width: 100%;
+        padding: 0.7rem;
+    }
+    
+    .generate-btn {
+        padding: 0.8rem 1.5rem;
+    }
+
+    .prompt-suggestions {
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="music-container">
+        <h1 class="music-title">Melody</h1>
+        <h2 class="music-subtitle">AI Music Creation - Transform Your Lyrics into Beautiful Melodies with One Click</h2>
+        
+        <!-- Error alert container -->
+        <div id="errorAlert" class="alert alert-danger mb-4" style="display: none;">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span id="errorMessage">An error occurred, please try again later</span>
+        </div>
+        
+        <form id="musicForm">
+            <div class="input-card">
+                <div class="mb-4">
+                    <div class="textarea-label">
+                        <label for="lyricsInput" class="form-label fw-bold">
+                            <i class="fas fa-music me-2"></i>Custom Lyrics (Supports English)
+                        </label>
+                        <button type="button" id="sampleLyricsBtn" class="sample-button">
+                            <i class="fas fa-magic me-1"></i>Sample Lyrics
+                        </button>
+                    </div>
+                    <p class="text-muted mb-2">Please enter timestamp + lyrics, each line should start with a timestamp, e.g.: [00:05.00]This is a line of lyrics</p>
+                    <div class="text-area-container">
+                        <textarea class="form-control" id="lyricsInput" rows="10" required></textarea>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <span class="info-text">
+                                <i class="fas fa-info-circle me-1"></i>Timestamp format: [minutes:seconds.milliseconds], leave lyrics empty for instrumental music
+                            </span>
+                            <span class="char-counter">
+                                <span id="lyricsCharCount">0</span> / 300 words
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="textarea-label">
+                        <label for="styleInput" class="form-label fw-bold">
+                            <i class="fas fa-guitar me-2"></i>Music Style
+                        </label>
+                    </div>
+                    <p class="text-muted mb-2">Describe your preferred music style, custom styles supported</p>
+                    <input type="text" class="form-control" id="styleInput" placeholder="e.g.: Pop ballad, piano accompaniment, 80s style..." required>
+                    
+                    <div class="prompt-suggestions mt-3">
+                        <span class="prompt-tag" data-style="Pop ballad, piano accompaniment">Pop Ballad</span>
+                        <span class="prompt-tag" data-style="Rock, electric guitar, strong drums">Rock</span>
+                        <span class="prompt-tag" data-style="EDM, modern, strong rhythm">EDM</span>
+                        <span class="prompt-tag" data-style="Folk, acoustic guitar, gentle">Folk</span>
+                        <span class="prompt-tag" data-style="Traditional, elegant">Traditional</span>
+                        <span class="prompt-tag" data-style="Jazz, relaxing, saxophone">Jazz</span>
+                        <span class="prompt-tag" data-style="Hip-hop, rap, strong beat">Hip-hop</span>
+                    </div>
+                </div>
+                
+                <button type="submit" id="generateBtn" class="generate-btn" data-is-authenticated="{{ current_user.is_authenticated|tojson|safe }}">
+                    <i class="fas fa-magic me-2"></i>Start Creating
+                </button>
+            </div>
+        </form>
+        
+        <div id="loadingSpinner" class="text-center mt-4" style="display: none;">
+            <div class="loading-wave">
+                <div class="loading-bar"></div>
+                <div class="loading-bar"></div>
+                <div class="loading-bar"></div>
+                <div class="loading-bar"></div>
+                <div class="loading-bar"></div>
+            </div>
+            <p class="mt-3">Creating your music...</p>
+        </div>
+        
+        <div id="audioContainer" class="audio-player-card" style="display: none;">
+            <h4 class="mb-4">Music creation complete! Enjoy your melody!</h4>
+            <div class="waveform-container">
+                <div id="waveform"></div>
+            </div>
+            <div class="audio-controls">
+                <button id="playBtn" class="audio-btn play-btn">
+                    <i class="fas fa-play me-2"></i>Play
+                </button>
+                <a id="downloadBtn" class="audio-btn download-btn text-center text-decoration-none">
+                    <i class="fas fa-download me-2"></i>Download
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/7.7.3/wavesurfer.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM elements
+    const musicForm = document.getElementById('musicForm');
+    const lyricsInput = document.getElementById('lyricsInput');
+    const styleInput = document.getElementById('styleInput');
+    const generateBtn = document.getElementById('generateBtn');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const audioContainer = document.getElementById('audioContainer');
+    const errorAlert = document.getElementById('errorAlert');
+    const errorMessage = document.getElementById('errorMessage');
+    const playBtn = document.getElementById('playBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const lyricsCharCount = document.getElementById('lyricsCharCount');
+    const sampleLyricsBtn = document.getElementById('sampleLyricsBtn');
+    const promptTags = document.querySelectorAll('.prompt-tag');
+    
+    // Check membership status and update UI when page loads
+    if (typeof window.globalCheckMembershipStatus === 'function') {
+        window.globalCheckMembershipStatus();
+    }
+    
+    // Update points display with infinity symbol for members
+    if (typeof updatePointsDisplay === 'function') {
+        updatePointsDisplay();
+    }
+    
+    // Set up interval to refresh membership status and points
+    setInterval(function() {
+        if (typeof window.globalCheckMembershipStatus === 'function') {
+            window.globalCheckMembershipStatus();
+        }
+        if (typeof updatePointsDisplay === 'function') {
+            updatePointsDisplay();
+        }
+    }, 60000);
+    
+    // Check membership status for displaying remaining days
+    function checkMembershipStatus() {
+        fetch('/get_membership_status')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Set global variable for membership status
+                    window.hasMembership = data.has_membership;
+                    
+                    // Update membership indicator in navbar if it exists
+                    const membershipIndicator = document.getElementById('membershipIndicator');
+                    if (membershipIndicator) {
+                        if (data.has_membership) {
+                            membershipIndicator.innerHTML = `<i class="fas fa-crown text-warning me-1"></i> Membership: ${data.days_remaining} days`;
+                            membershipIndicator.classList.remove('d-none');
+                            
+                            // Hide the "Membership Center" text when showing membership status
+                            const activateMembership = document.getElementById('activateMembership');
+                            if (activateMembership) {
+                                activateMembership.classList.add('d-none');
+                            }
+                            
+                            // Add active class to membership button
+                            const btnMembership = document.querySelector('.btn-membership');
+                            if (btnMembership) {
+                                btnMembership.classList.add('active');
+                            }
+                        } else {
+                            membershipIndicator.classList.add('d-none');
+                            
+                            // Show the "Membership Center" text when not a member
+                            const activateMembership = document.getElementById('activateMembership');
+                            if (activateMembership) {
+                                activateMembership.classList.remove('d-none');
+                            }
+                            
+                            // Remove active class from membership button
+                            const btnMembership = document.querySelector('.btn-membership');
+                            if (btnMembership) {
+                                btnMembership.classList.remove('active');
+                            }
+                        }
+                    }
+                    
+                    // Update points display with infinity symbol for members
+                    if (typeof updatePointsDisplay === 'function') {
+                        updatePointsDisplay();
+                    }
+                    
+                    // Call the global function to ensure the modal is updated
+                    if (typeof window.globalCheckMembershipStatus === 'function') {
+                        window.globalCheckMembershipStatus();
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error checking membership status:', error);
+                // In case of error, still try the global function
+                if (typeof window.globalCheckMembershipStatus === 'function') {
+                    window.globalCheckMembershipStatus();
+                }
+                
+                // Also try to update points display
+                if (typeof updatePointsDisplay === 'function') {
+                    updatePointsDisplay();
+                }
+            });
+    }
+    
+    // Check membership status immediately and set an interval
+    checkMembershipStatus();
+    setInterval(checkMembershipStatus, 60000);
+    
+    // Add event listener for membership modal
+    const membershipModal = document.getElementById('membershipModal');
+    if (membershipModal) {
+        membershipModal.addEventListener('show.bs.modal', function() {
+            // Force refresh the membership status display when the modal is shown
+            const membershipStatusDisplay = document.getElementById('membershipStatusDisplay');
+            if (membershipStatusDisplay) {
+                // Show loading state
+                membershipStatusDisplay.innerHTML = `
+                    <div class="text-center mb-4">
+                        <div class="display-1 text-muted mb-2">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                        <h4 class="mb-2">Checking membership status...</h4>
+                        <p class="text-muted">Please wait a moment</p>
+                    </div>
+                `;
+                
+                // Fetch fresh membership data and update display directly
+                fetch('/get_membership_status')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Update modal content based on membership status
+                            if (data.has_membership) {
+                                membershipStatusDisplay.innerHTML = `
+                                    <div class="text-center mb-4">
+                                        <div class="display-1 text-warning mb-2">
+                                            <i class="fas fa-crown"></i>
+                                        </div>
+                                        <h4 class="mb-2">Membership Active</h4>
+                                        <div class="bg-light rounded py-2 px-3 d-inline-block">
+                                            <i class="fas fa-calendar-alt me-2 text-primary"></i>
+                                            Membership: <span class="fw-bold text-primary">${data.days_remaining}</span> days
+                                        </div>
+                                    </div>
+                                `;
+                            } else {
+                                membershipStatusDisplay.innerHTML = `
+                                    <div class="text-center mb-4">
+                                        <h4 class="mb-3">Membership Special Offer: $5.99/month</h4>
+                                        <p class="text-muted">Activate membership to enjoy unlimited access to all services</p>
+                                    </div>
+                                `;
+                            }
+                            
+                            // Still call globalCheckMembershipStatus to update other UI elements
+                            if (typeof window.globalCheckMembershipStatus === 'function') {
+                                window.globalCheckMembershipStatus();
+                            }
+                        } else {
+                            // Handle error
+                            membershipStatusDisplay.innerHTML = `
+                                <div class="text-center mb-4 text-danger">
+                                    <i class="fas fa-exclamation-circle fa-3x mb-3"></i>
+                                    <p>Failed to get membership status, please refresh the page</p>
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching membership status:', error);
+                        membershipStatusDisplay.innerHTML = `
+                            <div class="text-center mb-4 text-danger">
+                                <i class="fas fa-exclamation-circle fa-3x mb-3"></i>
+                                <p>Failed to get membership status, please refresh the page</p>
+                            </div>
+                        `;
+                    });
+            }
+        });
+    }
+    
+    // Sample lyrics in LRC format
+    const sampleLyrics = `[00:00.00]This is a song about dreams
+[00:05.00]For everyone chasing the light
+[00:10.00]No matter where you are
+[00:15.00]Your passion makes your heart beat
+[00:20.00]Life will have its storms
+[00:25.00]Don't be afraid, that's just growth
+[00:30.00]Use your voice to paint hope
+[00:35.00]Let creativity flow through your fingers
+[00:40.00]Create love, create beauty
+[00:45.00]Run free in your dreams
+[00:50.00]Feel every moment with your heart
+[00:55.00]Your story is one of a kind
+[01:00.00]No matter how uncertain the path
+[01:05.00]There's always light to ignite your dreams
+[01:10.00]Don't look back, keep moving forward
+[01:15.00]Write your own brilliant story
+`;
+    
+    // Function to check if text contains Chinese characters
+    function containsChineseCharacters(text) {
+        return /[\u4e00-\u9fff]/.test(text);
+    }
+    
+    // Function to count words in English text
+    function countWords(text) {
+        return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+    }
+    
+    // Initialize counter with word count mode when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize with appropriate counting mode
+        const initialText = lyricsInput.value;
+        if (initialText) {
+            if (containsChineseCharacters(initialText)) {
+                // Chinese detected - use character count
+                lyricsCharCount.textContent = initialText.length;
+                document.querySelector('.char-counter').innerHTML = 
+                    '<span id="lyricsCharCount">' + initialText.length + '</span> / 300 characters';
+            } else {
+                // No Chinese - use word count (default)
+                const wordCount = countWords(initialText);
+                lyricsCharCount.textContent = wordCount;
+            }
+        } else {
+            // Empty textarea - default to word count mode
+            lyricsCharCount.textContent = "0";
+        }
+    });
+    
+    // Update character/word count
+    lyricsInput.addEventListener('input', function() {
+        const text = this.value;
+        const hasChineseChars = containsChineseCharacters(text);
+        
+        if (hasChineseChars) {
+            // Use character count for Chinese text (300 characters)
+            const maxLength = 300;
+            if (text.length > maxLength) {
+                this.value = text.substring(0, maxLength);
+            }
+            lyricsCharCount.textContent = text.length;
+            document.querySelector('.char-counter').innerHTML = 
+                '<span id="lyricsCharCount">' + text.length + '</span> / 300 characters';
+        } else {
+            // Use word count for non-Chinese text (300 words) - DEFAULT MODE
+            const wordCount = countWords(text);
+            const maxWords = 300;
+            
+            if (wordCount > maxWords) {
+                // Trim to 300 words
+                const words = text.trim().split(/\s+/);
+                this.value = words.slice(0, maxWords).join(' ');
+                lyricsCharCount.textContent = maxWords;
+            } else {
+                lyricsCharCount.textContent = wordCount;
+            }
+            
+            // Keep default display format for word count
+            if (document.querySelector('.char-counter').innerHTML.includes('characters')) {
+                document.querySelector('.char-counter').innerHTML = 
+                    '<span id="lyricsCharCount">' + lyricsCharCount.textContent + '</span> / 300 words';
+            }
+        }
+    });
+    
+    // Update maxlength attribute based on content type
+    lyricsInput.addEventListener('keyup', function() {
+        if (containsChineseCharacters(this.value)) {
+            this.setAttribute('maxlength', '300');
+        } else {
+            this.removeAttribute('maxlength'); // Let the word count logic handle it
+        }
+    });
+    
+    // Remove previous maxlength attribute that was set to 800
+    lyricsInput.removeAttribute('maxlength');
+    
+    // Sample lyrics button
+    sampleLyricsBtn.addEventListener('click', function() {
+        lyricsInput.value = sampleLyrics;
+        // Update the count based on content type
+        if (containsChineseCharacters(sampleLyrics)) {
+            lyricsCharCount.textContent = sampleLyrics.length;
+            document.querySelector('.char-counter').innerHTML = 
+                '<span id="lyricsCharCount">' + sampleLyrics.length + '</span> / 300 characters';
+        } else {
+            const wordCount = countWords(sampleLyrics);
+            lyricsCharCount.textContent = wordCount;
+            document.querySelector('.char-counter').innerHTML = 
+                '<span id="lyricsCharCount">' + wordCount + '</span> / 300 words';
+        }
+    });
+    
+    // Style prompt tags
+    promptTags.forEach(tag => {
+        tag.addEventListener('click', function() {
+            styleInput.value = this.getAttribute('data-style');
+        });
+    });
+    
+    // WaveSurfer instance
+    let wavesurfer = null;
+    
+    // Setup play button function
+    function setupPlayButton() {
+        // Remove any existing click handlers to prevent duplicates
+        playBtn.onclick = null;
+        
+        // Add fresh click handler
+        playBtn.onclick = function() {
+            if (!wavesurfer) return;
+            
+            if (wavesurfer.isPlaying()) {
+                wavesurfer.pause();
+                playBtn.innerHTML = '<i class="fas fa-play me-2"></i>播放';
+            } else {
+                wavesurfer.play();
+                playBtn.innerHTML = '<i class="fas fa-pause me-2"></i>暂停';
+            }
+        };
+    }
+    
+    // Form submission handler
+    musicForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Check authentication
+        const isAuthenticated = generateBtn.getAttribute('data-is-authenticated') === 'true';
+        if (!isAuthenticated) {
+            window.location.href = '/login';
+            return;
+        }
+        
+        // Validation
+        if (!lyricsInput.value) {
+            showError('Please enter lyrics');
+            return;
+        }
+        
+        if (!styleInput.value) {
+            showError('Please describe the music style');
+            return;
+        }
+        
+        // Validate LRC format (basic check)
+        if (!lyricsInput.value.includes('[') || !lyricsInput.value.includes(']')) {
+            showError('Lyrics must be in LRC format with timestamps, e.g. [00:05.00]This is a line of lyrics');
+            return;
+        }
+        
+        // Check word/character limit based on content
+        const hasChineseChars = containsChineseCharacters(lyricsInput.value);
+        if (hasChineseChars) {
+            if (lyricsInput.value.length > 300) {
+                showError('Lyrics are too long, please limit to 300 characters for Chinese content');
+                return;
+            }
+        } else {
+            const wordCount = countWords(lyricsInput.value);
+            if (wordCount > 300) {
+                showError('Lyrics are too long, please limit to 300 words');
+                return;
+            }
+        }
+        
+        // Hide any previous error
+        errorAlert.style.display = 'none';
+        
+        // Show loading spinner
+        loadingSpinner.style.display = 'block';
+        audioContainer.style.display = 'none';
+        generateBtn.disabled = true;
+        
+        // Create form data
+        const formData = new FormData();
+        formData.append('lyrics_text', lyricsInput.value);
+        formData.append('reference_prompt', styleInput.value);
+        
+        try {
+            // Send generation request
+            const response = await fetch('/generate_music', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Music generation failed, please try again later');
+            }
+            
+            // Parse response
+            const data = await response.json();
+            
+            if (!data.success || !data.file_url) {
+                throw new Error(data.message || 'Invalid audio URL returned from server, please try again later');
+            }
+            
+            // Get audio URL
+            const audioUrl = data.file_url;
+            
+            // Set download link
+            downloadBtn.href = audioUrl;
+            downloadBtn.download = 'generated_music.wav';
+            
+            // Initialize WaveSurfer
+            if (wavesurfer) {
+                wavesurfer.destroy();
+            }
+            
+            wavesurfer = WaveSurfer.create({
+                container: '#waveform',
+                waveColor: '#FFB74D',
+                progressColor: '#FF8F00',
+                cursorColor: '#FF6D00',
+                barWidth: 2,
+                barRadius: 3,
+                cursorWidth: 1,
+                height: 100,
+                barGap: 3,
+                normalize: true,
+                backend: 'WebAudio'
+            });
+            
+            // Setup error handling
+            wavesurfer.on('error', function(err) {
+                console.error('WaveSurfer error:', err);
+                showError('Failed to load audio, please try again');
+                loadingSpinner.style.display = 'none';
+                generateBtn.disabled = false;
+            });
+            
+            // Update play button when playback ends
+            wavesurfer.on('finish', function() {
+                playBtn.innerHTML = '<i class="fas fa-play me-2"></i>播放';
+            });
+            
+            // When audio is ready to play
+            wavesurfer.on('ready', function() {
+                // Skip the first 0.2 seconds of audio
+                if (wavesurfer.getDuration() > 1) {
+                    wavesurfer.seekTo(1 / wavesurfer.getDuration());
+                }
+                
+                audioContainer.style.display = 'block';
+                loadingSpinner.style.display = 'none';
+                generateBtn.disabled = false;
+                
+                // Make sure the play button is set up
+                setupPlayButton();
+                
+                // Scroll to audio container
+                setTimeout(() => {
+                    const rect = audioContainer.getBoundingClientRect();
+                    const isVisible = (
+                        rect.top >= 0 &&
+                        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+                    );
+                    
+                    if (!isVisible) {
+                        audioContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
+                }, 100);
+            });
+            
+            // Load audio
+            wavesurfer.load(audioUrl);
+            
+        } catch (error) {
+            console.error('Error during music generation:', error);
+            showError(error.message || '音乐生成过程中发生错误，请稍后重试');
+            loadingSpinner.style.display = 'none';
+            generateBtn.disabled = false;
+        }
+    });
+    
+    // Initial setup for play button
+    setupPlayButton();
+    
+    // Helper function to show error message
+    function showError(message) {
+        errorMessage.textContent = message;
+        errorAlert.style.display = 'block';
+        
+        // Scroll to error message
+        errorAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+});
+
+// Override the membership activation form submission to prevent page redirects
+document.addEventListener('DOMContentLoaded', function() {
+    const activateKeyForm = document.getElementById('activateKeyForm');
+    if (activateKeyForm) {
+        // Remove the existing form action to prevent direct submissions
+        activateKeyForm.removeAttribute('action');
+        activateKeyForm.removeAttribute('method');
+        
+        // Set iframe as target to prevent page reload
+        activateKeyForm.target = "hiddenFrame";
+        
+        // Override the form's submit event
+        activateKeyForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const activationKey = document.getElementById('activationKey').value.trim();
+            const activateBtn = document.getElementById('activateKeyBtn');
+            
+            if (!activationKey) {
+                alert('Please enter activation key');
+                return;
+            }
+            
+            // Disable button and show loading
+            activateBtn.disabled = true;
+            activateBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Activating...';
+            
+            // Log activation attempt
+            console.log('Attempting to activate key:', activationKey);
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('activation_key', activationKey);
+            
+            // Submit using fetch API
+            fetch('/activate_membership', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Server responded with status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle successful activation
+                console.log('Activation response:', data);
+                
+                // Reset button state
+                activateBtn.disabled = false;
+                activateBtn.innerHTML = '<i class="fas fa-check-circle me-1"></i>激活';
+                
+                if (data.success) {
+                    // Show success modal
+                    document.getElementById('successMessage').textContent = data.message || 'Your membership has been successfully activated!';
+                    document.getElementById('membershipDetails').textContent = `Membership: ${data.days_remaining} days`;
+                    
+                    // Hide membership modal and show success modal
+                    const membershipModal = bootstrap.Modal.getInstance(document.getElementById('membershipModal'));
+                    membershipModal.hide();
+                    
+                    // Show success modal
+                    const successModal = new bootstrap.Modal(document.getElementById('activationSuccessModal'));
+                    successModal.show();
+                    
+                    // Update membership display if function exists
+                    if (typeof updateMembershipDisplay === 'function') {
+                        updateMembershipDisplay(true, data.days_remaining);
+                    }
+                    
+                    // Clear the input
+                    document.getElementById('activationKey').value = '';
+                } else {
+                    // Show error message
+                    alert(data.message || 'Activation failed, please check your activation key');
+                }
+            })
+            .catch(error => {
+                console.error('Error activating membership:', error);
+                
+                // Reset button state
+                activateBtn.disabled = false;
+                activateBtn.innerHTML = '<i class="fas fa-check-circle me-1"></i>激活';
+                
+                // Show error message
+                alert('An error occurred during activation, please try again later');
+            });
+        });
+    }
+});
+</script>
+{% endblock %} 

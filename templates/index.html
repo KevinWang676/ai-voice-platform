@@ -1,0 +1,5226 @@
+
+
+{% block head %}
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-584FXGMJ57"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-584FXGMJ57');
+</script>
+<!-- Preload main cover image -->
+<link rel="preload" href="/static/images/main_cover.png" as="image">
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<section class="hero-section text-center text-white">
+    <div class="hero-overlay"></div>
+    <div class="container position-relative">
+        <div class="hero-content">
+            <h1 class="main-title animate__animated animate__fadeIn mb-4">书梦</h1>
+            <div class="writing-container position-relative">
+                <p class="main-slogan mb-4">
+                    <span class="first-line">
+                        <span class="writing-text2 fancy-poetry-light breathing-char1">书</span>
+                        <span class="writing-text breathing-char2" style="animation-delay: 0.2s">写</span>
+                        <span class="writing-text breathing-char3" style="animation-delay: 0.4s">你</span>
+                        <span class="writing-text breathing-char4" style="animation-delay: 0.6s">的</span>
+                    </span>
+                    <span class="second-line">
+                        <span class="writing-text breathing-char5" style="animation-delay: 0.8s">每</span>
+                        <span class="writing-text breathing-char6" style="animation-delay: 1.0s">一</span>
+                        <span class="writing-text breathing-char7" style="animation-delay: 1.2s">个</span>
+                        <span class="writing-text2 fancy-poetry-light breathing-char8" style="animation-delay: 1.4s">梦</span>
+                    </span>
+                </p>
+            </div>
+            <div class="sub-slogan">
+                <span class="sub-slogan-line1"><span class="sub-slogan4">沉浸式角色畅聊！</span></span>
+                <span class="sub-slogan-line2">不要<span class="sub-slogan2">意难平</span>，我要<span class="sub-slogan3">意满离</span>！</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<style>
+.hero-section {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: url('/static/images/main_cover.png') no-repeat center center;
+    background-size: cover;
+    padding: 4rem 0;
+    overflow: hidden;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6));
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+.main-title {
+    font-size: 7.2rem;
+    background: linear-gradient(120deg, #FFF8DC, #FFD700, #FFA500, #FFF8DC);
+    background-size: 300% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-smooth: always;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    animation: shine 8s linear infinite, breathing 3s ease-in-out infinite;
+    letter-spacing: 15px;
+    font-weight: bold;
+    position: relative;
+    z-index: 2;
+    transform: perspective(1000px) rotateX(15deg);
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+}
+
+@media (min-width: 768px) {
+    .main-title {
+        font-family: "KaiTi", "Kaiti SC", "Kaiti TC", "STKaiti", "KaiTi_GB2312", "KaiTi_GB", "楷体", "华文楷体";
+    }
+}
+
+@media (min-width: 768px) {
+    .main-title {
+        font-weight: 300;
+    }
+}
+
+.main-title::before {
+    content: "书梦";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, #FFD700, #FFA500);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0.6;
+    filter: blur(12px);
+    animation: pulse 3s ease-in-out infinite;
+    z-index: -1;
+}
+
+.main-slogan {
+    text-align: center;
+    margin: 1rem auto;
+    padding: 0 15px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.writing-text {
+    display: inline-block;
+    font-size: 2.5rem;
+    margin: 0 2px;
+    vertical-align: middle;
+    letter-spacing: 8px; /* Adjust spacing as needed */
+}
+
+.writing-text2 {
+    display: inline-block;
+    font-size: 3.5rem;
+    margin: 0 2px;
+    vertical-align: middle;
+    letter-spacing: 8px;
+}
+
+@media (min-width: 768px) {
+    .writing-text2 {
+        font-family: "KaiTi", "Kaiti SC", "Kaiti TC", "STKaiti", "KaiTi_GB2312", "KaiTi_GB", "楷体", "华文楷体";
+    }
+}
+
+@media (max-width: 768px) {
+    .main-slogan {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        line-height: 1.8;
+        margin-bottom: -0.5rem;  /* Reduced from 1rem to 0.5rem */
+    }
+    
+    .main-slogan .first-line,
+    .main-slogan .second-line {
+        display: flex;
+        align-items: center;
+    }
+
+    .sub-slogan {
+        font-size: 1.4rem;
+        letter-spacing: 3px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.3rem;
+        margin-top: -2rem;  /* Changed from 0rem to -0.5rem to pull it up */
+    }
+
+    .sub-slogan-line1 {
+        display: block;
+        white-space: nowrap;
+        margin-bottom: -0.2rem;
+    }
+    
+    .sub-slogan-line2 {
+        display: block;
+        white-space: normal;
+        text-align: center;
+    }
+
+    .sub-slogan2, .sub-slogan3 {
+        margin-top: -2rem;
+    }
+}
+
+
+@media (min-width: 992px) {
+    .writing-text {
+        font-size: 3rem;   
+        font-family: "KaiTi", "Kaiti SC", "Kaiti TC", "STKaiti", "KaiTi_GB2312", "KaiTi_GB", "楷体", "华文楷体";
+    }
+}
+
+.sub-slogan {
+    font-size: 1.8rem;
+    color: #5cee0e;
+    letter-spacing: 6px;
+    margin-top: 1.8rem;
+    position: relative;
+    z-index: 1;
+    font-weight: 400;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+    .sub-slogan {
+        font-size: 1.4rem;
+        letter-spacing: 3px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.4rem;
+        margin-top: 1rem;
+    }
+    
+    .sub-slogan-line1 {
+        display: block;
+        white-space: nowrap;
+        margin-bottom: -0.2rem;
+    }
+    
+    .sub-slogan-line2 {
+        display: block;
+        white-space: normal;
+        text-align: center;
+    }
+
+    .sub-slogan2, .sub-slogan3 {
+        margin-top: -0.5rem;
+    }
+}
+
+.sub-slogan2 {
+    font-size: 1.8rem;
+    color: #da5bee;
+    letter-spacing: 6px;
+    margin-top: 1.8rem;
+    position: relative;
+    z-index: 1;
+    font-weight: 400;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+@media (min-width: 768px) {
+    .sub-slogan2 {
+        font-family: "KaiTi", "Kaiti SC", "Kaiti TC", "STKaiti", "KaiTi_GB2312", "KaiTi_GB", "楷体", "华文楷体";
+        font-size: 2rem;
+    }
+}
+
+.sub-slogan3 {
+    font-size: 1.8rem;
+    color: #FF6B6B;
+    letter-spacing: 6px;
+    margin-top: 1.8rem;
+    position: relative;
+    z-index: 1;
+    font-weight: 400;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+@media (min-width: 768px) {
+    .sub-slogan3 {
+        font-family: "KaiTi", "Kaiti SC", "Kaiti TC", "STKaiti", "KaiTi_GB2312", "KaiTi_GB", "楷体", "华文楷体";
+        font-size: 2rem;
+    }
+}
+
+.sub-slogan4 {
+  font-size: 1.95rem;
+  /* Apply the gradient as a background instead of a color */
+  background: linear-gradient(to right, #f56dca, #7ceed9);
+
+  /* The next two lines make the text itself become "see-through," 
+     showing the background gradient. */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  /* Other properties you had remain the same */
+  letter-spacing: 6px;
+  margin-top: 1.8rem;
+  position: relative;
+  z-index: 1;
+  font-weight: 400;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+
+@media (min-width: 768px) {
+    .sub-slogan4 {
+        font-family: "KaiTi", "Kaiti SC", "Kaiti TC", "STKaiti", "KaiTi_GB2312", "KaiTi_GB", "楷体", "华文楷体";
+        font-size: 2rem;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+    50% {
+        transform: scale(1.08);
+        opacity: 0.8;
+    }
+}
+
+@keyframes shine {
+    0% {
+        background-position: 0% 50%;
+        filter: hue-rotate(0deg);
+    }
+    100% {
+        background-position: 300% 50%;
+        filter: hue-rotate(360deg);
+    }
+}
+
+@keyframes breathing {
+    0%, 100% {
+        transform: perspective(1000px) rotateX(15deg) scale(1);
+    }
+    50% {
+        transform: perspective(1000px) rotateX(15deg) scale(1.03);
+    }
+}
+
+.writing-container {
+    position: relative;
+    display: inline-block;
+}
+
+.writing-text {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(20px);
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    position: relative;
+    margin: 0 4px;
+    font-size: 2.3rem;
+    filter: blur(10px);
+}
+
+.writing-text2 {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(20px);
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    position: relative;
+    margin: 0 4px;
+    font-size: 2.72rem;
+    filter: blur(10px);
+}
+
+@keyframes fadeInOnce {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) perspective(1000px) rotateX(15deg);
+        filter: blur(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) perspective(1000px) rotateX(15deg);
+        filter: blur(0);
+    }
+}
+
+@keyframes gentleBreathing {
+    0%, 100% {
+        transform: perspective(1000px) rotateX(15deg) translateY(0) scale(1);
+    }
+    50% {
+        transform: perspective(1000px) rotateX(15deg) translateY(-5px) scale(1.03);
+    }
+}
+
+.breathing-char1 { 
+    animation: fadeInOnce 0.8s ease-out forwards 0s,
+               gentleBreathing 4s ease-in-out infinite 0.8s;
+}
+.breathing-char2 { 
+    animation: fadeInOnce 0.8s ease-out forwards 0.2s,
+               gentleBreathing 4s ease-in-out infinite 1s;
+}
+.breathing-char3 { 
+    animation: fadeInOnce 0.8s ease-out forwards 0.4s,
+               gentleBreathing 4s ease-in-out infinite 1.2s;
+}
+.breathing-char4 { 
+    animation: fadeInOnce 0.8s ease-out forwards 0.6s,
+               gentleBreathing 4s ease-in-out infinite 1.4s;
+}
+.breathing-char5 { 
+    animation: fadeInOnce 0.8s ease-out forwards 0.8s,
+               gentleBreathing 4s ease-in-out infinite 1.6s;
+}
+.breathing-char6 { 
+    animation: fadeInOnce 0.8s ease-out forwards 1.0s,
+               gentleBreathing 4s ease-in-out infinite 1.8s;
+}
+.breathing-char7 { 
+    animation: fadeInOnce 0.8s ease-out forwards 1.2s,
+               gentleBreathing 4s ease-in-out infinite 2.0s;
+}
+.breathing-char8 { 
+    animation: fadeInOnce 0.8s ease-out forwards 1.4s,
+               gentleBreathing 4s ease-in-out infinite 2.2s;
+}
+
+.writing-text.fancy-poetry {
+    font-size: inherit;
+    display: inline-block;
+    vertical-align: baseline;
+    margin: 0 4px;
+}
+
+.writing-text.fancy-poetry-hello {
+    font-size: inherit;
+    display: inline-block;
+    vertical-align: baseline;
+    margin: 0 4px;
+}
+
+.chat-messages {
+    max-height: 500px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+}
+
+/* Add cute loading animations */
+.loading-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(to right, rgba(248, 249, 250, 0.5), rgba(248, 249, 250, 0.8));
+    border-radius: 10px;
+}
+
+.loading-animation {
+    flex: 1;
+    height: 80px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(to bottom, transparent, rgba(248, 249, 250, 0.3));
+    border-radius: 8px;
+}
+
+.cat, .cat2, .dog, .dog2 {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 50%;
+    margin-top: -20px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.cat {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23FFB6C1' d='M290.59 192c-20.18 0-106.82 1.98-162.59 85.95V192c0-52.94-43.06-96-96-96-17.67 0-32 14.33-32 32s14.33 32 32 32c17.64 0 32 14.36 32 32v256c0 35.3 28.7 64 64 64h176c8.84 0 16-7.16 16-16v-16c0-17.67-14.33-32-32-32h-32l128-96v144c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V289.86c-10.29 2.67-20.89 4.54-32 4.54-61.81 0-113.52-44.05-125.41-102.4zM448 96h-64l-64-64v134.4c0 53.02 42.98 96 96 96s96-42.98 96-96V32l-64 64zm-72 80c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16zm80 0c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16z'/%3E%3C/svg%3E") no-repeat center center;
+    left: -40px;
+    animation: runAndJump 6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.cat2 {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23FFA07A' d='M290.59 192c-20.18 0-106.82 1.98-162.59 85.95V192c0-52.94-43.06-96-96-96-17.67 0-32 14.33-32 32s14.33 32 32 32c17.64 0 32 14.36 32 32v256c0 35.3 28.7 64 64 64h176c8.84 0 16-7.16 16-16v-16c0-17.67-14.33-32-32-32h-32l128-96v144c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V289.86c-10.29 2.67-20.89 4.54-32 4.54-61.81 0-113.52-44.05-125.41-102.4zM448 96h-64l-64-64v134.4c0 53.02 42.98 96 96 96s96-42.98 96-96V32l-64 64zm-72 80c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16zm80 0c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16z'/%3E%3C/svg%3E") no-repeat center center;
+    left: -120px;
+    animation: runAndJump 6s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite 0.6s;
+}
+
+.dog {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath fill='%23B8860B' d='M298.06,224,448,277.55V496a16,16,0,0,1-16,16H368a16,16,0,0,1-16-16V384H192V496a16,16,0,0,1-16,16H112a16,16,0,0,1-16-16V282.09C58.84,268.84,32,233.66,32,192a32,32,0,0,1,64,0,32.06,32.06,0,0,0,32,32ZM544,112v32a64,64,0,0,1-64,64H448v35.58L320,197.87V48c0-14.25,17.22-21.39,27.31-11.31L374.59,64h53.63c10.91,0,23.75,7.92,28.62,17.69L464,96h64A16,16,0,0,1,544,112Zm-112,0a16,16,0,1,0-16,16A16,16,0,0,0,432,112Z'/%3E%3C/svg%3E") no-repeat center center;
+    left: -80px;
+    animation: runAndJump 6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite 0.3s;
+}
+
+.dog2 {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath fill='%23F4A460' d='M298.06,224,448,277.55V496a16,16,0,0,1-16,16H368a16,16,0,0,1-16-16V384H192V496a16,16,0,0,1-16,16H112a16,16,0,0,1-16-16V282.09C58.84,268.84,32,233.66,32,192a32,32,0,0,1,64,0,32.06,32.06,0,0,0,32,32ZM544,112v32a64,64,0,0,1-64,64H448v35.58L320,197.87V48c0-14.25,17.22-21.39,27.31-11.31L374.59,64h53.63c10.91,0,23.75,7.92,28.62,17.69L464,96h64A16,16,0,0,1,544,112Zm-112,0a16,16,0,1,0-16,16A16,16,0,0,0,432,112Z'/%3E%3C/svg%3E") no-repeat center center;
+    left: -160px;
+    animation: runAndJump 6s cubic-bezier(0.55, 0.15, 0.45, 0.85) infinite 0.9s;
+}
+
+@keyframes runAndJump {
+    0% {
+        left: -80px;
+        transform: scaleX(1) translateY(0) rotate(0deg);
+        animation-timing-function: ease-out;
+    }
+    10% {
+        transform: scaleX(1) translateY(-25px) rotate(-5deg);
+        animation-timing-function: ease-in;
+    }
+    20% {
+        transform: scaleX(1) translateY(15px) rotate(8deg);
+        animation-timing-function: ease-out;
+    }
+    30% {
+        transform: scaleX(1) translateY(-45px) rotate(-12deg);
+        animation-timing-function: ease-in-out;
+    }
+    35% {
+        transform: scaleX(1) translateY(5px) rotate(0deg);
+        animation-timing-function: linear;
+    }
+    45% {
+        transform: scaleX(1) translateY(-15px) rotate(15deg);
+        animation-timing-function: ease-in;
+    }
+    50% {
+        left: calc(100% + 40px);
+        transform: scaleX(-1) translateY(25px) rotate(-8deg);
+        animation-timing-function: ease-out;
+    }
+    60% {
+        transform: scaleX(-1) translateY(-35px) rotate(10deg);
+        animation-timing-function: ease-in;
+    }
+    70% {
+        transform: scaleX(-1) translateY(20px) rotate(-15deg);
+        animation-timing-function: cubic-bezier(0.2, 0.8, 0.3, 1);
+    }
+    80% {
+        transform: scaleX(-1) translateY(-20px) rotate(5deg);
+        animation-timing-function: ease-out;
+    }
+    90% {
+        transform: scaleX(-1) translateY(30px) rotate(-10deg);
+        animation-timing-function: ease-in-out;
+    }
+    100% {
+        left: -80px;
+        transform: scaleX(1) translateY(0) rotate(0deg);
+    }
+}
+
+.loading-message {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: max-content;
+    font-size: 1rem;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+@keyframes float-breathe-1 {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    25% {
+        transform: translateY(-3px) scale(1.03);
+    }
+    50% {
+        transform: translateY(-5px) scale(1.05);
+    }
+    75% {
+        transform: translateY(-3px) scale(1.03);
+    }
+}
+
+@keyframes float-breathe-2 {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    25% {
+        transform: translateY(-4px) scale(1.04);
+    }
+    50% {
+        transform: translateY(-6px) scale(1.06);
+    }
+    75% {
+        transform: translateY(-4px) scale(1.04);
+    }
+}
+
+@keyframes float-breathe-3 {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    25% {
+        transform: translateY(-2px) scale(1.02);
+    }
+    50% {
+        transform: translateY(-4px) scale(1.04);
+    }
+    75% {
+        transform: translateY(-2px) scale(1.02);
+    }
+}
+
+@keyframes float-breathe-4 {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    25% {
+        transform: translateY(-3px) scale(1.02);
+    }
+    50% {
+        transform: translateY(-5px) scale(1.03);
+    }
+    75% {
+        transform: translateY(-3px) scale(1.02);
+    }
+}
+
+@keyframes float-breathe-5 {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    25% {
+        transform: translateY(-4px) scale(1.05);
+    }
+    50% {
+        transform: translateY(-7px) scale(1.07);
+    }
+    75% {
+        transform: translateY(-4px) scale(1.05);
+    }
+}
+
+@keyframes float-breathe-6 {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    25% {
+        transform: translateY(-3px) scale(1.03);
+    }
+    50% {
+        transform: translateY(-5px) scale(1.05);
+    }
+    75% {
+        transform: translateY(-3px) scale(1.03);
+    }
+}
+
+@keyframes float-breathe-7 {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    25% {
+        transform: translateY(-2px) scale(1.02);
+    }
+    50% {
+        transform: translateY(-4px) scale(1.04);
+    }
+    75% {
+        transform: translateY(-2px) scale(1.02);
+    }
+}
+
+@keyframes float-breathe-8 {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    25% {
+        transform: translateY(-4px) scale(1.04);
+    }
+    50% {
+        transform: translateY(-6px) scale(1.06);
+    }
+    75% {
+        transform: translateY(-4px) scale(1.04);
+    }
+}
+
+.message-content {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.message-content p {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.message-actions {
+    display: flex;
+    gap: 5px;
+    justify-content: flex-end;
+    padding: 5px 0;
+    margin-top: auto;
+}
+
+.message-ai .message-content p {
+    margin-bottom: 10px !important;
+    width: 100%;
+    padding-right: 0;
+}
+
+/* Add specific style for message-ai with actions */
+.message-ai .message-content.has-actions p {
+    margin-bottom: 30px !important;
+}
+
+.copy-btn {
+    background: none;
+    border: none;
+    color: #6c757d;
+    padding: 5px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.copy-btn:hover {
+    opacity: 1;
+    color: #4568dc;
+    transform: scale(1.1);
+}
+
+.copy-btn.copied {
+    color: #28a745;
+    animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.share-btn {
+    background: none;
+    border: none;
+    color: #6c757d;
+    padding: 5px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.share-btn:hover {
+    opacity: 1;
+    color: #4568dc;
+    transform: scale(1.1);
+}
+
+.input-group {
+    align-items: stretch;
+    position: relative;
+}
+
+.expand-btn {
+    position: absolute;
+    left: 0;
+    bottom: -32px;
+    background: none;
+    border: none;
+    color: #6c757d;
+    padding: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+.expand-btn:hover {
+    color: #4568dc;
+}
+
+.expand-btn i {
+    transition: transform 0.3s ease;
+}
+
+.expand-btn.expanded i {
+    transform: rotate(180deg);
+}
+
+.expandable-content {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.expandable-content.show {
+    display: block;
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .chat-messages .message,
+    .chat-messages .message-ai,
+    #character-chat-messages .message,
+    #character-chat-messages .message-ai {
+        width: 100%;
+        max-width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
+    .chat-messages .message p,
+    .chat-messages .message-ai p,
+    #character-chat-messages .message p,
+    #character-chat-messages .message-ai p {
+        width: 100%;
+        max-width: 100%;
+        padding-right: 0;
+    }
+
+    #character-chat-messages {
+        margin-left: -15px;
+        margin-right: -15px;
+        width: calc(100% + 30px);
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        padding: 15px;
+    }
+
+    #character-chat-messages .message-content {
+        width: 100%;
+        padding: 0;
+    }
+
+    #character-chat-messages .message-text {
+        width: 100%;
+        padding-right: 0;
+    }
+
+    #character-chat-messages .message-actions {
+        width: 100%;
+        justify-content: flex-end;
+        padding: 5px 0;
+    }
+
+    #character-chat {
+        margin-left: -15px;
+        margin-right: -15px;
+        width: calc(100% + 30px);
+        padding: 0 15px;
+    }
+
+    .input-group .btn {
+        padding: 0.375rem 0.75rem;
+        min-width: 60px;
+        font-size: 0.9rem;
+    }
+
+    .input-group .btn i {
+        margin-right: 0 !important;
+    }
+
+    .input-group .btn span {
+        display: none;
+    }
+
+    .input-group .form-control {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .input-group {
+        gap: 0.25rem;
+    }
+
+    .col-auto.d-flex {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+
+    .btn-primary .fas {
+        font-size: 0.85rem;
+        margin-right: 0 !important;
+    }
+
+    .btn-primary span.btn-text {
+        display: none;
+    }
+}
+
+@media (min-width: 992px) {
+    .message-content .message-text {
+        font-size: 1.05rem;
+        line-height: 1.8;
+    }
+    
+    .message-ai .message-text {
+        font-size: 1.05rem;
+        line-height: 1.8;
+    }
+
+    .message-user .message-text {
+        font-size: 1.05rem;
+        line-height: 1.8;
+    }
+
+    .chat-messages .message,
+    .chat-messages .message-ai,
+    #character-chat-messages .message,
+    #character-chat-messages .message-ai .message-text {
+        font-size: 1.05rem;
+        line-height: 1.8;
+    }
+}
+
+@media (max-width: 768px) {
+    .fancy-poetry {
+        display: none;
+    }
+}
+
+@media (min-width: 992px) {
+        .fancy-poetry-laptop{
+            font-family: "STKaiti", "KaiTi", serif;
+        }
+}
+
+@media (max-width: 768px) {
+        .fancy-poetry-laptop{
+            font-size: 1.2rem;
+            font-family: "STKaiti", "KaiTi", serif;
+        }
+}
+
+@media (min-width: 992px) {
+        .fancy-poetry{
+            font-family: "STKaiti", "KaiTi", serif;
+        }
+}
+
+@media (min-width: 992px) {
+        .fancy-poetry-hello{
+            font-family: "STKaiti", "KaiTi", serif;
+        }
+}
+
+/* Add specific style for the "绘梦社" button */
+.btn-gradient.btn-clear[onclick="shareEnding()"] {
+    background: linear-gradient(45deg, #e6eea8, #96e8da);
+    border: none;
+    color: #f37575;
+    font-weight: 500;
+    box-shadow: 0 4px 15px rgba(109, 255, 138, 0.3);
+}
+
+.btn-gradient.btn-clear[onclick="shareEnding()"]:hover {
+    background: linear-gradient(45deg, #96e8da, #e6eea8);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(109, 255, 138, 0.4);
+}
+
+.btn-gradient.btn-clear[onclick="shareEnding()"]:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(109, 255, 138, 0.2);
+}
+
+/* Add styles for mode buttons */
+.btn-group .btn {
+    border-radius: 25px;  /* Make mode buttons more rounded */
+    margin: 0 5px;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+/* Specific styles for chat mode button */
+#chatModeBtn.active {
+    background: linear-gradient(45deg, var(--primary-color), #4568dc);
+    color: rgb(255, 255, 255);
+    border: none;
+}
+
+/* Specific styles for ending mode button */
+#endingModeBtn.active {
+    background: linear-gradient(45deg, var(--secondary-color), #b06ab3);
+    color: white;
+    border: none;
+}
+
+/* Hover effects for both buttons */
+#chatModeBtn:hover {
+    background: linear-gradient(45deg, #4568dc, var(--primary-color));
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(69, 104, 220, 0.2);
+}
+
+#endingModeBtn:hover {
+    background: linear-gradient(45deg, #b06ab3, var(--secondary-color));
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(176, 106, 179, 0.2);
+}
+
+/* Non-active state for both buttons */
+.btn-group .btn:not(.active) {
+    background: transparent;
+    color: #1787e8;
+    border: 1px solid #22d1a8;
+}
+
+#chat-input {
+    border-radius: 8px;
+    border: 1px solid rgba(69, 104, 220, 0.2);
+    transition: all 0.3s ease;
+    min-height: 80px;  /* Keep textarea height */
+    padding: 12px;
+}
+
+#chat-input:focus {
+    border-color: #4568dc;
+    box-shadow: 0 0 0 0.2rem rgba(69, 104, 220, 0.15);
+}
+
+/* Update send button to be smaller and centered */
+#sendButton {
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1.5rem;
+    align-self: center;
+    margin-left: 8px;
+    border-radius: 22.5px;  /* Make it more rounded - half of the height */
+    transition: all 0.3s ease;
+}
+
+/* Adjust input group to allow vertical centering */
+.input-group {
+    display: flex;
+    align-items: center;  /* Center items vertically */
+    gap: 0;              /* Remove default gap */
+}
+
+.search-area-wrapper {
+    position: relative;
+    margin-bottom: 2.5rem;  /* Increased from 1rem to 2.5rem */
+}
+
+#mode-specific-inputs {
+    margin-top: 2.5rem;  /* Added margin-top to create more space */
+}
+
+.toggle-search-btn {
+    position: absolute;
+    bottom: -35px;  /* Adjusted from -25px to -35px to center between textareas */
+    left: 50%;
+    transform: translateX(-50%);
+    background: none;
+    border: none;
+    color: #6c757d;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+}
+
+.toggle-search-btn:hover {
+    color: #4568dc;
+}
+
+.toggle-search-btn i {
+    transition: transform 0.3s ease;
+}
+
+.search-area-wrapper.collapsed .toggle-search-btn i {
+    transform: rotate(180deg);
+}
+
+.search-area-wrapper.collapsed #search-area {
+    display: none;
+}
+
+.toggle-search-btn::after {
+    content: "隐藏搜索栏";
+    font-size: 0.9rem;
+}
+
+.search-area-wrapper.collapsed .toggle-search-btn::after {
+    content: "点击开启新搜索";
+}
+
+.message-content .message-text,
+.message-ai .message-text,
+.message-user .message-text,
+.chat-messages .message,
+.chat-messages .message-ai,
+.chat-messages .message-user {
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.message p,
+.message-ai p,
+.message-user p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    margin-bottom: 1em;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Remove any specific font-size overrides */
+.message-ai .message-content p {
+    margin-bottom: 10px !important;
+    width: 100%;
+    padding-right: 0;
+    font-size: 1.05rem;  /* Ensure consistent font size */
+}
+
+/* Update the initial welcome message */
+.message.message-ai p.mb-0 {
+    font-size: 1.05rem !important;
+}
+
+.btn-clear {
+    background: linear-gradient(45deg, #f5f5f5, #e0e0e0);
+    border: 1px solid #d4d4d4;
+    color: #666;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-clear:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(45deg, #e0e0e0, #f5f5f5);
+    color: #444;
+}
+
+.btn-clear:active {
+    transform: translateY(0);
+}
+
+/* Keep the existing styles for mode buttons to maintain their prominence */
+.btn-group .btn {
+    border-radius: 25px;
+    margin: 0 5px;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+#chatModeBtn.active {
+    background: linear-gradient(45deg, var(--primary-color), #4568dc);
+    color: rgb(255, 255, 255);
+    border: none;
+}
+
+#endingModeBtn.active {
+    background: linear-gradient(45deg, var(--secondary-color), #b06ab3);
+    color: white;
+    border: none;
+}
+
+/* Add CSS for mode title animation */
+.mode-title {
+    transition: opacity 0.3s ease;
+    background: linear-gradient(120deg, #4568dc, #b06ab3);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media screen and (max-width: 768px) {
+    .mode-title {
+        display: none !important;
+    }
+}
+
+/* Add immersive chat button styles */
+.btn-immersive {
+    background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    transform-style: preserve-3d;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-immersive:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    color: white;
+}
+
+.btn-immersive:active {
+    transform: translateY(1px);
+}
+
+.btn-immersive-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    animation: glow 2s infinite;
+}
+
+@keyframes glow {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}
+
+/* Immersive modal styles */
+.immersive-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+}
+
+.immersive-modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.immersive-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: #666;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-modal:hover {
+    color: #FF6B6B;
+}
+
+.style-btn {
+    transition: all 0.3s ease;
+}
+
+.style-btn.active {
+    background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+    color: white;
+    border: none;
+}
+
+/* Add floating chat styles */
+.floating-chat {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 2000;
+}
+
+.floating-chat-header {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 2001;
+}
+
+.floating-chat-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.floating-chat-actions button {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+}
+
+.floating-chat-actions button:hover {
+    color: #fff;
+}
+
+.floating-chat-actions .hide-text,
+.floating-chat-actions .exit-text {
+    font-size: 14px;
+}
+
+/* Mobile styles */
+@media screen and (max-width: 768px) {
+    .floating-chat-actions {
+        gap: 15px;  /* Increase gap for better touch targets */
+    }
+    
+    .floating-chat-actions button {
+        padding: 10px;  /* Larger touch target */
+    }
+    
+    .floating-chat-actions i {
+        font-size: 18px;  /* Larger icons */
+    }
+    
+    .floating-chat-actions .hide-text,
+    .floating-chat-actions .exit-text {
+        font-size: 16px;  /* Larger text */
+        display: inline-block;  /* Ensure text is always visible */
+    }
+}
+
+.floating-chat-actions button:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    padding: 0 25px;  /* Increased padding for better text display */
+    border-radius: 25px;  /* Slightly less rounded when expanded */
+}
+
+.floating-chat-actions button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.floating-chat-actions button i {
+    font-size: 1.2rem;
+}
+
+.floating-chat-actions button .exit-text {
+    display: none;
+    margin-left: 10px;  /* Increased margin for better spacing */
+    font-size: 0.95rem;  /* Slightly larger font size */
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.floating-chat-actions button .hide-text {
+    display: none;
+    margin-left: 10px;  /* Increased margin for better spacing */
+    font-size: 0.95rem;  /* Slightly larger font size */
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.floating-chat-actions button:hover .exit-text {
+    display: inline;
+    opacity: 1;
+}
+
+.floating-chat-actions button:hover .hide-text {
+    display: inline;
+    opacity: 1;
+}
+
+.floating-chat-actions button:hover {
+    width: auto;
+    padding: 0 20px;
+}
+
+.floating-chat-body {
+    height: calc(100vh - 180px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.floating-chat-messages {
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+    max-height: calc(100vh - 200px);
+}
+
+.floating-chat-messages .message {
+    max-width: 600px;
+    padding: 12px 18px;
+    border-radius: 20px;
+    color: white;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 0 auto;
+    animation: fadeIn 0.3s ease;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.floating-chat-messages .message-user {
+    align-self: flex-end;
+    margin-right: 40px;
+    background: rgba(69, 104, 220, 0.4);
+    border-color: rgba(69, 104, 220, 0.2);
+    border-bottom-right-radius: 5px;
+}
+
+.floating-chat-messages .message-ai {
+    align-self: flex-start;
+    margin-left: 40px;
+    background: rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.15);
+    border-bottom-left-radius: 5px;
+}
+
+.floating-chat-input {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 800px;
+    display: flex;
+    gap: 12px;
+    padding: 15px 20px;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    border-radius: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.floating-chat-input textarea {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 20px;
+    padding: 12px 20px;
+    resize: none;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.floating-chat-input textarea::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.floating-chat-input textarea:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.floating-chat-input .btn-send {
+    background: rgba(69, 104, 220, 0.4);
+    border: 1px solid rgba(69, 104, 220, 0.2);
+    color: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.floating-chat-input .btn-send:hover {
+    background: rgba(69, 104, 220, 0.6);
+    transform: scale(1.05);
+}
+
+.floating-chat-input .btn-send:active {
+    transform: scale(0.95);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message-content .message-text,
+.message-ai .message-text,
+.message-user .message-text,
+.chat-messages .message,
+.chat-messages .message-ai,
+.chat-messages .message-user {
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.message p,
+.message-ai p,
+.message-user p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    margin-bottom: 1em;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Remove any specific font-size overrides */
+.message-ai .message-content p {
+    margin-bottom: 10px !important;
+    width: 100%;
+    padding-right: 0;
+    font-size: 1.05rem;  /* Ensure consistent font size */
+}
+
+/* Update the initial welcome message */
+.message.message-ai p.mb-0 {
+    font-size: 1.05rem !important;
+}
+
+.btn-clear {
+    background: linear-gradient(45deg, #f5f5f5, #e0e0e0);
+    border: 1px solid #d4d4d4;
+    color: #666;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-clear:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(45deg, #e0e0e0, #f5f5f5);
+    color: #444;
+}
+
+.btn-clear:active {
+    transform: translateY(0);
+}
+
+/* Keep the existing styles for mode buttons to maintain their prominence */
+.btn-group .btn {
+    border-radius: 25px;
+    margin: 0 5px;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+#chatModeBtn.active {
+    background: linear-gradient(45deg, var(--primary-color), #4568dc);
+    color: rgb(255, 255, 255);
+    border: none;
+}
+
+#endingModeBtn.active {
+    background: linear-gradient(45deg, var(--secondary-color), #b06ab3);
+    color: white;
+    border: none;
+}
+
+/* Add CSS for mode title animation */
+.mode-title {
+    transition: opacity 0.3s ease;
+    background: linear-gradient(120deg, #4568dc, #b06ab3);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media screen and (max-width: 768px) {
+    .mode-title {
+        display: none !important;
+    }
+}
+
+/* Add immersive chat button styles */
+.btn-immersive {
+    background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    transform-style: preserve-3d;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-immersive:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    color: white;
+}
+
+.btn-immersive:active {
+    transform: translateY(1px);
+}
+
+.btn-immersive-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    animation: glow 2s infinite;
+}
+
+@keyframes glow {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}
+
+/* Immersive modal styles */
+.immersive-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+}
+
+.immersive-modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.immersive-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: #666;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-modal:hover {
+    color: #FF6B6B;
+}
+
+.style-btn {
+    transition: all 0.3s ease;
+}
+
+.style-btn.active {
+    background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+    color: white;
+    border: none;
+}
+
+/* Add floating chat styles */
+.floating-chat {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.floating-chat.minimized {
+    height: 50px;
+    overflow: hidden;
+}
+
+.floating-chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 15px 15px 0 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 0.95rem;
+}
+
+.floating-chat-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.floating-chat-actions button {
+    background: none;
+    border: none;
+    color: white;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0.8;
+}
+
+.floating-chat-actions button:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.floating-chat-body {
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.floating-chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.floating-chat-messages .message {
+    max-width: 85%;
+    padding: 8px 12px;
+    border-radius: 15px;
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 8px;
+}
+
+.floating-chat-messages .message-user {
+    align-self: flex-end;
+    background: rgba(69, 104, 220, 0.3);
+    border-color: rgba(69, 104, 220, 0.2);
+}
+
+.floating-chat-messages .message-ai {
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.floating-chat-input {
+    padding: 10px;
+    display: flex;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0 0 15px 15px;
+}
+
+.floating-chat-input textarea {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 20px;
+    padding: 8px 15px;
+    resize: none;
+    font-size: 0.95rem;
+}
+
+.floating-chat-input textarea::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.floating-chat-input textarea:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.floating-chat-input .btn-send {
+    background: rgba(69, 104, 220, 0.3);
+    border: 1px solid rgba(69, 104, 220, 0.2);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.floating-chat-input .btn-send:hover {
+    background: rgba(69, 104, 220, 0.4);
+    transform: scale(1.05);
+}
+
+.floating-chat-input .btn-send:active {
+    transform: scale(0.95);
+}
+
+/* Add styles for minimized state */
+.floating-chat.minimized .floating-chat-body {
+    display: none;
+}
+
+const style = document.createElement('style');
+style.textContent = `
+    .message-ai em {
+        font-style: italic;
+        color: #6c757d;
+    }
+    .message-ai strong {
+        font-weight: bold;
+        color: #0d6efd;
+    }
+    .message p {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+    
+    /* Floating chat styles */
+    .floating-chat {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: 2000;
+    }
+
+    .floating-chat-header {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        display: flex;
+        gap: 10px;
+        z-index: 2001;
+    }
+
+    .floating-chat-actions button {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        width: 44px;
+        height: 44px;
+        border-radius: 50px;  /* Changed from 12px to 50px for full roundness */
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .floating-chat-actions button:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        padding: 0 25px;  /* Increased padding for better text display */
+        border-radius: 25px;  /* Slightly less rounded when expanded */
+    }
+
+    .floating-chat-actions button:active {
+        transform: translateY(1px);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .floating-chat-actions button i {
+        font-size: 1.2rem;
+    }
+
+    .floating-chat-actions button .exit-text {
+        display: none;
+        margin-left: 10px;  /* Increased margin for better spacing */
+        font-size: 0.95rem;  /* Slightly larger font size */
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .floating-chat-actions button .hide-text {
+        display: none;
+        margin-left: 10px;  /* Increased margin for better spacing */
+        font-size: 0.95rem;  /* Slightly larger font size */
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .floating-chat-actions button:hover .exit-text {
+        display: inline;
+        opacity: 1;
+    }
+
+    .floating-chat-actions button:hover .hide-text {
+        display: inline;
+        opacity: 1;
+    }
+
+    .floating-chat-actions button:hover {
+        width: auto;
+        padding: 0 20px;
+    }
+
+    .floating-chat-body {
+        height: calc(100vh - 180px);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+
+    .floating-chat-messages {
+        overflow-y: auto;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 20px;
+        max-height: calc(100vh - 200px);
+    }
+
+    .floating-chat-messages .message {
+        max-width: 600px;
+        padding: 12px 18px;
+        border-radius: 20px;
+        color: white;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin: 0 auto;
+        animation: fadeIn 0.3s ease;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+    .floating-chat-messages .message-user {
+        align-self: flex-end;
+        margin-right: 40px;
+        background: rgba(69, 104, 220, 0.4);
+        border-color: rgba(69, 104, 220, 0.2);
+        border-bottom-right-radius: 5px;
+    }
+
+    .floating-chat-messages .message-ai {
+        align-self: flex-start;
+        margin-left: 40px;
+        background: rgba(0, 0, 0, 0.5);
+        border-color: rgba(255, 255, 255, 0.15);
+        border-bottom-left-radius: 5px;
+    }
+
+    .floating-chat-input {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 800px;
+        display: flex;
+        gap: 12px;
+        padding: 15px 20px;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(10px);
+        border-radius: 25px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .floating-chat-input textarea {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        border-radius: 20px;
+        padding: 12px 20px;
+        resize: none;
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    .floating-chat-input textarea::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .floating-chat-input textarea:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+    }
+
+    .floating-chat-input .btn-send {
+        background: rgba(69, 104, 220, 0.4);
+        border: 1px solid rgba(69, 104, 220, 0.2);
+        color: white;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .floating-chat-input .btn-send:hover {
+        background: rgba(69, 104, 220, 0.6);
+        transform: scale(1.05);
+    }
+
+    .floating-chat-input .btn-send:active {
+        transform: scale(0.95);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+`;
+// ... existing code ...
+
+.style-options .style-btn {
+    transition: all 0.3s ease;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1), -3px -3px 6px rgba(255, 255, 255, 0.8);
+    position: relative;
+    overflow: hidden;
+}
+
+.style-options .style-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15), -4px -4px 8px rgba(255, 255, 255, 0.9);
+}
+
+.style-options .style-btn:active {
+    transform: translateY(1px);
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1), -2px -2px 4px rgba(255, 255, 255, 0.7);
+}
+
+.style-options .style-btn i {
+    transition: all 0.3s ease;
+    color: #666;
+}
+
+.style-options .style-btn:hover i {
+    transform: scale(1.2);
+    color: var(--primary-color);
+}
+
+.style-options .style-btn.clicked {
+    background: linear-gradient(145deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    animation: pulse 0.5s ease;
+}
+
+.style-options .style-btn.clicked i {
+    color: white;
+    animation: spin 0.5s ease;
+}
+
+.style-options .style-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 100%);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.style-options .style-btn:hover::before {
+    width: 120px;
+    height: 120px;
+    opacity: 0.3;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.style-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+// ... existing code ...
+
+.style-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 15px;
+}
+
+.style-options .style-btn {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 12px;
+    font-size: 0.95rem;
+    padding: 0.6rem 1rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6));
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    color: #333;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(5px);
+}
+
+.style-options .style-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.8));
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.style-options .style-btn:active {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.style-options .style-btn i {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--primary-color);
+    font-size: 1.1em;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.style-options .style-btn:hover i {
+    transform: scale(1.2) rotate(5deg);
+    color: var(--secondary-color);
+}
+
+.style-options .style-btn.clicked {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    animation: buttonPulse 0.5s ease;
+    box-shadow: 0 5px 20px rgba(var(--primary-rgb), 0.3);
+}
+
+.style-options .style-btn.clicked i {
+    color: white;
+    animation: iconPop 0.5s ease;
+}
+
+.style-options .style-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 80%);
+    transform: translate(-50%, -50%);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.style-options .style-btn:hover::before {
+    width: 150px;
+    height: 150px;
+    opacity: 0.4;
+}
+
+@keyframes buttonPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); box-shadow: 0 8px 30px rgba(var(--primary-rgb), 0.4); }
+    100% { transform: scale(1); }
+}
+
+@keyframes iconPop {
+    0% { transform: scale(1) rotate(0); }
+    50% { transform: scale(1.4) rotate(180deg); }
+    100% { transform: scale(1) rotate(360deg); }
+}
+
+/* Add glowing effect for clicked state */
+.style-options .style-btn.clicked::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    z-index: -1;
+    border-radius: 14px;
+    filter: blur(8px);
+    opacity: 0.6;
+    animation: glowPulse 2s infinite;
+}
+
+@keyframes glowPulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.6; }
+}
+
+.generate-bg-btn {
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 25px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.generate-bg-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+}
+
+.generate-bg-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.generate-bg-btn i {
+    font-size: 1.2rem;
+}
+
+.message-loading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border-radius: 20px;
+    color: white;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    margin: 0 auto;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    align-self: flex-start;
+    margin-left: 40px;
+    animation: fadeIn 0.3s ease;
+}
+
+.loading-dots {
+    display: flex;
+    gap: 4px;
+}
+
+.loading-dots span {
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    animation: loadingDots 1.4s infinite;
+}
+
+.loading-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes loadingDots {
+    0%, 100% { transform: scale(0.3); opacity: 0.3; }
+    50% { transform: scale(1); opacity: 1; }
+}
+
+// Helper function to scroll chat to bottom
+function scrollImmersiveChatToBottom() {
+    const messagesContainer = document.getElementById('floating-chat-messages');
+    if (messagesContainer) {
+        // Use smooth scrolling for better user experience
+        messagesContainer.scrollTo({
+            top: messagesContainer.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
+}
+
+// Update handleFloatingChatSend function
+function handleFloatingChatSend() {
+    var textarea = document.getElementById('floating-chat-textarea');
+    var messagesContainer = document.getElementById('floating-chat-messages');
+    var sendButton = document.querySelector('.floating-chat-input .btn-send');
+    var message = textarea.value.trim();
+    
+    if (!message) return;
+    
+    // Only disable send button, keep textarea enabled
+    if (sendButton) {
+        sendButton.disabled = true;
+        sendButton.style.opacity = '0.5';
+        sendButton.style.cursor = 'not-allowed';
+    }
+    
+    // Clear textarea immediately
+    textarea.value = '';
+    
+    // Create user message container
+    var userMessageDiv = document.createElement('div');
+    userMessageDiv.className = 'message message-user';
+    
+    // Create message content div
+    var messageContent = document.createElement('div');
+    messageContent.className = 'message-content';
+    
+    // Create message text div
+    var messageText = document.createElement('div');
+    messageText.className = 'message-text';
+    messageText.textContent = message;
+    
+    // Assemble the message
+    messageContent.appendChild(messageText);
+    userMessageDiv.appendChild(messageContent);
+    messagesContainer.appendChild(userMessageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    
+    // If no character is set, use the first message as character name
+    if (!currentCharacter) {
+        currentCharacter = message;
+        
+        // Create AI welcome message
+        const aiMessageDiv = document.createElement('div');
+        aiMessageDiv.className = 'message message-ai';
+        
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+        
+        const messageText = document.createElement('div');
+        messageText.className = 'message-text';
+        messageText.textContent = `好的！根据你的设定 “ ${currentCharacter} ” 我们现在可以开始畅聊啦！请你来开启我们的聊天吧！`;
+        
+        messageContent.appendChild(messageText);
+        aiMessageDiv.appendChild(messageContent);
+        messagesContainer.appendChild(aiMessageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Update textarea placeholder
+        textarea.placeholder = '请对角色说出你的心里话吧～';
+        
+        // Re-enable send button
+        if (sendButton) {
+            sendButton.disabled = false;
+            sendButton.style.opacity = '1';
+            sendButton.style.cursor = 'pointer';
+        }
+        return;
+    }
+    
+    // Add loading indicator
+    var loadingDiv = document.createElement('div');
+    loadingDiv.className = 'message-loading';
+    loadingDiv.innerHTML = '<i class="fas fa-comments"></i><div class="loading-dots"><span></span><span></span><span></span></div>';
+    messagesContainer.appendChild(loadingDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    // Send request to character chat endpoint
+    const storyContent = document.getElementById('story-editor')?.value || '';
+    fetch('/character-chat', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            story_content: storyContent,
+            character_name: currentCharacter,
+            message: message,
+            model_type: currentModel  // Add model type parameter
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Remove loading indicator
+        if (loadingDiv && messagesContainer.contains(loadingDiv)) {
+            messagesContainer.removeChild(loadingDiv);
+        }
+
+        // Create AI message
+        const aiMessageDiv = document.createElement('div');
+        aiMessageDiv.className = 'message message-ai';
+        
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+        
+        const messageText = document.createElement('div');
+        messageText.className = 'message-text';
+        
+        if (data.response) {
+            messageText.innerHTML = window.marked ? marked.parse(data.response) : data.response;
+        } else {
+            messageText.textContent = data.error || '对话生成失败，请重试';
+        }
+        
+        messageContent.appendChild(messageText);
+        aiMessageDiv.appendChild(messageContent);
+        messagesContainer.appendChild(aiMessageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Re-enable send button only
+        if (sendButton) {
+            sendButton.disabled = false;
+            sendButton.style.opacity = '1';
+            sendButton.style.cursor = 'pointer';
+        }
+    })
+    .catch(error => {
+        console.error('Chat error:', error);
+        
+        // Remove loading indicator
+        if (loadingDiv && messagesContainer.contains(loadingDiv)) {
+            messagesContainer.removeChild(loadingDiv);
+        }
+        
+        // Show error message
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'message message-ai';
+        
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+        
+        const messageText = document.createElement('div');
+        messageText.className = 'message-text';
+        messageText.textContent = error.message || '对话过程中发生错误，请稍后重试';
+        
+        messageContent.appendChild(messageText);
+        errorDiv.appendChild(messageContent);
+        messagesContainer.appendChild(errorDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Re-enable send button only
+        if (sendButton) {
+            sendButton.disabled = false;
+            sendButton.style.opacity = '1';
+            sendButton.style.cursor = 'pointer';
+        }
+    });
+}
+
+// Helper function to handle chat response
+async function handleChatResponse(message, messagesContainer, loadingDiv) {
+    try {
+        // Make sure we have the required data
+        if (!currentCharacter) {
+            throw new Error('请先设置一个角色再开始聊天');
+        }
+
+        // Get story content from the editor
+        const storyContent = document.getElementById('story-editor')?.value || '';
+        
+        // Use the same endpoint and data structure as normal chat mode
+        const response = await fetch('/character-chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                story_content: storyContent,
+                character_name: currentCharacter,
+                message: message,
+                model_type: currentModel  // Add model type parameter
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('服务器响应错误');
+        }
+        
+        const data = await response.json();
+        
+        // Remove loading indicator if it exists
+        if (loadingDiv && messagesContainer.contains(loadingDiv)) {
+            messagesContainer.removeChild(loadingDiv);
+        }
+
+        // Create AI message with the same structure as normal chat mode
+        const aiMessageDiv = document.createElement('div');
+        aiMessageDiv.className = 'message message-ai';
+        
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+        
+        const messageText = document.createElement('div');
+        messageText.className = 'message-text';
+        
+        if (data.response) {
+            // Use the same markdown parsing as normal chat mode
+            messageText.innerHTML = window.marked ? marked.parse(data.response) : data.response;
+        } else {
+            messageText.textContent = data.error || '对话生成失败，请重试';
+        }
+        
+        // Assemble the message
+        messageContent.appendChild(messageText);
+        aiMessageDiv.appendChild(messageContent);
+        messagesContainer.appendChild(aiMessageDiv);
+        
+        // Scroll to bottom
+        scrollImmersiveChatToBottom();
+        
+    } catch (error) {
+        console.error('Chat error:', error);
+        
+        // Remove loading indicator if it exists
+        if (loadingDiv && messagesContainer.contains(loadingDiv)) {
+            messagesContainer.removeChild(loadingDiv);
+        }
+        
+        // Create error message with the same structure
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'message message-ai';
+        
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+        
+        const messageText = document.createElement('div');
+        messageText.className = 'message-text';
+        messageText.textContent = error.message || '对话过程中发生错误，请稍后重试';
+        
+        messageContent.appendChild(messageText);
+        errorDiv.appendChild(messageContent);
+        messagesContainer.appendChild(errorDiv);
+        
+        scrollImmersiveChatToBottom();
+    }
+}
+
+// Update openImmersiveChat function to scroll to bottom when opening
+function openImmersiveChat() {
+    if (!isUserLoggedIn()) {
+        window.location.href = '/login';
+        return;
+    }
+    
+    // Ensure we have a character set
+    if (!currentCharacter) {
+        alert('请先设置一个角色再进入沉浸式聊天模式');
+        return;
+    }
+    
+    // Get and validate story content
+    const storyEditor = document.getElementById('story-editor');
+    const storyContent = storyEditor ? storyEditor.value.trim() : '';
+    
+    if (!storyContent) {
+        alert('请先填写原剧情再进入沉浸式聊天模式');
+        return;
+    }
+    
+    const modal = document.getElementById('immersive-chat-modal');
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    
+    // Create or update hidden input for story content
+    let hiddenStoryContent = document.getElementById('hidden-story-content');
+    if (!hiddenStoryContent) {
+        hiddenStoryContent = document.createElement('input');
+        hiddenStoryContent.type = 'hidden';
+        hiddenStoryContent.id = 'hidden-story-content';
+        modal.appendChild(hiddenStoryContent);
+    }
+    hiddenStoryContent.value = storyContent;
+    
+    // Update remaining generations when opening modal
+    updateRemainingGenerations();
+    // Initialize style buttons
+    initializeStyleButtons();
+    // Scroll to bottom when opening chat
+    scrollImmersiveChatToBottom();
+    
+    // Sync chat history from normal chat to immersive chat
+    const normalChatMessages = document.getElementById('chat-messages').children;
+    const floatingChatMessages = document.getElementById('floating-chat-messages');
+    floatingChatMessages.innerHTML = ''; // Clear existing messages
+    
+    // Copy messages from normal chat to immersive chat
+    for (let i = 0; i < normalChatMessages.length; i++) {
+        const message = normalChatMessages[i];
+        const messageText = message.querySelector('.message-text')?.textContent.trim();
+        if (messageText) {
+            const isUser = message.classList.contains('message-user');
+            const newMessage = document.createElement('div');
+            newMessage.className = `message ${isUser ? 'message-user' : 'message-ai'}`;
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            
+            const messageTextDiv = document.createElement('div');
+            messageTextDiv.className = 'message-text';
+            messageTextDiv.textContent = messageText;
+            
+            messageContent.appendChild(messageTextDiv);
+            newMessage.appendChild(messageContent);
+            floatingChatMessages.appendChild(newMessage);
+        }
+    }
+    
+    // Scroll to bottom of floating chat
+    floatingChatMessages.scrollTop = floatingChatMessages.scrollHeight;
+}
+
+// Function to check if user is logged in
+function isUserLoggedIn() {
+    // This value should be set by your backend when rendering the template
+    return Boolean(window.userLoggedIn); // userLoggedIn will be set in your Jinja template
+}
+
+// Update openImmersiveChat function to handle login check
+function openImmersiveChat() {
+    if (!isUserLoggedIn()) {
+        // Redirect to login page if user is not logged in
+        window.location.href = '/login';
+        return;
+    }
+    
+    // Proceed with opening immersive chat if user is logged in
+    const modal = document.getElementById('immersive-chat-modal');
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    // Update remaining generations when opening modal
+    updateRemainingGenerations();
+    // Initialize style buttons
+    initializeStyleButtons();
+    // Scroll to bottom when opening chat
+    scrollImmersiveChatToBottom();
+}
+
+// Add this in your Jinja template where appropriate
+{% if current_user.is_authenticated %}
+    <script>window.userLoggedIn = true;</script>
+{% else %}
+    <script>window.userLoggedIn = false;</script>
+{% endif %}
+
+<script>
+function handleImmersiveChat() {
+    if (!{{ current_user.is_authenticated|tojson }}) {
+        window.location.href = '/login';
+        return;
+    }
+    openImmersiveChat();
+}
+</script>
+
+<!-- Add immersive chat button that only shows in chat mode -->
+<div id="immersive-chat-button" class="text-center mt-3" style="display: none;">
+    {% if current_user.is_authenticated %}
+        <button class="btn btn-immersive mx-auto d-block" onclick="handleImmersiveChat()">
+            <i class="fas fa-theater-masks me-2"></i>沉浸式畅聊
+            <div class="btn-immersive-glow"></div>
+        </button>
+        <div id="share-chat-button" class="position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%);">
+            <button class="btn btn-outline-primary btn-sm" onclick="shareCharacterChat()">
+                <i class="fas fa-share-alt me-1"></i>创建智能体
+            </button>
+        </div>
+    {% else %}
+        <button class="btn btn-immersive" onclick="window.location.href='/login'">
+            <i class="fas fa-theater-masks me-2"></i>沉浸式畅聊
+            <div class="btn-immersive-glow"></div>
+        </button>
+    {% endif %}
+</div>
+
+<script>
+function checkLoginAndOpenChat() {
+    const button = document.querySelector('#immersive-chat-button .btn-immersive');
+    const isAuthenticated = JSON.parse(button.dataset.auth);
+    
+    if (!isAuthenticated) {
+        window.location.href = '/login';
+        return;
+    }
+    openImmersiveChat();
+}
+</script>
+
+<style>
+/* Add styles for background image upload */
+.background-image-upload {
+    border: 2px dashed rgba(0,0,0,0.1);
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(255,255,255,0.5);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.background-image-upload:hover {
+    border-color: var(--primary-color);
+    background: rgba(var(--primary-rgb), 0.05);
+}
+
+.background-image-upload .upload-preview {
+    width: 100%;
+    min-height: 120px;
+    max-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.background-image-upload .upload-preview img {
+    max-width: 100%;
+    max-height: 150px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.background-image-upload .upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    width: 100%;
+}
+
+.background-image-upload .upload-icon {
+    color: var(--primary-color);
+    background: rgba(var(--primary-rgb), 0.1);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.25rem;
+}
+
+.background-image-upload .upload-icon i {
+    font-size: 1.4rem;
+}
+
+.background-image-upload .upload-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    margin: 0.25rem 0;
+}
+
+.background-image-upload .upload-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.background-image-upload .format-info,
+.background-image-upload .size-info {
+    background: rgba(255,255,255,0.8);
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+/* Desktop and general styles */
+.immersive-chat-modal {
+  background-size: contain; /* Ensures the entire image is shown */
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: rgba(0, 0, 0, 0.85); /* Dark background behind the image */
+  min-height: 100vh; /* Let it grow at least the full viewport height */
+}
+
+/* Mobile-specific overrides */
+@media screen and (max-width: 768px) {
+  .immersive-chat-modal {
+    /* Removing height: 100% prevents over-scaling on some devices */
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    min-height: 100vh; /* Ensures the modal can show the full image */
+    width: 100%;       /* Fit mobile width */
+  }
+}
+
+.background-image-upload .upload-preview img {
+  max-width: 100%;
+  max-height: 150px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+@media screen and (max-width: 768px) {
+  .background-image-upload .upload-preview {
+    min-height: 200px;
+    max-height: none;
+  }
+  
+  .background-image-upload .upload-preview img {
+    max-height: 200px;
+    width: 100%;
+    object-position: center;
+  }
+}
+
+.btn-chat-agent {
+    background: linear-gradient(45deg, #FFB6C1, #FFD700);
+    color: #333;
+    border: none;
+    border-radius: 20px;  /* Reduced from 25px */
+    padding: 8px 20px;    /* Reduced from 10px 25px */
+    font-size: 0.95rem;   /* Reduced from 1.1rem */
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 182, 193, 0.4);
+    margin-left: 15px;
+    transform-origin: center;
+    animation: buttonPulse 2s infinite;
+}
+
+.btn-chat-agent:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(255, 182, 193, 0.6);
+    color: #333;
+    background: linear-gradient(45deg, #FFD700, #FFB6C1);
+}
+
+.btn-chat-agent:active {
+    transform: translateY(1px);
+}
+
+.btn-chat-agent .fas {
+    animation: robotWiggle 3s infinite;
+    color: #333;
+}
+
+.btn-chat-agent .btn-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 70%);
+    opacity: 0;
+    animation: glowEffect 3s infinite;
+    pointer-events: none;
+}
+
+@keyframes buttonPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+}
+
+@keyframes robotWiggle {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+    100% { transform: rotate(0deg); }
+}
+
+@keyframes glowEffect {
+    0% { transform: rotate(0deg); opacity: 0; }
+    25% { opacity: 0.5; }
+    50% { opacity: 0; }
+    100% { transform: rotate(360deg); opacity: 0; }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize background image upload functionality
+    const backgroundImageInput = document.getElementById('background-image');
+    const backgroundPreview = document.getElementById('background-preview');
+    const previewImage = backgroundPreview.querySelector('img');
+    const placeholder = backgroundPreview.querySelector('.upload-placeholder');
+
+    // Add click handler for background preview
+    backgroundPreview.addEventListener('click', () => backgroundImageInput.click());
+
+    // Add change handler for background image input
+    backgroundImageInput.addEventListener('change', function(e) {
+        if (this.files && this.files[0]) {
+            const file = this.files[0];
+            
+            // Check file size (8MB)
+            const maxSize = 8 * 1024 * 1024; // 8MB in bytes
+            if (file.size > maxSize) {
+                alert('图片大小不能超过 8MB');
+                this.value = ''; // Clear the input
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+                placeholder.style.display = 'none';
+                
+                // Set the background image immediately
+                const floatingChat = document.getElementById('floating-chat');
+                floatingChat.style.backgroundImage = `url(${e.target.result})`;
+                floatingChat.style.backgroundSize = 'cover';
+                floatingChat.style.backgroundPosition = 'center';
+                floatingChat.style.backgroundAttachment = 'fixed';
+                floatingChat.style.display = 'block';
+                
+                // Close the modal
+                closeImmersiveChat();
+
+                // Sync chat history from normal chat to immersive chat
+                const normalChatMessages = document.getElementById('chat-messages').children;
+                const floatingChatMessages = document.getElementById('floating-chat-messages');
+                floatingChatMessages.innerHTML = ''; // Clear existing messages
+                
+                // Copy messages from normal chat to immersive chat
+                for (let i = 0; i < normalChatMessages.length; i++) {
+                    const message = normalChatMessages[i];
+                    const messageText = message.querySelector('.message-text')?.textContent.trim();
+                    if (messageText) {
+                        const isUser = message.classList.contains('message-user');
+                        const newMessage = document.createElement('div');
+                        newMessage.className = `message ${isUser ? 'message-user' : 'message-ai'}`;
+                        
+                        const messageContent = document.createElement('div');
+                        messageContent.className = 'message-content';
+                        
+                        const messageTextDiv = document.createElement('div');
+                        messageTextDiv.className = 'message-text';
+                        messageTextDiv.textContent = messageText;
+                        
+                        messageContent.appendChild(messageTextDiv);
+                        newMessage.appendChild(messageContent);
+                        floatingChatMessages.appendChild(newMessage);
+                    }
+                }
+                
+                // Scroll to bottom of floating chat
+                floatingChatMessages.scrollTop = floatingChatMessages.scrollHeight;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Add toggle handler for AI background generation
+    document.getElementById('useAiBackground').addEventListener('change', function(e) {
+        const aiPromptSection = document.getElementById('aiBackgroundPrompt');
+        aiPromptSection.style.display = this.checked ? 'block' : 'none';
+    });
+});
+</script>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="chat-container">
+                <div class="chat-header d-flex justify-content-between align-items-center mb-3">
+                    <div class="poetry-text">
+                        <h5 class="mb-0 fancy-poetry-laptop mode-title">寻找属于你的梦</h5>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-outline-primary" onclick="switchMode('chat')" id="chatModeBtn">
+                                <i class="fas fa-comments me-1"></i>角色畅聊
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="switchMode('ending')" id="endingModeBtn">
+                                <i class="fas fa-magic me-1"></i>结局改写
+                            </button>
+                        </div>
+                        <div class="btn-group ms-2" role="group">
+                            <button class="btn btn-outline-primary btn-sm model-btn active" data-model="doubao">极速模型</button>
+                            <button class="btn btn-outline-primary btn-sm model-btn" data-model="deepseek">DeepSeek</button>
+                        </div>
+                        <button class="btn btn-gradient btn-clear" onclick="clearChat()" title="清空历史">
+                            <i class="fas fa-trash-alt me-1"></i>清空历史
+                        </button>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message message-ai">
+                        <p class="mb-0" style="font-size: 1.05em;" id="initial-greeting">你好呀！我是<span class="fancy-poetry-hello" style="font-size: 1.2em;">书梦者</span>。请告诉我你想改写哪部小说或电影的结局吧！只需小说名或电影名即可。如果有同名作品，可添加作者名进行搜索哦～</p>
+                    </div>
+                </div>
+
+                <div class="chat-input">
+                    <div class="search-area-wrapper">
+                        <div class="input-group mb-3" id="search-area">
+                            <input type="text" class="form-control" id="story-title" 
+                                   placeholder="请输入小说/电影/动漫名称（如：云边有个小卖部），仅需输入作品名哦～" autocomplete="off">
+                            <button class="btn btn-primary" onclick="searchStory()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <button class="toggle-search-btn" onclick="toggleSearchArea()" title="展开/收起搜索框">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                    </div>
+
+                    <div id="mode-specific-inputs" style="display: none;">
+                        <div class="input-group">
+                            <textarea class="form-control" id="chat-input" rows="3" 
+                                    placeholder="请发送你希望书梦者扮演的角色和剧情设定，还可以说出你想要扮演的角色哦～&#10;例如：请你扮演程霜，我是刘十三，我们再一次在云边镇相逢..."></textarea>
+                            <button class="btn btn-primary" id="sendButton" onclick="handleSend()">
+                                <i class="fas fa-paper-plane me-2"></i>发送
+                            </button>
+                        </div>
+                        <!-- Add immersive chat button that only shows in chat mode -->
+                        <div id="immersive-chat-button" class="text-center mt-3" style="display: none;">
+                            <button class="btn btn-immersive" onclick="handleImmersiveChat()">
+                                <i class="fas fa-theater-masks me-2"></i>沉浸式畅聊
+                                <div class="btn-immersive-glow"></div>
+                            </button>
+                        </div>
+                        <!-- Add immersive chat modal -->
+                        <div id="immersive-chat-modal" class="immersive-modal">
+                            <div class="immersive-modal-content">
+                                <div class="immersive-header">
+                                    <h5><i class="fas fa-paint-brush me-2"></i>生成沉浸式背景</h5>
+                                    <button class="close-modal" onclick="closeImmersiveChat()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <div class="immersive-body">
+                                    <div class="bg-image-section">
+                                        <div class="form-group">
+                                            <!-- Add background image upload section -->
+                                            <div class="background-image-upload mb-4">
+                                                <div class="upload-section">
+                                                    <input type="file" class="form-control" id="background-image" name="background_image" 
+                                                           accept="image/*" style="display: none;">
+                                                    <div class="upload-preview" id="background-preview">
+                                                        <div class="upload-placeholder">
+                                                            <div class="upload-icon">
+                                                                <i class="fas fa-image fa-2x"></i>
+                                                            </div>
+                                                            <div class="upload-title">1. 点击上传背景图片</div>
+                                                            <div class="upload-info">
+                                                                <div class="format-info">支持 JPG、PNG、GIF 格式</div>
+                                                            </div>
+                                                        </div>
+                                                        <img src="" alt="Preview" style="display: none;">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Add AI generation section -->
+                                            <div class="ai-image-section">
+                                                <div class="form-check creative-checkbox">
+                                                    <label class="form-check-label" for="useAiBackground">
+                                                        <input class="form-check-input" type="checkbox" id="useAiBackground">
+                                                        <span class="checkbox-text">
+                                                            <i class="fas fa-wand-magic-sparkles me-2"></i>2. 或点击此处使用AI生成背景&nbsp;<span id="remainingGenerations" class="ms-2 text-muted" style="font-size: 0.9rem;"></span>
+
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                
+                                                <div id="aiBackgroundPrompt" class="mt-2" style="display: none;">
+                                                    <div class="style-options mb-2">
+                                                        <span class="text-muted me-2">推荐风格：</span>
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary style-btn me-2" data-style="国风漫画">
+                                                            <i class="fas fa-paint-brush me-1"></i>国风漫画
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary style-btn me-2" data-style="水墨画">
+                                                            <i class="fas fa-palette me-1"></i>水墨画
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary style-btn me-2" data-style="动漫">
+                                                            <i class="fas fa-dragon me-1"></i>动漫
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary style-btn me-2" data-style="风景">
+                                                            <i class="fas fa-mountain me-1"></i>风景
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary style-btn me-2" data-style="人像摄影">
+                                                            <i class="fas fa-camera me-1"></i>人像摄影
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary style-btn me-2" data-style="宫崎骏">
+                                                            <i class="fas fa-wind me-1"></i>宫崎骏
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary style-btn me-2" data-style="3D">
+                                                            <i class="fas fa-cube me-1"></i>3D
+                                                        </button>
+                                                    </div>
+                                                    <textarea class="form-control" id="bgImagePrompt" rows="3" 
+                                                            placeholder="请描述你想要绘制的场景，可自定义风格和内容，例如：图片风格为国风漫画，新中式，国风，复古优雅，日光，光影，一位美丽的女生对着镜头微笑"></textarea>
+                                                    <div class="text-center mt-3">
+                                                        <div class="d-inline-flex align-items-center justify-content-center">
+                                                            <button type="button" class="btn btn-primary generate-bg-btn" id="generateBgBtn" onclick="generateBackground()">
+                                                                <i class="fas fa-magic me-2"></i>生成背景
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Add share chat button that only shows in chat mode -->
+                        <div id="share-chat-button" class="text-end mt-2 mb-3" style="display: none;">
+                            <button class="btn btn-chat-agent btn-sm" onclick="shareCharacterChat()">
+                                <i class="fas fa-share-alt me-1"></i>创建智能体
+                                <div class="btn-glow"></div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="story-content" style="display: none; margin-top: 20px;">
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-bold" style="font-size: 1.2em;">原剧情编辑区<span class="text-muted" style="font-size: 0.8em;">（对话时会参考原剧情，请确保内容准确哦～）</span></label>
+                            <textarea class="form-control" id="story-editor" rows="10"
+                                    placeholder="原剧情的内容将显示在这里，你可以根据需要进行编辑..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5 pt-5">
+        <div class="col-md-4 mb-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h4>角色畅聊</h4>
+                <p>快来和小说或电影中的角色谈天说地吧<br><span style="background-color: #FFE66D">想聊什么就聊什么</span></p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-magic"></i>
+                </div>
+                <h4>定制结局</h4>
+                <p>每个结局都由你定，完美契合你的期待与想象<br><span style="background-color: #FFE66D">想怎么改就怎么改</span></p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <h4>绘制好梦</h4>
+                <p>绘制你最爱的主角与场景，身临其境的体验<br><span style="background-color: #FFE66D">想画什么就画什么</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add floating chat window -->
+<div id="floating-chat" class="floating-chat">
+    <div class="floating-chat-header">
+        <div class="floating-chat-actions">
+            <button onclick="hideImmersiveChat()" title="隐藏">
+                <i class="fas fa-minus"></i>
+                <span class="hide-text">隐藏</span>
+            </button>
+            <button onclick="exitImmersiveMode()" title="关闭">
+                <i class="fas fa-times"></i>
+                <span class="exit-text">关闭</span>
+            </button>
+        </div>
+    </div>
+    <div class="floating-chat-body">
+        <div id="floating-chat-messages" class="floating-chat-messages">
+            <!-- Messages will be added here -->
+        </div>
+    </div>
+    <div class="floating-chat-input">
+        <textarea id="floating-chat-textarea" placeholder="说出你的心里话吧...（在畅聊前请先发送角色设定哦）" rows="1"></textarea>
+        <button class="btn-send" onclick="handleFloatingChatSend()">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+let currentStoryId = null;
+let originalContent = null;
+let isRequestInProgress = false;
+let currentMode = null;
+let currentCharacter = null;
+let currentModel = 'doubao';  // Default model
+
+// Add this at the beginning of the script to ensure DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Set default mode to 'chat' and activate the chat button
+    switchMode('chat');
+    document.getElementById('chatModeBtn').classList.add('active');
+    
+    // Initialize event listeners for mode buttons
+    document.getElementById('chatModeBtn').addEventListener('click', function() {
+        switchMode('chat');
+    });
+    
+    document.getElementById('endingModeBtn').addEventListener('click', function() {
+        switchMode('ending');
+    });
+
+    // Initialize event listener for chat input
+    const chatInput = document.getElementById('chat-input');
+    if (chatInput) {
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+            }
+        });
+    }
+
+    // Initialize event listener for story title
+    const storyTitle = document.getElementById('story-title');
+    if (storyTitle) {
+        storyTitle.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchStory();
+            }
+        });
+    }
+
+    // Initialize event listener for floating chat textarea
+    const floatingTextarea = document.getElementById('floating-chat-textarea');
+    if (floatingTextarea) {
+        floatingTextarea.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleFloatingChatSend();
+            }
+        });
+    }
+
+    // Remove old style button handlers if they exist
+    const styleButtons = document.querySelectorAll('.bg-image-section .style-btn');
+    styleButtons.forEach(button => {
+        button.replaceWith(button.cloneNode(true));
+    });
+
+    // Add new style button click handlers
+    document.querySelectorAll('.bg-image-section .style-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove clicked class from all buttons first
+            document.querySelectorAll('.bg-image-section .style-btn').forEach(btn => {
+                btn.classList.remove('clicked');
+            });
+            
+            const style = this.dataset.style;
+            const promptArea = document.getElementById('bgImagePrompt');
+            let styleText = '';
+            
+            // Mark only this button as clicked
+            this.classList.add('clicked');
+            
+            // Set style text based on selection
+            if (style === '国风漫画') {
+                styleText = '图片风格为国风漫画，新中式，国风，复古优雅，日光，光影，{请继续你的描述}';
+            } else if (style === '水墨画') {
+                styleText = '图片风格为点彩水墨画，中式审美，留白，极简主义，超高清，柔和的笔触，{请继续你的描述}';
+            } else if (style === '动漫') {
+                styleText = '图片风格为动漫，剪影，伦勃朗灯光，高对比，高细节，高分辨率，特写，{请继续你的描述}';
+            } else if (style === '风景') {
+                styleText = '图片风格为风景，剪影摄影，大师作品，{请继续你的描述}';
+            } else if (style === '人像摄影') {
+                styleText = '图片风格为人像摄影，丁达尔效应，人文摄影，徕卡M11，特写摄影，{请继续你的描述}';
+            } else if (style === '宫崎骏') {
+                styleText = '图片风格为动漫，宫崎骏的动漫风格，{请继续你的描述}';
+            } else if (style === '3D') {
+                styleText = '图片风格为3D渲染，卡通人物设计，Blender渲染，柔和的灯光，{请继续你的描述}';
+            }
+            
+            // Set the textarea value
+            promptArea.value = styleText;
+        });
+    });
+
+    // Add model selection handler
+    document.querySelectorAll('.model-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentModel = this.dataset.model;
+        });
+    });
+
+    // Check for stored agent settings and expand sections
+    const agentSettings = sessionStorage.getItem('agentSettings');
+    const storySettings = sessionStorage.getItem('storySettings');
+    const shouldExpand = sessionStorage.getItem('shouldExpandSections');
+    const shouldInitChat = sessionStorage.getItem('shouldInitChatMode');
+    const hideSearchBar = sessionStorage.getItem('hideSearchBar');
+    
+    if (agentSettings && storySettings && shouldExpand === 'true') {
+        // Show story content section
+        const storyContent = document.getElementById('story-content');
+        if (storyContent) {
+            storyContent.style.display = 'block';
+        }
+
+        // Show mode specific inputs
+        const modeInputs = document.getElementById('mode-specific-inputs');
+        if (modeInputs) {
+            modeInputs.style.display = 'block';
+            // Scroll to the chat area with smooth animation
+            modeInputs.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Hide search bar if needed
+        if (hideSearchBar === 'true') {
+            const searchWrapper = document.querySelector('.search-area-wrapper');
+            if (searchWrapper) {
+                searchWrapper.classList.add('collapsed');
+            }
+        }
+
+        // Switch to chat mode if needed
+        if (shouldInitChat === 'true') {
+            switchMode('chat');
+            const chatModeBtn = document.getElementById('chatModeBtn');
+            if (chatModeBtn) {
+                chatModeBtn.click();
+            }
+        }
+
+        // Populate the inputs
+        const chatInput = document.getElementById('chat-input');
+        const storyEditor = document.getElementById('story-editor');
+        
+        if (chatInput) {
+            chatInput.value = agentSettings;
+            // Trigger a send to initialize the chat
+            setTimeout(() => {
+                handleSend();
+                // Scroll to chat messages after a short delay to ensure content is loaded
+                setTimeout(() => {
+                    const chatMessages = document.getElementById('chat-messages');
+                    if (chatMessages) {
+                        chatMessages.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 500);
+            }, 100);
+        }
+        
+        if (storyEditor) {
+            storyEditor.value = storySettings;
+        }
+        
+        // Clear the stored settings
+        sessionStorage.removeItem('agentSettings');
+        sessionStorage.removeItem('storySettings');
+        sessionStorage.removeItem('shouldExpandSections');
+        sessionStorage.removeItem('shouldInitChatMode');
+        sessionStorage.removeItem('hideSearchBar');
+    }
+});
+
+function switchMode(mode) {
+    currentMode = mode;
+    const chatBtn = document.getElementById('chatModeBtn');
+    const endingBtn = document.getElementById('endingModeBtn');
+    const sendButton = document.getElementById('sendButton');
+    const shareChatButton = document.getElementById('share-chat-button');
+    const immersiveChatButton = document.getElementById('immersive-chat-button');
+    const modeTitle = document.querySelector('.mode-title');
+    const chatInput = document.getElementById('chat-input');
+    const storyTitle = document.getElementById('story-title');
+    const initialGreeting = document.querySelector('#chat-messages .message-ai p');
+
+    chatBtn.classList.remove('active');
+    endingBtn.classList.remove('active');
+    
+    if (mode === 'chat') {
+        chatBtn.classList.add('active');
+        sendButton.innerHTML = '<i class="fas fa-paper-plane me-2"></i>畅聊';
+        shareChatButton.style.display = 'block';
+        immersiveChatButton.style.display = 'block';
+        modeTitle.textContent = '对话属于你的梦';
+        storyTitle.placeholder = '请输入任何你喜欢的角色名称，加上作品名会让搜索更准确哦，如原神中的派蒙';
+        initialGreeting.innerHTML = '你好呀！我是<span class="fancy-poetry-hello" style="font-size: 1.2em;">书梦者</span>。请告诉我你想和哪个角色聊天吧！请输入角色名称，加上作品名会让搜索更准确哦，如原神中的派蒙～';
+        
+        if (chatInput && !currentCharacter) {
+            chatInput.placeholder = '请发送你希望书梦者扮演的角色和剧情设定，还可以说出你想要扮演的角色哦～\n例如：请你扮演程霜，我是刘十三，我们再一次在云边镇相逢...';
+        } else if (chatInput && currentCharacter) {
+            chatInput.placeholder = '请对角色说出你的心里话吧～';
+        }
+    } else {
+        endingBtn.classList.add('active');
+        sendButton.innerHTML = '<i class="fas fa-paper-plane me-2"></i>书梦';
+        shareChatButton.style.display = 'none';
+        immersiveChatButton.style.display = 'none';
+        modeTitle.textContent = '创造属于你的梦';
+        storyTitle.placeholder = '请输入小说/电影/动漫名称（如：云边有个小卖部），仅需输入作品名哦～';
+        initialGreeting.innerHTML = '你好呀！我是<span class="fancy-poetry-hello" style="font-size: 1.2em;">书梦者</span>。请告诉我你想改写哪部小说或电影的结局吧！只需小说名或电影名即可。如果有同名作品，可添加作者名进行搜索哦～';
+        chatInput.placeholder = '请描述你希望的结局或剧情，越详细越好哦，让书梦者来为你逆转乾坤吧～\n例如：程霜的病终于痊愈，回到云边镇，和刘十三重逢。他们一起...共2000字';
+    }
+}
+
+async function handleSend() {
+    if (!currentMode) {
+        addMessage('请选择“角色畅聊”或“结局改写”模式（默认为“角色畅聊”），开启你的书梦之旅～', 'message-ai');
+        return;
+    }
+    
+    if (isRequestInProgress) {
+        return;
+    }
+
+    const chatInput = document.getElementById('chat-input');
+    if (!chatInput) {
+        console.error('Chat input element not found');
+        return;
+    }
+
+    const message = chatInput.value.trim();
+    const storyContent = document.getElementById('story-editor')?.value || '';
+    
+    if (!message) {
+        return;
+    }
+
+    // Clear input immediately after getting the message
+    chatInput.value = '';
+
+    try {
+        isRequestInProgress = true;
+        disableInteractiveElements();
+
+        // Add user's message to chat
+        addMessage(message, 'message-user');
+        
+        if (currentMode === 'chat') {
+            // For character chat mode
+            if (!currentCharacter) {
+                currentCharacter = message;
+                addMessage(`好的！根据你的设定 “ ${currentCharacter} ” 我们现在可以开始畅聊啦！请你来开启我们的聊天吧！`, 'message-ai');
+                chatInput.placeholder = '请对角色说出你的心里话吧～';
+                isRequestInProgress = false;
+                enableInteractiveElements();
+                chatInput.value = '';
+                return;
+            }
+
+            addMessage('正在思考回复中...', 'loading-message');
+            
+            const response = await fetch('/character-chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    story_content: storyContent,
+                    character_name: currentCharacter,
+                    message: message,
+                    model_type: currentModel  // Add the model type
+                })
+            });
+
+            const data = await response.json();
+            removeLoadingMessage();
+            
+            if (data.error) {
+                addMessage(`对话出错：${data.error}`, 'message-ai');
+            } else {
+                addMessage(data.response, 'message-ai');
+            }
+        } else {
+            // For ending generation mode
+            addMessage('正在生成新的结局或剧情...', 'loading-message');
+            
+            const response = await fetch('/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    context: storyContent,
+                    prompt: message,
+                    story_id: currentStoryId
+                })
+            });
+
+            const data = await response.json();
+            removeLoadingMessage();
+
+            if (!response.ok && response.status === 429) {
+                addMessage(data.error, 'message-ai');
+            } else if (data.error) {
+                addMessage(`生成新结局时发生错误：${data.error}`, 'message-ai');
+            } else if (data.new_ending) {
+                addMessage(data.new_ending, 'message-ai');
+                addMessage('这个结局如何？你还可以继续调整故事内容或结局方向，或者尝试其他作品。', 'message-ai');
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        removeLoadingMessage();
+        addMessage('发送消息时发生错误，请稍后重试', 'message-ai');
+    } finally {
+        isRequestInProgress = false;
+        enableInteractiveElements();
+    }
+}
+
+// Configure marked to handle Chinese text properly
+marked.setOptions({
+    breaks: true,
+    gfm: true,
+    headerIds: false,
+    mangle: false,
+    smartLists: true
+});
+
+function addMessage(content, type = '') {
+    const chatMessages = document.getElementById('chat-messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${type}`;
+    
+    if (type === 'loading-message') {
+        messageDiv.innerHTML = `
+            <div class="loading-container">
+                <div class="loading-message">
+                    <div class="spinner-border spinner-border-sm" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    ${content}
+                </div>
+                <div class="loading-animation">
+                    <div class="cat"></div>
+                    <div class="dog"></div>
+                    <div class="cat2"></div>
+                    <div class="dog2"></div>
+                </div>
+            </div>
+        `;
+    } else {
+        // For AI messages, parse markdown and add copy button if content is long enough
+        if (type === 'message-ai') {
+            try {
+                const parsedContent = marked.parse(content);
+                const hasActions = content.length > 200;
+                messageDiv.innerHTML = `
+                    <div class="message-content ${hasActions ? 'has-actions' : ''}">
+                        <div class="message-text">${parsedContent}</div>
+                        ${hasActions ? `
+                        <div class="message-actions">
+                            <button class="copy-btn" onclick="handleCopy(this)" title="复制内容">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <button class="share-btn" onclick="shareMessage(this)" title="分享到书梦社">
+                                <i class="fas fa-share-alt"></i>
+                            </button>
+                        </div>
+                        ` : ''}
+                    </div>`;
+            } catch (error) {
+                console.error('Error parsing markdown:', error);
+                const hasActions = content.length > 200;
+                messageDiv.innerHTML = `
+                    <div class="message-content ${hasActions ? 'has-actions' : ''}">
+                        <div class="message-text">${content}</div>
+                        ${hasActions ? `
+                        <div class="message-actions">
+                            <button class="copy-btn" onclick="handleCopy(this)" title="复制内容">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <button class="share-btn" onclick="shareMessage(this)" title="分享到书梦社">
+                                <i class="fas fa-share-alt"></i>
+                            </button>
+                        </div>
+                        ` : ''}
+                    </div>`;
+            }
+        } else {
+            // For user messages, use plain text without copy button
+            messageDiv.innerHTML = `<div class="message-text">${content}</div>`;
+        }
+    }
+    
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    return messageDiv;
+}
+
+function removeLoadingMessage() {
+    const loadingMessage = document.querySelector('.loading-message');
+    if (loadingMessage) {
+        loadingMessage.remove();
+    }
+}
+
+// Add CSS for markdown formatting
+const style = document.createElement('style');
+style.textContent = `
+    .message-ai em {
+        font-style: italic;
+        color: #6c757d;
+    }
+    .message-ai strong {
+        font-weight: bold;
+        color: #0d6efd;
+    }
+    .message p {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+    .message-ai p {
+        line-height: 1.6;
+        margin-bottom: 1em;
+    }
+    .btn-gradient {
+        background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+        border: none;
+        color: white;
+        padding: 0.5rem 1rem;
+        transition: all 0.3s ease;
+    }
+    .btn-gradient:hover {
+        background: linear-gradient(45deg, #FF8E53, #FF6B6B);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(255, 107, 107, 0.2);
+        color: white;
+    }
+    .btn-gradient:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(255, 107, 107, 0.2);
+    }
+    .btn-gradient i {
+        font-size: 0.9rem;
+    }
+    .input-group .btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 38px;
+    }
+    .fancy-poetry {
+        background: linear-gradient(120deg, #4568dc, #b06ab3);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 1.5rem;
+        letter-spacing: 2px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1s ease-in-out;
+    }
+    .fancy-poetry-hello {
+        background: linear-gradient(120deg, #4568dc, #b06ab3);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 1.5rem;
+        letter-spacing: 2px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1s ease-in-out;
+    }
+    .fancy-poetry-laptop {
+        background: linear-gradient(120deg, #4568dc, #b06ab3);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 1.5rem;
+        letter-spacing: 2px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1s ease-in-out;
+    }
+    .fancy-poetry-light {
+        background: linear-gradient(120deg, #a0f258, #f1ef62);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 3rem;
+        letter-spacing: 2px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1s ease-in-out;
+    }
+    @media (min-width: 992px) {
+        .fancy-poetry-light {
+            font-family: "KaiTi", "Kaiti SC", "Kaiti TC", "STKaiti", "KaiTi_GB2312", "KaiTi_GB", "楷体", "华文楷体";
+        }
+    }
+
+    .btn-clear {
+        background: linear-gradient(45deg, #f5f5f5, #e0e0e0);
+        border: 1px solid #d4d4d4;
+        color: #666;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-clear:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(45deg, #e0e0e0, #f5f5f5);
+        color: #444;
+    }
+
+    .btn-clear:active {
+        transform: translateY(0);
+    }
+
+    .chat-header {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 1rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        backdrop-filter: blur(10px);
+        margin-bottom: 1.5rem !important;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .input-group {
+        align-items: stretch;
+    }
+
+    .input-group .form-control {
+        height: 42px;
+        border-radius: 8px 0 0 8px;
+        border: 1px solid #ced4da;
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+    }
+
+    .input-group .btn-primary {
+        height: 42px;
+        border-radius: 21px;  /* Make it more rounded - half of the height */
+        padding: 0 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: -1px;
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .input-group .btn-primary:hover {
+        background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(69, 104, 220, 0.2);
+    }
+
+    .input-group .btn-primary:active {
+        transform: translateY(0);
+    }
+
+    .input-group .btn-primary i {
+        font-size: 1rem;
+    }
+`;
+document.head.appendChild(style);
+
+async function searchStory() {
+    const searchInput = document.getElementById('story-title');
+    const query = searchInput.value.trim();
+    
+    if (!query) {
+        return;
+    }
+    
+    // Reset character name and placeholder when starting a new search
+    currentCharacter = null;
+    const chatInput = document.getElementById('chat-input');
+    if (chatInput && currentMode === 'chat') {
+        chatInput.placeholder = '请发送你希望书梦者扮演的角色和剧情设定，还可以说出你想要扮演的角色哦～\n例如：请你扮演程霜，我是刘十三，我们再一次在云边镇相逢...';
+    }
+    
+    if (isRequestInProgress) {
+        return;
+    }
+
+    try {
+        isRequestInProgress = true;
+        disableInteractiveElements();
+
+        // Collapse the search area after search
+        const wrapper = document.querySelector('.search-area-wrapper');
+        wrapper.classList.add('collapsed');
+
+        // Clear backend chat history first
+        const clearResponse = await fetch('/clear-chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!clearResponse.ok) {
+            console.error('Failed to clear chat history');
+        }
+
+        // Clear frontend chat messages
+        const chatMessages = document.getElementById('chat-messages');
+        while (chatMessages.children.length > 0) {
+            chatMessages.removeChild(chatMessages.firstChild);
+        }
+        
+        // Reset story-related states but keep the mode
+        currentCharacter = null;
+        currentStoryId = null;
+        originalContent = null;
+        
+        // Reset UI elements but keep mode buttons state
+        document.getElementById('story-content').style.display = 'none';
+        document.getElementById('mode-specific-inputs').style.display = 'none';
+        document.getElementById('chat-input').value = '';
+        document.getElementById('story-editor').value = '';
+        
+        // Add user's search prompt as a message
+        addMessage(`${query}`, 'message-user');
+        addMessage(`正在搜索「${query}」的相关内容...`, 'loading-message');
+        
+        // Clear the input right after sending
+        searchInput.value = '';
+        
+        // Use search_character endpoint for chat mode, search endpoint for ending mode
+        const response = await fetch(currentMode === 'chat' ? '/search_character' : '/search', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ title: query })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            removeLoadingMessage();
+            addMessage(errorData.error || '搜索过程中发生错误：' + response.statusText, 'message-ai');
+            isRequestInProgress = false;
+            enableInteractiveElements();
+            return; // Return early to avoid showing additional error messages
+        }
+
+        const reader = response.body.getReader();
+        let decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+                if (buffer) {
+                    try {
+                        const results = JSON.parse(buffer);
+                        displaySearchResults(results);
+                        isRequestInProgress = false;
+                        enableInteractiveElements();
+                    } catch (e) {
+                        console.error('Error parsing JSON:', e);
+                        addMessage('搜索过程中发生错误，请稍后重试', 'message-ai');
+                        isRequestInProgress = false;
+                        enableInteractiveElements();
+                    }
+                }
+                break;
+            }
+            buffer += decoder.decode(value, { stream: true });
+            try {
+                const results = JSON.parse(buffer);
+                displaySearchResults(results);
+                buffer = '';
+                isRequestInProgress = false;
+                enableInteractiveElements();
+            } catch (e) {
+                // Continue accumulating data if JSON is incomplete
+            }
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        if (error.response) {
+            error.response.json().then(errorData => {
+                addMessage(errorData.error || '搜索过程中发生错误，请稍后重试：' + error.message, 'message-ai');
+            });
+        } else {
+            addMessage('搜索过程中发生错误，请稍后重试：' + error.message, 'message-ai');
+        }
+    
+        isRequestInProgress = false;
+        enableInteractiveElements();
+    }
+}
+
+function displaySearchResults(results) {
+    removeLoadingMessage();
+    
+    if (!results || results.length === 0) {
+        addMessage('抱歉，未找到相关的故事信息');
+        return;
+    }
+    
+    const result = results[0];
+    
+    if (!result.is_editable) {
+        addMessage(result.body, 'message-ai');
+        return;
+    }
+    
+    addMessage(result.body, 'message-ai');
+    
+    if (result.body.length >= 500) {
+        const storyEditor = document.getElementById('story-editor');
+        storyEditor.value = result.body;
+        
+        originalContent = result.body;
+        currentStoryId = result.story_id;
+        
+        document.getElementById('story-content').style.display = 'block';
+        document.getElementById('mode-specific-inputs').style.display = 'block';
+        
+        addMessage('请选择“角色畅聊”或“结局改写”模式（默认为“角色畅聊”），开始你的创作之旅～', 'message-ai');
+    } else {
+        addMessage('你搜索的内容好像不太对哦，请换一个作品试试吧～', 'message-ai');
+    }
+}
+
+async function generateNewEnding() {
+    if (isRequestInProgress) {
+        return;
+    }
+
+    const prompt = document.getElementById('ending-prompt').value;
+    const storyContent = document.getElementById('story-editor').value;
+    
+    if (!prompt || !storyContent) {
+        addMessage('请先发送你希望的结局方向哦～', 'message-ai');
+        return;
+    }
+
+    try {
+        isRequestInProgress = true;
+        disableInteractiveElements();
+
+        addMessage(prompt, 'message-user');
+        addMessage('正在生成新的结局或剧情...', 'loading-message');
+        
+        // Clear the input right after sending
+        document.getElementById('ending-prompt').value = '';
+        
+        const response = await fetch('/generate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                context: storyContent,
+                prompt: prompt,
+                story_id: currentStoryId
+            })
+        });
+
+        const data = await response.json();
+        removeLoadingMessage();
+
+        if (!response.ok && response.status === 429) {
+            // Rate limit error - show only the rate limit message
+            addMessage(data.error, 'message-ai');
+        } else if (data.error) {
+            // Other errors - show with prefix
+            addMessage(`生成新结局时发生错误：${data.error}`, 'message-ai');
+        } else if (data.new_ending) {
+            addMessage(data.new_ending, 'message-ai');
+            addMessage('这个结局如何？你还可以继续调整故事内容或结局方向，或者尝试其他作品。', 'message-ai');
+            document.getElementById('ending-prompt').value = '';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        removeLoadingMessage();
+        addMessage('生成新结局时发生错误，请稍后重试', 'message-ai');
+    } finally {
+        isRequestInProgress = false;
+        enableInteractiveElements();
+    }
+}
+
+function addCharacterMessage(message, isUser = false, isLoading = false) {
+    const chatMessages = document.getElementById('character-chat-messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${isUser ? 'message-user' : 'message-ai'}`;
+    
+    if (isLoading) {
+        messageDiv.innerHTML = `
+            <div class="loading-container">
+                <div class="loading-message">
+                    <div class="spinner-border spinner-border-sm" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    ${message}
+                </div>
+                <div class="loading-animation">
+                    <div class="cat"></div>
+                    <div class="dog"></div>
+                    <div class="cat2"></div>
+                    <div class="dog2"></div>
+                </div>
+            </div>
+        `;
+    } else {
+        const messageContent = document.createElement('p');
+        messageContent.className = 'mb-0';
+        // Use innerHTML instead of textContent to properly render HTML
+        messageContent.innerHTML = message;
+        messageDiv.appendChild(messageContent);
+    }
+    
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    return messageDiv;
+}
+
+async function sendCharacterChat() {
+    if (isRequestInProgress) {
+        return;
+    }
+
+    const input = document.getElementById('character-chat-input');
+    const message = input.value.trim();
+    const storyEditor = document.getElementById('story-editor');
+    const storyContent = storyEditor.value;
+    
+    if (!message) {
+        return;
+    }
+
+    // If no character is selected yet, treat the first message as character selection
+    if (!currentCharacter) {
+        currentCharacter = message;
+        addCharacterMessage(message, true);
+        addCharacterMessage(`好的！根据你的设定 “ ${currentCharacter} ” 我们现在可以开始畅聊啦！请你来开启我们的聊天吧！`);
+        input.value = '';
+        input.placeholder = '请对角色说出你的心里话吧～';
+        return;
+    }
+
+    try {
+        isRequestInProgress = true;
+        // Disable all interactive buttons
+        disableInteractiveElements();
+        
+        addCharacterMessage(message, true);
+        input.value = '';
+        
+        const loadingMessage = addCharacterMessage('对方正在思考回复中...', false, true);
+        
+        const response = await fetch('/character-chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                story_content: storyContent,
+                character_name: currentCharacter,
+                message: message,
+                model_type: currentModel  // Add model type parameter
+            })
+        });
+
+        const data = await response.json();
+        loadingMessage.remove();
+        
+        if (data.error) {
+            addCharacterMessage(`对话出错：${data.error}`);
+        } else {
+            addCharacterMessage(data.response);
+        }
+    } catch (error) {
+        loadingMessage?.remove();
+        console.error('Error:', error);
+        addCharacterMessage('对话过程中发生错误，请稍后重试');
+    } finally {
+        isRequestInProgress = false;
+        // Re-enable all interactive buttons
+        enableInteractiveElements();
+    }
+}
+
+// Add character chat input event listener
+document.getElementById('character-chat-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendCharacterChat();
+    }
+});
+
+async function clearCharacterChat() {
+    try {
+        // Clear chat history on the server first using the correct endpoint URL
+        const response = await fetch('/clear-character-chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to clear chat history');
+        }
+        
+        // Clear frontend chat display
+        const chatMessages = document.getElementById('character-chat-messages');
+        chatMessages.innerHTML = '';
+        
+        // Reset character state
+        currentCharacter = null;
+        
+        // Add the welcome message with properly rendered HTML
+        addCharacterMessage('又见面啦！我是<span class="fancy-poetry" style="font-size: 1.2em;">书梦者</span>，请告诉我你想和哪个角色聊天吧~', false);
+        
+        // Reset the chat input value and placeholder
+        const chatInput = document.getElementById('character-chat-input');
+        chatInput.value = '';
+        chatInput.placeholder = '请发送你希望书梦者扮演的角色和剧情设定，还可以说出你想要扮演的角色哦～\n例如：请你扮演程霜，我是刘十三，我们再一次在云边镇相逢...';
+        
+        // Maintain expand button state and text
+        const expandBtn = document.querySelector('.expand-btn');
+        const expandableContent = document.getElementById('expandable-sections');
+        if (expandableContent.classList.contains('show')) {
+            expandBtn.querySelector('span').textContent = '收起';
+        } else {
+            expandBtn.querySelector('span').textContent = '跳过搜索，亲自填写剧情';
+        }
+        
+    } catch (error) {
+        console.error('Error clearing chat history:', error);
+        addCharacterMessage('清除对话历史时发生错误，请刷新页面重试');
+    }
+}
+
+async function clearChat() {
+    try {
+        // Store the current mode before clearing
+        const previousMode = currentMode;
+        
+        // Send request to clear backend chat history first
+        const response = await fetch('/clear-chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const data = await response.json();
+        
+        // Clear all chat messages from the UI
+        const chatMessages = document.getElementById('chat-messages');
+        while (chatMessages.children.length > 0) {
+            chatMessages.removeChild(chatMessages.firstChild);
+        }
+        
+        // Reset states except mode
+        currentCharacter = null;
+        currentStoryId = null;
+        originalContent = null;
+        
+        // Reset UI elements but preserve search area visibility
+        document.getElementById('story-content').style.display = 'none';
+        document.getElementById('mode-specific-inputs').style.display = 'none';
+        document.getElementById('chat-input').value = '';
+        document.getElementById('story-editor').value = '';
+        
+        // Ensure search area remains visible
+        const searchWrapper = document.querySelector('.search-area-wrapper');
+        searchWrapper.classList.remove('collapsed');
+        document.getElementById('story-title').value = '';
+
+        if (data.success) {
+            // Add welcome message back
+            addMessage('你好呀！我是<span class="fancy-poetry-hello" style="font-size: 1.2em;">书梦者</span>。请告诉我你想改写哪部小说或电影的结局吧！只需小说名或电影名即可。如果有同名作品，可添加作者名进行搜索哦～', 'message-ai');
+            
+            // Restore the previous mode if it exists
+            if (previousMode) {
+                currentMode = previousMode;
+                switchMode(previousMode);
+            }
+        } else {
+            addMessage('清空对话历史时发生错误：' + (data.error || '未知错误'));
+        }
+    } catch (error) {
+        console.error('Error clearing chat:', error);
+        addMessage('清空对话历史时发生错误：' + error);
+    }
+}
+
+function disableInteractiveElements() {
+    // Only disable buttons
+    document.querySelectorAll('button, input[type="submit"], .btn').forEach(element => {
+        element.disabled = true;
+        // Add visual feedback for disabled state
+        element.style.opacity = '0.7';
+        element.style.cursor = 'not-allowed';
+    });
+}
+
+function enableInteractiveElements() {
+    // Re-enable only buttons
+    document.querySelectorAll('button, input[type="submit"], .btn').forEach(element => {
+        element.disabled = false;
+        // Remove visual feedback
+        element.style.opacity = '';
+        element.style.cursor = '';
+    });
+}
+
+async function copyToClipboard(text, button) {
+    try {
+        // Try using the modern Clipboard API first
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+            showCopySuccess(button);
+            return;
+        }
+
+        // Fallback for iOS and other devices
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '0';
+        textArea.style.top = '0';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            document.execCommand('copy');
+            textArea.remove();
+            showCopySuccess(button);
+        } catch (err) {
+            console.error('Copy failed:', err);
+            textArea.remove();
+            alert('复制失败，请手动复制');
+        }
+    } catch (err) {
+        console.error('Copy failed:', err);
+        alert('复制失败，请手动复制');
+    }
+}
+
+function showCopySuccess(button) {
+    button.classList.add('copied');
+    button.innerHTML = '<i class="fas fa-check"></i>';
+    
+    setTimeout(() => {
+        button.classList.remove('copied');
+        button.innerHTML = '<i class="fas fa-copy"></i>';
+    }, 2000);
+}
+
+function handleCopy(button) {
+    const messageContent = button.closest('.message-content').querySelector('.message-text').innerText;
+    copyToClipboard(messageContent, button);
+}
+
+function formatContent(content) {
+    // Remove markdown signs ** and * from the content
+    return content.replace(/\*\*/g, '').replace(/\*/g, '');
+}
+
+function shareMessage(button) {
+    if (!{{ current_user.is_authenticated|tojson }}) {
+        // Save the message content temporarily
+        const messageContent = button.closest('.message-content').querySelector('.message-text').innerText;
+        sessionStorage.setItem('pendingSharedContent', messageContent);
+        // Redirect to login page
+        window.location.href = '/login?next=/forum/create&share=true';
+        return;
+    }
+    
+    const messageContent = button.closest('.message-content').querySelector('.message-text').innerText;
+    sessionStorage.setItem('sharedContent', messageContent);
+    window.location.href = '/forum/create';
+}
+
+function shareCharacterChat() {
+    if (!{{ current_user.is_authenticated|tojson }}) {
+        alert('请先登录你的书梦账号，再使用分享功能哦～');
+        return;
+    }
+    
+    // Only allow sharing in chat mode
+    if (currentMode !== 'chat') {
+        alert('只能在“角色畅聊”模式下分享对话哦～');
+        return;
+    }
+    
+    const storyEditor = document.getElementById('story-editor');
+    const storyContent = storyEditor ? storyEditor.value : '';
+    const chatMessages = document.getElementById('chat-messages').children;
+    
+    if (chatMessages.length === 0) {
+        alert('请确保已有对话记录');
+        return;
+    }
+
+    // Prompt for character names with default values
+    //let aiName = prompt('请输入与你对话角色的名称（例如：程霜）') || '角色';
+    //let myName = prompt('请输入你扮演角色的名称（例如：刘十三 或 我）：') || '我';
+    
+    let formattedContent = '';
+    let settingMessage = '';
+    let foundSettingMessage = false;
+    let foundSettingResponse = false;
+    let isInChatMode = false;
+    
+    // Format chat history
+    for (let i = 0; i < chatMessages.length; i++) {
+        const message = chatMessages[i];
+        const messageText = message.querySelector('.message-text').textContent.trim();
+        const isUser = message.classList.contains('message-user');
+        const isAI = message.classList.contains('message-ai');
+        
+        // Skip the initial welcome message
+        if (i === 0 && isAI && messageText.includes('你好呀！我是书梦者')) {
+            continue;
+        }
+        
+        // Look for the AI's setting response message that indicates chat mode
+        if (isAI && messageText.includes('好的！根据你的设定')) {
+            foundSettingResponse = true;
+            isInChatMode = true;
+            // The previous message should be the setting
+            if (i > 0) {
+                const prevMessage = chatMessages[i - 1];
+                if (prevMessage.classList.contains('message-user')) {
+                    settingMessage = prevMessage.querySelector('.message-text').textContent.trim();
+                    foundSettingMessage = true;
+                }
+            }
+            continue;
+        }
+        
+        // Only capture messages if we're in chat mode and have found the setting
+        if (isInChatMode && foundSettingResponse && foundSettingMessage) {
+            // Skip the setting message itself
+            if (messageText === settingMessage) {
+                continue;
+            }
+            
+            // Skip messages that indicate ending mode
+            if (messageText.includes('正在生成新的结局或剧情') || 
+                messageText.includes('你还可以继续调整故事内容或结局方向') ||
+                messageText.includes('生成新结局时发生错误')) {
+                continue;
+            }
+            
+            //const role = isUser ? myName : aiName;
+            //formattedContent += `${role}：${messageText}\n\n`;
+        }
+    }
+    
+    // Format the story content if it exists
+    let formattedStoryContent = '';
+    if (storyContent) {
+        formattedStoryContent = storyContent.replace(/[#*`]/g, '').trim(); // Remove markdown signs
+    }
+    
+    // Combine all content with the setting at the beginning
+    //let finalContent = `设定：${settingMessage}\n\n畅聊内容分享：\n\n${formattedContent}`;
+    let finalContent = `智能体设定：${settingMessage}\n\n`; // 只分享设定
+
+    // Add story content if it exists
+    if (formattedStoryContent) {
+        finalContent += `\n角色背景设定：\n\n${formattedStoryContent}`;
+    }
+    
+    // Save content and redirect to create post page
+    sessionStorage.setItem('sharedContent', finalContent);
+    window.location.href = '/forum/create';
+}
+
+function toggleExpandContent() {
+    const expandBtn = document.querySelector('.expand-btn');
+    const expandableContent = document.getElementById('expandable-sections');
+    const storyPrompt = document.getElementById('story-prompt');
+    const characterChat = document.getElementById('character-chat');
+    const storyContent = document.getElementById('story-content');
+    const isExpanded = expandableContent.classList.contains('show');
+    
+    if (isExpanded) {
+        expandableContent.classList.remove('show');
+        expandBtn.classList.remove('expanded');
+        expandBtn.querySelector('span').textContent = '收起';
+        // Hide all sections
+        storyPrompt.style.display = 'none';
+        characterChat.style.display = 'none';
+        storyContent.style.display = 'none';
+    } else {
+        expandableContent.classList.add('show');
+        expandBtn.classList.add('expanded');
+        expandBtn.querySelector('span').textContent = '收起';
+        // Show all sections
+        storyPrompt.style.display = 'block';
+        characterChat.style.display = 'block';
+        storyContent.style.display = 'block';
+    }
+}
+
+function shareEnding() {
+    if (!{{ current_user.is_authenticated|tojson }}) {
+        window.location.href = '/login?next=/forum/create';
+        return;
+    }
+    window.location.href = '/forum/create';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // ... existing code ...
+
+    // Add shareEnding function
+    window.shareEnding = function() {
+        if (!{{ current_user.is_authenticated|tojson }}) {
+            // Save the current state temporarily if needed
+            window.location.href = '/login?next=/forum/create';
+            return;
+        }
+        window.location.href = '/forum/create';
+    };
+
+    // ... existing code ...
+});
+
+function toggleSearchArea() {
+    const wrapper = document.querySelector('.search-area-wrapper');
+    wrapper.classList.toggle('collapsed');
+}
+
+// Function to initialize style buttons
+function initializeStyleButtons() {
+    document.querySelectorAll('.bg-image-section .style-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove clicked class from all buttons first
+            document.querySelectorAll('.bg-image-section .style-btn').forEach(btn => {
+                btn.classList.remove('clicked');
+            });
+            
+            const style = this.dataset.style;
+            const promptArea = document.getElementById('bgImagePrompt');
+            let styleText = '';
+            
+            // Mark only this button as clicked
+            this.classList.add('clicked');
+            
+            // Set style text based on selection
+            if (style === '国风漫画') {
+                styleText = '图片风格为国风漫画，新中式，国风，复古优雅，日光，光影，{请继续你的描述}';
+            } else if (style === '水墨画') {
+                styleText = '图片风格为点彩水墨画，中式审美，留白，极简主义，超高清，柔和的笔触，{请继续你的描述}';
+            } else if (style === '动漫') {
+                styleText = '图片风格为动漫，剪影，伦勃朗灯光，高对比，高细节，高分辨率，特写，{请继续你的描述}';
+            } else if (style === '风景') {
+                styleText = '图片风格为风景，剪影摄影，大师作品，{请继续你的描述}';
+            } else if (style === '人像摄影') {
+                styleText = '图片风格为人像摄影，丁达尔效应，人文摄影，徕卡M11，特写摄影，{请继续你的描述}';
+            } else if (style === '宫崎骏') {
+                styleText = '图片风格为动漫，宫崎骏的动漫风格，{请继续你的描述}';
+            } else if (style === '3D') {
+                styleText = '图片风格为3D渲染，卡通人物设计，Blender渲染，柔和的灯光，{请继续你的描述}';
+            }
+            
+            // Set the textarea value
+            promptArea.value = styleText;
+        });
+    });
+}
+
+// Call this when opening the immersive chat modal
+function openImmersiveChat() {
+    if (!isUserLoggedIn()) {
+        window.location.href = '/login';
+        return;
+    }
+    
+    // Ensure we have a character set
+    if (!currentCharacter) {
+        alert('请先设置一个角色再进入沉浸式聊天模式');
+        return;
+    }
+    
+    // Get and validate story content
+    const storyEditor = document.getElementById('story-editor');
+    const storyContent = storyEditor ? storyEditor.value.trim() : '';
+    
+    if (!storyContent) {
+        alert('请先填写原剧情再进入沉浸式聊天模式');
+        return;
+    }
+    
+    const modal = document.getElementById('immersive-chat-modal');
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    
+    // Create or update hidden input for story content
+    let hiddenStoryContent = document.getElementById('hidden-story-content');
+    if (!hiddenStoryContent) {
+        hiddenStoryContent = document.createElement('input');
+        hiddenStoryContent.type = 'hidden';
+        hiddenStoryContent.id = 'hidden-story-content';
+        modal.appendChild(hiddenStoryContent);
+    }
+    hiddenStoryContent.value = storyContent;
+    
+    // Update remaining generations when opening modal
+    updateRemainingGenerations();
+    // Initialize style buttons
+    initializeStyleButtons();
+    // Scroll to bottom when opening chat
+    scrollImmersiveChatToBottom();
+    
+    // Sync chat history from normal chat to immersive chat
+    const normalChatMessages = document.getElementById('chat-messages').children;
+    const floatingChatMessages = document.getElementById('floating-chat-messages');
+    floatingChatMessages.innerHTML = ''; // Clear existing messages
+    
+    // Copy messages from normal chat to immersive chat
+    for (let i = 0; i < normalChatMessages.length; i++) {
+        const message = normalChatMessages[i];
+        const messageText = message.querySelector('.message-text')?.textContent.trim();
+        if (messageText) {
+            const isUser = message.classList.contains('message-user');
+            const newMessage = document.createElement('div');
+            newMessage.className = `message ${isUser ? 'message-user' : 'message-ai'}`;
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            
+            const messageTextDiv = document.createElement('div');
+            messageTextDiv.className = 'message-text';
+            messageTextDiv.textContent = messageText;
+            
+            messageContent.appendChild(messageTextDiv);
+            newMessage.appendChild(messageContent);
+            floatingChatMessages.appendChild(newMessage);
+        }
+    }
+    
+    // Scroll to bottom of floating chat
+    floatingChatMessages.scrollTop = floatingChatMessages.scrollHeight;
+}
+
+function closeImmersiveChat() {
+    const modal = document.getElementById('immersive-chat-modal');
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+function generateBackground() {
+    const prompt = document.getElementById('bgImagePrompt').value.trim();
+    if (!prompt) {
+        alert('请描述你想要的场景背景');
+        return;
+    }
+
+    const generateBtn = document.getElementById('generateBgBtn');
+    generateBtn.disabled = true;
+    generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>生成中...';
+
+    // Check if device is mobile
+    const isMobile = window.innerWidth <= 768;
+    
+    // Set dimensions based on device type
+    const dimensions = isMobile ? 
+        { width: 288, height: 512 } :  // Portrait ratio for mobile (1:2)
+        { width: 512, height: 288 };  // Laptop dimensions unchanged (4:3)
+
+    fetch('/generate-cover-image', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+            prompt: prompt,
+            width: dimensions.width,
+            height: dimensions.height
+        }),
+        signal: AbortSignal.timeout(30000)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (!data.success) {
+            throw new Error(data.error || '生成背景图片失败');
+        }
+        
+        if (data.image_url) {
+            // Reset generate button to normal state
+            generateBtn.disabled = false;
+            generateBtn.innerHTML = '<i class="fas fa-magic me-2"></i>生成背景';
+            
+            // Close the immersive chat modal
+            closeImmersiveChat();
+            
+            // Show floating chat window and set its background
+            const floatingChat = document.getElementById('floating-chat');
+            floatingChat.style.display = 'block';
+            
+            // Create a new Image object to verify the image loads correctly
+            const img = new Image();
+            img.onload = function() {
+                floatingChat.style.backgroundImage = `url(${data.image_url})`;
+                floatingChat.style.backgroundSize = 'cover';
+                floatingChat.style.backgroundPosition = 'center';
+                floatingChat.style.backgroundAttachment = 'fixed';
+                
+                // Sync chat history from normal chat to immersive chat
+                const normalChatMessages = document.getElementById('chat-messages').children;
+                const floatingChatMessages = document.getElementById('floating-chat-messages');
+                floatingChatMessages.innerHTML = ''; // Clear existing messages
+                
+                // Copy all messages from normal chat to immersive chat
+                for (let i = 0; i < normalChatMessages.length; i++) {
+                    const message = normalChatMessages[i];
+                    const messageText = message.querySelector('.message-text')?.textContent.trim();
+                    if (messageText) {
+                        const isUser = message.classList.contains('message-user');
+                        const newMessage = document.createElement('div');
+                        newMessage.className = `message ${isUser ? 'message-user' : 'message-ai'}`;
+                        
+                        const messageContent = document.createElement('div');
+                        messageContent.className = 'message-content';
+                        
+                        const messageTextDiv = document.createElement('div');
+                        messageTextDiv.className = 'message-text';
+                        messageTextDiv.textContent = messageText;
+                        
+                        messageContent.appendChild(messageTextDiv);
+                        newMessage.appendChild(messageContent);
+                        floatingChatMessages.appendChild(newMessage);
+                    }
+                }
+                
+                // Scroll to bottom of floating chat
+                floatingChatMessages.scrollTop = floatingChatMessages.scrollHeight;
+            };
+            
+            img.onerror = function() {
+                throw new Error('图片加载失败，请重试');
+            };
+            
+            img.src = data.image_url;
+            
+            // Update remaining generations if available
+            if (data.remaining_generations !== undefined) {
+                const remainingText = document.getElementById('remainingGenerations');
+                if (remainingText) {
+                    remainingText.textContent = `(今日剩余次数: ${data.remaining_generations}次)`;
+                }
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        
+        // Check if we should retry
+        if (currentRetry < maxRetries && 
+            (error.name === 'AbortError' || 
+             error.message.includes('IncompleteRead') || 
+             error.message.includes('Connection broken'))) {
+            
+            currentRetry++;
+            console.log(`Retrying... Attempt ${currentRetry} of ${maxRetries}`);
+            generateBtn.innerHTML = `<i class="fas fa-spinner fa-spin me-2"></i>重试中 (${currentRetry}/${maxRetries})...`;
+            setTimeout(attemptGeneration, 2000); // Wait 2 seconds before retrying
+        } else {
+            // If we're out of retries or it's a different error, show the error
+            alert(error.message === 'AbortError' 
+                ? '生成图片超时，请重试' 
+                : '生成背景图片时发生错误，请稍后重试');
+            generateBtn.disabled = false;
+            generateBtn.innerHTML = '<i class="fas fa-magic me-2"></i>生成背景';
+        }
+    });
+}
+
+function toggleFloatingChat() {
+    const floatingChat = document.getElementById('floating-chat');
+    floatingChat.classList.toggle('minimized');
+}
+
+function exitImmersiveMode() {
+    const floatingChat = document.getElementById('floating-chat');
+    floatingChat.style.display = 'none';
+    floatingChat.style.backgroundImage = '';
+}
+
+function handleFloatingChatSend() {
+    var textarea = document.getElementById('floating-chat-textarea');
+    var messagesContainer = document.getElementById('floating-chat-messages');
+    var sendButton = document.querySelector('.floating-chat-input .btn-send');
+    var message = textarea.value.trim();
+    
+    if (!message) return;
+    
+    // Only disable send button, keep textarea enabled
+    if (sendButton) {
+        sendButton.disabled = true;
+        sendButton.style.opacity = '0.5';
+        sendButton.style.cursor = 'not-allowed';
+    }
+    
+    // Clear textarea immediately
+    textarea.value = '';
+    
+    // Create user message container
+    var userMessageDiv = document.createElement('div');
+    userMessageDiv.className = 'message message-user';
+    
+    // Create message content div
+    var messageContent = document.createElement('div');
+    messageContent.className = 'message-content';
+    
+    // Create message text div
+    var messageText = document.createElement('div');
+    messageText.className = 'message-text';
+    messageText.textContent = message;
+    
+    // Assemble the message
+    messageContent.appendChild(messageText);
+    userMessageDiv.appendChild(messageContent);
+    messagesContainer.appendChild(userMessageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    
+    // If no character is set, use the first message as character name
+    if (!currentCharacter) {
+        currentCharacter = message;
+        
+        // Create AI welcome message
+        const aiMessageDiv = document.createElement('div');
+        aiMessageDiv.className = 'message message-ai';
+        
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+        
+        const messageText = document.createElement('div');
+        messageText.className = 'message-text';
+        messageText.textContent = `好的！根据你的设定 “ ${currentCharacter} ” 我们现在可以开始畅聊啦！请你来开启我们的聊天吧！`;
+        
+        messageContent.appendChild(messageText);
+        aiMessageDiv.appendChild(messageContent);
+        messagesContainer.appendChild(aiMessageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Update textarea placeholder
+        textarea.placeholder = '请对角色说出你的心里话吧～';
+        
+        // Re-enable send button
+        if (sendButton) {
+            sendButton.disabled = false;
+            sendButton.style.opacity = '1';
+            sendButton.style.cursor = 'pointer';
+        }
+        return;
+    }
+    
+    // Add loading indicator
+    var loadingDiv = document.createElement('div');
+    loadingDiv.className = 'message-loading';
+    loadingDiv.innerHTML = '<i class="fas fa-comments"></i><div class="loading-dots"><span></span><span></span><span></span></div>';
+    messagesContainer.appendChild(loadingDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    // Send request to character chat endpoint
+    const storyContent = document.getElementById('story-editor')?.value || '';
+    fetch('/character-chat', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            story_content: storyContent,
+            character_name: currentCharacter,
+            message: message,
+            model_type: currentModel  // Add the model type
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Remove loading indicator
+        if (loadingDiv && messagesContainer.contains(loadingDiv)) {
+            messagesContainer.removeChild(loadingDiv);
+        }
+
+        // Create AI message
+        const aiMessageDiv = document.createElement('div');
+        aiMessageDiv.className = 'message message-ai';
+        
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+        
+        const messageText = document.createElement('div');
+        messageText.className = 'message-text';
+        
+        if (data.response) {
+            messageText.innerHTML = window.marked ? marked.parse(data.response) : data.response;
+        } else {
+            messageText.textContent = data.error || '对话生成失败，请重试';
+        }
+        
+        messageContent.appendChild(messageText);
+        aiMessageDiv.appendChild(messageContent);
+        messagesContainer.appendChild(aiMessageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Re-enable send button only
+        if (sendButton) {
+            sendButton.disabled = false;
+            sendButton.style.opacity = '1';
+            sendButton.style.cursor = 'pointer';
+        }
+    })
+    .catch(error => {
+        console.error('Chat error:', error);
+        
+        // Remove loading indicator
+        if (loadingDiv && messagesContainer.contains(loadingDiv)) {
+            messagesContainer.removeChild(loadingDiv);
+        }
+        
+        // Show error message
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'message message-ai';
+        
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+        
+        const messageText = document.createElement('div');
+        messageText.className = 'message-text';
+        messageText.textContent = error.message || '对话过程中发生错误，请稍后重试';
+        
+        messageContent.appendChild(messageText);
+        errorDiv.appendChild(messageContent);
+        messagesContainer.appendChild(errorDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Re-enable send button only
+        if (sendButton) {
+            sendButton.disabled = false;
+            sendButton.style.opacity = '1';
+            sendButton.style.cursor = 'pointer';
+        }
+    });
+}
+
+// Add event listener for floating chat textarea
+document.addEventListener('DOMContentLoaded', function() {
+    const floatingTextarea = document.getElementById('floating-chat-textarea');
+    if (floatingTextarea) {
+        floatingTextarea.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleFloatingChatSend();
+            }
+        });
+    }
+});
+
+// Add function to get remaining generations
+function updateRemainingGenerations() {
+    fetch('/get_remaining_generations')
+        .then(response => response.json())
+        .then(data => {
+            const generateBtn = document.getElementById('generateBgBtn');
+            const remainingText = document.getElementById('remainingGenerations');
+            const remaining = data.remaining;
+            
+            remainingText.textContent = `剩余次数：${remaining}/10`;
+            
+            if (remaining <= 0) {
+                generateBtn.disabled = true;
+                generateBtn.classList.add('disabled');
+                generateBtn.style.cursor = 'not-allowed';
+                generateBtn.title = '已达到每日生成次数上限';
+            } else {
+                generateBtn.disabled = false;
+                generateBtn.classList.remove('disabled');
+                generateBtn.style.cursor = 'pointer';
+                generateBtn.title = '';
+            }
+        });
+}
+
+// Add style button click handler
+document.querySelectorAll('.style-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const style = this.dataset.style;
+        const prompt = document.getElementById('bgImagePrompt');
+        prompt.value = `图片风格为${style}，` + prompt.value;
+        
+        // Toggle active state
+        document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
+
+// Add style button click handlers for background image generation
+document.querySelectorAll('.bg-image-section .style-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        // Remove clicked class from all buttons first
+        document.querySelectorAll('.bg-image-section .style-btn').forEach(btn => {
+            btn.classList.remove('clicked');
+        });
+        
+        const style = this.dataset.style;
+        const promptArea = document.getElementById('bgImagePrompt');
+        let styleText = '';
+        
+        // Mark only this button as clicked
+        this.classList.add('clicked');
+        
+        // Set style text based on selection
+        if (style === '国风漫画') {
+            styleText = '图片风格为国风漫画，新中式，国风，复古优雅，日光，光影，{请继续你的描述}';
+        } else if (style === '水墨画') {
+            styleText = '图片风格为点彩水墨画，中式审美，留白，极简主义，超高清，柔和的笔触，{请继续你的描述}';
+        } else if (style === '动漫') {
+            styleText = '图片风格为动漫，剪影，伦勃朗灯光，高对比，高细节，高分辨率，特写，{请继续你的描述}';
+        } else if (style === '风景') {
+            styleText = '图片风格为风景，剪影摄影，大师作品，{请继续你的描述}';
+        } else if (style === '人像摄影') {
+            styleText = '图片风格为人像摄影，丁达尔效应，人文摄影，徕卡M11，特写摄影，{请继续你的描述}';
+        } else if (style === '宫崎骏') {
+            styleText = '图片风格为动漫，宫崎骏的动漫风格，{请继续你的描述}';
+        } else if (style === '3D') {
+            styleText = '图片风格为3D渲染，卡通人物设计，Blender渲染，柔和的灯光，{请继续你的描述}';
+        }
+        
+        // Set the textarea value
+        promptArea.value = styleText;
+    });
+});
+
+// Function to handle immersive chat button click
+function handleImmersiveChat() {
+    {% if current_user.is_authenticated %}
+        const modal = document.getElementById('immersive-chat-modal');
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        // Update remaining generations when opening modal
+        updateRemainingGenerations();
+        // Initialize style buttons
+        initializeStyleButtons();
+        // Scroll to bottom when opening chat
+        scrollImmersiveChatToBottom();
+    {% else %}
+        window.location.href = '/login';
+    {% endif %}
+}
+
+function hideImmersiveChat() {
+    const floatingChat = document.getElementById('floating-chat');
+    floatingChat.style.display = 'none';
+    
+    // Hide search bar if it exists (for content copied from view_post.html and forum.html)
+    const searchArea = document.querySelector('.search-area-wrapper');
+    if (searchArea) {
+        searchArea.style.display = 'none';
+    }
+    
+    // Create or show the reopen button if it doesn't exist
+    let reopenBtn = document.getElementById('reopen-immersive-chat');
+    if (!reopenBtn) {
+        reopenBtn = document.createElement('button');
+        reopenBtn.id = 'reopen-immersive-chat';
+        reopenBtn.className = 'btn btn-primary position-fixed';
+        reopenBtn.style.cssText = 'bottom: 20px; right: 20px; z-index: 1050;';
+        reopenBtn.innerHTML = '<i class="fas fa-comments me-2"></i>重新打开聊天';
+        reopenBtn.onclick = showImmersiveChat;
+        document.body.appendChild(reopenBtn);
+    } else {
+        reopenBtn.style.display = 'block';
+    }
+}
+
+function showImmersiveChat() {
+    const floatingChat = document.getElementById('floating-chat');
+    floatingChat.style.display = 'block';
+    
+    // Hide the reopen button
+    const reopenBtn = document.getElementById('reopen-immersive-chat');
+    if (reopenBtn) {
+        reopenBtn.style.display = 'none';
+    }
+    
+    // Show search bar if it exists
+    const searchArea = document.querySelector('.search-area-wrapper');
+    if (searchArea) {
+        searchArea.style.display = 'block';
+    }
+    
+    // Scroll to bottom of messages
+    const messagesContainer = document.getElementById('floating-chat-messages');
+    if (messagesContainer) {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+}
+
+function exitImmersiveMode() {
+    const floatingChat = document.getElementById('floating-chat');
+    floatingChat.style.display = 'none';
+    floatingChat.style.backgroundImage = '';
+    
+    // Remove the reopen button if it exists
+    const reopenBtn = document.getElementById('reopen-immersive-chat');
+    if (reopenBtn) {
+        reopenBtn.remove();
+    }
+}
+
+// Add window resize handler to update title visibility
+window.addEventListener('resize', function() {
+    const modeTitle = document.getElementById('modeTitle');
+    if (modeTitle) {
+        if (window.innerWidth <= 768) {
+            modeTitle.style.display = 'none';
+        } else {
+            modeTitle.style.display = 'block';
+            // Update title based on current mode
+            modeTitle.textContent = currentMode === 'chat' ? '对话属于你的梦' : '创造属于你的梦';
+        }
+    }
+});
+
+// Update handleChatResponse function to include model type
+const originalHandleChatResponse = handleChatResponse;
+handleChatResponse = async function(message, messagesContainer, loadingDiv) {
+    try {
+        if (!currentCharacter) {
+            throw new Error('请先设置一个角色再开始聊天');
+        }
+
+        const storyContent = document.getElementById('story-editor')?.value || '';
+        
+        const response = await fetch('/character-chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                story_content: storyContent,
+                character_name: currentCharacter,
+                message: message,
+                model_type: currentModel  // Add the model type
+            })
+        });
+        // ... rest of the existing code ...
+    } catch (error) {
+        // ... existing error handling ...
+    }
+};
+
+// Add model selection handler
+document.querySelectorAll('.model-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        currentModel = this.dataset.model;
+    });
+});
+
+// Update the existing fetch calls to include model_type
+const originalFetch = fetch;
+fetch = function(url, options) {
+    if (url === '/character-chat' && options.method === 'POST') {
+        const body = JSON.parse(options.body);
+        body.model_type = currentModel;
+        options.body = JSON.stringify(body);
+    }
+    return originalFetch(url, options);
+};
+</script>
+{% endblock %} 

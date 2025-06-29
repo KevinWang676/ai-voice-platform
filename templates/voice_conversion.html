@@ -1,0 +1,1201 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/7.7.3/wavesurfer.min.css" rel="stylesheet">
+<style>
+body {
+    background: linear-gradient(135deg, #E3F2FD, #BBDEFB) !important;
+}
+
+.vc-container {
+    background: none;
+    border-radius: 30px;
+    padding: 3rem;
+    margin-top: 6rem;
+    box-shadow: none;
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+.vc-title {
+    font-size: 4.8rem;
+    font-weight: 300;
+    background: linear-gradient(120deg, 
+        #2196F3,
+        #64B5F6,
+        #42A5F5,
+        #1E88E5,
+        #1976D2
+    );
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-top: -20px;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    position: relative;
+    letter-spacing: 0em;
+    transform: translateZ(0);
+    will-change: transform;
+    animation: gradientFlow 15s ease infinite, gentleBreathing 4s ease-in-out infinite;
+    transform-origin: center center;
+}
+
+.vc-subtitle {
+    text-align: center;
+    font-size: 1.3rem;
+    margin: 1.5rem 0 2.5rem;
+    font-weight: bold;
+    background: linear-gradient(120deg, #f26745, #ea923f);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0.95;
+}
+
+@keyframes gradientFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes gentleBreathing {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.03);
+    }
+}
+
+.upload-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+}
+
+.upload-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.audio-preview-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 1rem;
+    margin-top: 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.audio-player-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.waveform-container {
+    background: rgba(33, 150, 243, 0.05);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.audio-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.audio-btn {
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.audio-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.play-btn {
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+}
+
+.download-btn {
+    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+}
+
+.convert-btn {
+    background: linear-gradient(135deg, #75ecad, #e8ec69);
+    color: rgb(241, 93, 93);
+    border: none;
+    border-radius: 30px;
+    padding: 1rem 2.5rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-top: 1rem;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.convert-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.convert-btn:disabled {
+    opacity: 0.7;
+    transform: none;
+    box-shadow: none;
+}
+
+.loading-wave {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    height: 50px;
+}
+
+.loading-bar {
+    width: 8px;
+    height: 32px;
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+    border-radius: 4px;
+    animation: loadingWave 1.5s ease-in-out infinite;
+}
+
+.loading-bar:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.loading-bar:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.loading-bar:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+.loading-bar:nth-child(5) {
+    animation-delay: 0.4s;
+}
+
+@keyframes loadingWave {
+    0%, 100% {
+        transform: scaleY(0.5);
+    }
+    50% {
+        transform: scaleY(1);
+    }
+}
+
+.form-check-input:checked {
+    background-color: #2196F3;
+    border-color: #2196F3;
+}
+
+@media (min-width: 768px) {
+    .vc-title {
+        font-family: "STKaiti", "KaiTi", "Kaiti SC", "Kaiti TC", "KaiTi_GB2312", "KaiTi_GB", "楷体", "华文楷体";
+    }
+}
+
+@media (max-width: 768px) {
+    .vc-title {
+        font-size: 3.2rem;
+        margin-top: -15px;
+        margin-bottom: 1rem;
+        font-weight: 500;
+    }
+    
+    .vc-subtitle {
+        font-size: 1.1rem;
+        padding: 0 1rem;
+        margin: 1rem 0 2rem;
+    }
+    
+    .vc-container {
+        padding: 1.5rem;
+        margin-top: 4rem;
+    }
+    
+    .upload-card {
+        padding: 1.5rem;
+    }
+    
+    .audio-player-card {
+        padding: 1.5rem;
+    }
+    
+    .waveform-container {
+        padding: 1rem;
+    }
+    
+    .audio-controls {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .audio-btn {
+        width: 100%;
+        padding: 0.7rem;
+    }
+    
+    .convert-btn {
+        padding: 0.8rem 1.5rem;
+    }
+}
+
+.audio-input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mic-btn {
+    background: linear-gradient(135deg, #e4714c, #f73b3b);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.mic-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.mic-btn.recording {
+    background: linear-gradient(135deg, #f73b3b, #ff0000);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(247, 59, 59, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(247, 59, 59, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(247, 59, 59, 0);
+    }
+}
+
+.recording-timer {
+    color: #f73b3b;
+    font-weight: bold;
+    margin-left: 10px;
+    display: none;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="vc-container">
+        <h1 class="vc-title">NewVoice</h1>
+        <h2 class="vc-subtitle">One-click voice conversion, keep your favorite voices always with you</h2>
+        
+        <!-- Error alert container -->
+        <div id="errorAlert" class="alert alert-danger mb-4" style="display: none;">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span id="errorMessage">An error occurred, please try again later</span>
+        </div>
+        
+        <form id="vcForm">
+            <div class="upload-card">
+                <div class="mb-4">
+                    <label for="sourceFile" class="form-label fw-bold">
+                        <i class="fas fa-microphone me-2"></i>Audio to Convert
+                    </label>
+                    <p class="text-muted mb-2">Please upload the audio file you want to convert, supports speech and song vocals under one minute (WAV or MP3 format)</p>
+                    <div class="audio-input-container">
+                        <input type="file" class="form-control" id="sourceFile" name="source_file" accept=".wav,.mp3">
+                        <button type="button" id="sourceRecordBtn" class="mic-btn">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <span id="sourceRecordingTimer" class="recording-timer">00:00</span>
+                    </div>
+                    
+                    <div id="sourcePreviewSection" class="audio-preview-card" style="display:none">
+                        <p class="mb-2 fw-bold">Source Audio Preview:</p>
+                        <audio id="sourcePreview" controls class="w-100"></audio>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="targetFile" class="form-label fw-bold">
+                        <i class="fas fa-bullseye me-2"></i>Target Voice
+                    </label>
+                    <p class="text-muted mb-2">Please upload the target voice audio file, under one minute in length, your audio will be converted to use this voice (WAV or MP3 format)</p>
+                    <div class="audio-input-container">
+                        <input type="file" class="form-control" id="targetFile" name="target_file" accept=".wav,.mp3">
+                        <button type="button" id="targetRecordBtn" class="mic-btn">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <span id="targetRecordingTimer" class="recording-timer">00:00</span>
+                    </div>
+                    
+                    <div id="targetPreviewSection" class="audio-preview-card" style="display:none">
+                        <p class="mb-2 fw-bold">Target Voice Preview:</p>
+                        <audio id="targetPreview" controls class="w-100"></audio>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="songCheck" name="song_or_not">
+                        <label class="form-check-label" for="songCheck">
+                            Is the source audio a song? <span class="text-muted">(Check this if your source audio is a song)</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <button type="submit" id="convertBtn" class="convert-btn" data-is-authenticated="{{ current_user.is_authenticated|tojson|safe }}">
+                    <i class="fas fa-magic me-2"></i>Start Conversion
+                </button>
+            </div>
+        </form>
+        
+        <div id="loadingSpinner" class="text-center mt-4" style="display: none;">
+            <div class="loading-wave">
+                <div class="loading-bar"></div>
+                <div class="loading-bar"></div>
+                <div class="loading-bar"></div>
+                <div class="loading-bar"></div>
+                <div class="loading-bar"></div>
+            </div>
+            <p class="mt-3">Converting voice, please wait...</p>
+        </div>
+        
+        <div id="audioContainer" class="audio-player-card" style="display: none;">
+            <h4 class="mb-4">Conversion complete, listen to the result!</h4>
+            <div class="waveform-container">
+                <div id="waveform"></div>
+            </div>
+            <div class="audio-controls">
+                <button id="playBtn" class="audio-btn play-btn">
+                    <i class="fas fa-play me-2"></i>Play
+                </button>
+                <a id="downloadBtn" class="audio-btn download-btn text-center text-decoration-none">
+                    <i class="fas fa-download me-2"></i>Download
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/7.7.3/wavesurfer.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM elements
+    const vcForm = document.getElementById('vcForm');
+    const sourceFile = document.getElementById('sourceFile');
+    const targetFile = document.getElementById('targetFile');
+    const songCheck = document.getElementById('songCheck');
+    const convertBtn = document.getElementById('convertBtn');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const audioContainer = document.getElementById('audioContainer');
+    const errorAlert = document.getElementById('errorAlert');
+    const errorMessage = document.getElementById('errorMessage');
+    const playBtn = document.getElementById('playBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    
+    // Recording elements
+    const sourceRecordBtn = document.getElementById('sourceRecordBtn');
+    const targetRecordBtn = document.getElementById('targetRecordBtn');
+    const sourceRecordingTimer = document.getElementById('sourceRecordingTimer');
+    const targetRecordingTimer = document.getElementById('targetRecordingTimer');
+    
+    // Recording variables
+    let sourceMediaRecorder = null;
+    let targetMediaRecorder = null;
+    let sourceAudioChunks = [];
+    let targetAudioChunks = [];
+    let sourceRecordedBlob = null;
+    let targetRecordedBlob = null;
+    let sourceRecordInterval = null;
+    let targetRecordInterval = null;
+    let sourceRecordingTime = 0;
+    let targetRecordingTime = 0;
+    
+    // Membership status and duration limits
+    let hasMembership = false;
+    let maxSourceDuration = 60; // Default: 1 minute for non-members
+    
+    // Check membership status and update limits
+    function checkMembershipStatus() {
+        fetch('/get_membership_status')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    hasMembership = data.has_membership;
+                    // Update duration limits based on membership
+                    maxSourceDuration = hasMembership ? 120 : 60; // 2 minutes for members, 1 minute for non-members
+                    
+                    // Update instructions to show current limits
+                    const sourceInstructions = document.querySelector('.mb-4:first-child .text-muted');
+                    if (sourceInstructions) {
+                        sourceInstructions.textContent = `Please upload the audio file you want to convert, supports speech and song vocals under ${hasMembership ? 'two minutes' : 'one minute'} (WAV or MP3 format)`;
+                    }
+                    
+                    // Update membership indicator if it exists
+                    const membershipIndicator = document.getElementById('membershipIndicator');
+                    if (membershipIndicator) {
+                        if (data.has_membership) {
+                            membershipIndicator.innerHTML = `<i class="fas fa-crown text-warning me-1"></i> Membership: ${data.days_remaining} days`;
+                            membershipIndicator.classList.remove('d-none');
+                            
+                            // Hide the "会员中心" text when showing membership status
+                            const activateMembership = document.getElementById('activateMembership');
+                            if (activateMembership) {
+                                activateMembership.classList.add('d-none');
+                            }
+                            
+                            // Add active class to membership button
+                            const btnMembership = document.querySelector('.btn-membership');
+                            if (btnMembership) {
+                                btnMembership.classList.add('active');
+                            }
+                        } else {
+                            membershipIndicator.classList.add('d-none');
+                        }
+                    }
+                    
+                    // Update points display with infinity symbol for members
+                    if (typeof updatePointsDisplay === 'function') {
+                        updatePointsDisplay();
+                    }
+                    
+                    // Also call the global function to ensure the modal is updated
+                    if (typeof window.globalCheckMembershipStatus === 'function') {
+                        window.globalCheckMembershipStatus();
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error checking membership status:', error);
+                // In case of error, still try the global function
+                if (typeof window.globalCheckMembershipStatus === 'function') {
+                    window.globalCheckMembershipStatus();
+                }
+                
+                // Also try to update points display
+                if (typeof updatePointsDisplay === 'function') {
+                    updatePointsDisplay();
+                }
+            });
+    }
+    
+    // Function to reset the user's points if it's a new day
+    function resetPointsIfNewDay() {
+        fetch('/get_remaining_points', {
+            method: 'GET',
+            headers: {
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log("Points reset check completed. Current points:", data.points);
+                
+                // If there's a points display in the navbar, update it
+                if (typeof updatePointsDisplay === 'function') {
+                    updatePointsDisplay();
+                }
+            } else {
+                console.error("Error checking/resetting points:", data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error in resetPointsIfNewDay:", error);
+        });
+    }
+    
+    // Call the function when the page loads
+    checkMembershipStatus();
+    
+    // Also reset points if it's a new day
+    resetPointsIfNewDay();
+    
+    // Set up an interval to check membership status every minute
+    setInterval(function() {
+        checkMembershipStatus();
+        // Also check points reset on interval
+        resetPointsIfNewDay();
+    }, 60000);
+    
+    // Add event listener for membership modal
+    const membershipModal = document.getElementById('membershipModal');
+    if (membershipModal) {
+        membershipModal.addEventListener('show.bs.modal', function() {
+            // Force refresh the membership status display when the modal is shown
+            const membershipStatusDisplay = document.getElementById('membershipStatusDisplay');
+            if (membershipStatusDisplay) {
+                // Show loading state
+                membershipStatusDisplay.innerHTML = `
+                    <div class="text-center mb-4">
+                        <div class="display-1 text-muted mb-2">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                        <h4 class="mb-2">Checking membership status...</h4>
+                        <p class="text-muted">Please wait a moment</p>
+                    </div>
+                `;
+                
+                // Fetch fresh membership data and update display directly
+                fetch('/get_membership_status')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Use the updateMembershipDisplay function from base.html
+                            // but also directly update the modal content
+                            if (data.has_membership) {
+                                membershipStatusDisplay.innerHTML = `
+                                    <div class="text-center mb-4">
+                                        <div class="display-1 text-warning mb-2">
+                                            <i class="fas fa-crown"></i>
+                                        </div>
+                                        <h4 class="mb-2">Membership Activated</h4>
+                                        <div class="bg-light rounded py-2 px-3 d-inline-block">
+                                            <i class="fas fa-calendar-alt me-2 text-primary"></i>
+                                            Days remaining: <span class="fw-bold text-primary">${data.days_remaining}</span> days
+                                        </div>
+                                    </div>
+                                `;
+                            } else {
+                                membershipStatusDisplay.innerHTML = `
+                                    <div class="text-center mb-4">
+                                        <h4 class="mb-3">Membership Special Price: $5.90/month</h4>
+                                        <p class="text-muted">Activate membership to enjoy unlimited use of all services without point restrictions</p>
+                                    </div>
+                                `;
+                            }
+                            
+                            // Still call globalCheckMembershipStatus to update other UI elements
+                            if (typeof window.globalCheckMembershipStatus === 'function') {
+                                window.globalCheckMembershipStatus();
+                            }
+                        } else {
+                            // Handle error
+                            membershipStatusDisplay.innerHTML = `
+                                <div class="text-center mb-4 text-danger">
+                                    <i class="fas fa-exclamation-circle fa-3x mb-3"></i>
+                                    <p>Failed to get membership status, please refresh the page and try again</p>
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching membership status:', error);
+                        membershipStatusDisplay.innerHTML = `
+                            <div class="text-center mb-4 text-danger">
+                                <i class="fas fa-exclamation-circle fa-3x mb-3"></i>
+                                <p>Failed to get membership status, please refresh the page and try again</p>
+                            </div>
+                        `;
+                    });
+            }
+        });
+    }
+    
+    // Request microphone permission and setup recording
+    async function setupRecording(recordBtn, recordingTimer, audioChunks, 
+                                  previewSection, previewAudio, fileInput, 
+                                  isSource = true) {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const mediaRecorder = new MediaRecorder(stream);
+            
+            // Clear previous recordings
+            audioChunks.length = 0;
+            
+            // Set up event handlers
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    audioChunks.push(event.data);
+                }
+            };
+            
+            mediaRecorder.onstop = () => {
+                // Create blob from recorded chunks
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                
+                // Display preview
+                previewAudio.src = audioUrl;
+                previewSection.style.display = 'block';
+                
+                // Store the recorded blob
+                if (isSource) {
+                    sourceRecordedBlob = audioBlob;
+                    // Clear file input to avoid conflicts
+                    fileInput.value = '';
+                } else {
+                    targetRecordedBlob = audioBlob;
+                    // Clear file input to avoid conflicts
+                    fileInput.value = '';
+                }
+                
+                // Stop all tracks to release the microphone
+                stream.getTracks().forEach(track => track.stop());
+            };
+            
+            return mediaRecorder;
+        } catch (error) {
+            console.error('Error accessing microphone:', error);
+            showError('Cannot access microphone: ' + error.message);
+            return null;
+        }
+    }
+    
+    // Format time for recording timer
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const secs = Math.floor(seconds % 60).toString().padStart(2, '0');
+        return `${mins}:${secs}`;
+    }
+    
+    // Source recording logic
+    sourceRecordBtn.addEventListener('click', async function() {
+        // If already recording, stop recording
+        if (sourceMediaRecorder && sourceMediaRecorder.state === 'recording') {
+            sourceMediaRecorder.stop();
+            sourceRecordBtn.classList.remove('recording');
+            sourceRecordBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            sourceRecordingTimer.style.display = 'none';
+            
+            // Clear timer interval
+            clearInterval(sourceRecordInterval);
+            sourceRecordingTime = 0;
+            return;
+        }
+        
+        // Setup recording if not already set up
+        sourceMediaRecorder = await setupRecording(
+            sourceRecordBtn, 
+            sourceRecordingTimer, 
+            sourceAudioChunks, 
+            document.getElementById('sourcePreviewSection'),
+            document.getElementById('sourcePreview'),
+            sourceFile,
+            true
+        );
+        
+        if (sourceMediaRecorder) {
+            // Start recording
+            sourceAudioChunks = [];
+            sourceMediaRecorder.start();
+            sourceRecordBtn.classList.add('recording');
+            sourceRecordBtn.innerHTML = '<i class="fas fa-stop"></i>';
+            sourceRecordingTimer.style.display = 'inline';
+            sourceRecordingTime = 0;
+            sourceRecordingTimer.textContent = formatTime(sourceRecordingTime);
+            
+            // Update timer
+            sourceRecordInterval = setInterval(() => {
+                sourceRecordingTime++;
+                sourceRecordingTimer.textContent = formatTime(sourceRecordingTime);
+                
+                // Auto-stop at maxSourceDuration seconds, but use the recording
+                if (sourceRecordingTime >= maxSourceDuration) {
+                    sourceMediaRecorder.stop();
+                    sourceRecordBtn.classList.remove('recording');
+                    sourceRecordBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                    sourceRecordingTimer.style.display = 'none';
+                    clearInterval(sourceRecordInterval);
+                    // Display info message instead of error
+                    const infoAlert = document.createElement('div');
+                    infoAlert.className = 'alert alert-info mt-2';
+                    infoAlert.innerHTML = `<i class="fas fa-info-circle me-2"></i>Recording reached maximum length (${hasMembership ? '2 minutes' : '1 minute'})`;
+                    document.getElementById('sourcePreviewSection').appendChild(infoAlert);
+                    
+                    // Remove info message after 5 seconds
+                    setTimeout(() => {
+                        if (infoAlert.parentNode) {
+                            infoAlert.parentNode.removeChild(infoAlert);
+                        }
+                    }, 5000);
+                }
+            }, 1000);
+        }
+    });
+    
+    // Target recording logic
+    targetRecordBtn.addEventListener('click', async function() {
+        // If already recording, stop recording
+        if (targetMediaRecorder && targetMediaRecorder.state === 'recording') {
+            targetMediaRecorder.stop();
+            targetRecordBtn.classList.remove('recording');
+            targetRecordBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            targetRecordingTimer.style.display = 'none';
+            
+            // Clear timer interval
+            clearInterval(targetRecordInterval);
+            targetRecordingTime = 0;
+            return;
+        }
+        
+        // Setup recording if not already set up
+        targetMediaRecorder = await setupRecording(
+            targetRecordBtn, 
+            targetRecordingTimer, 
+            targetAudioChunks, 
+            document.getElementById('targetPreviewSection'),
+            document.getElementById('targetPreview'),
+            targetFile,
+            false
+        );
+        
+        if (targetMediaRecorder) {
+            // Start recording
+            targetAudioChunks = [];
+            targetMediaRecorder.start();
+            targetRecordBtn.classList.add('recording');
+            targetRecordBtn.innerHTML = '<i class="fas fa-stop"></i>';
+            targetRecordingTimer.style.display = 'inline';
+            targetRecordingTime = 0;
+            targetRecordingTimer.textContent = formatTime(targetRecordingTime);
+            
+            // Update timer
+            targetRecordInterval = setInterval(() => {
+                targetRecordingTime++;
+                targetRecordingTimer.textContent = formatTime(targetRecordingTime);
+                
+                // Auto-stop at 60 seconds, but use the recording
+                if (targetRecordingTime >= 60) {
+                    targetMediaRecorder.stop();
+                    targetRecordBtn.classList.remove('recording');
+                    targetRecordBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                    targetRecordingTimer.style.display = 'none';
+                    clearInterval(targetRecordInterval);
+                    // Display info message instead of error
+                    const infoAlert = document.createElement('div');
+                    infoAlert.className = 'alert alert-info mt-2';
+                    infoAlert.innerHTML = '<i class="fas fa-info-circle me-2"></i>Recording reached maximum length (60 seconds)';
+                    document.getElementById('targetPreviewSection').appendChild(infoAlert);
+                    
+                    // Remove info message after 5 seconds
+                    setTimeout(() => {
+                        if (infoAlert.parentNode) {
+                            infoAlert.parentNode.removeChild(infoAlert);
+                        }
+                    }, 5000);
+                }
+            }, 1000);
+        }
+    });
+    
+    // Source file preview
+    sourceFile.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const sourcePreview = document.getElementById('sourcePreview');
+            sourcePreview.src = URL.createObjectURL(file);
+            document.getElementById('sourcePreviewSection').style.display = 'block';
+            
+            // Check audio duration when metadata is loaded
+            sourcePreview.onloadedmetadata = function() {
+                const maxDuration = maxSourceDuration; // Use the membership-aware duration limit
+                if (sourcePreview.duration > maxDuration) {
+                    showError(`Source audio file exceeds ${hasMembership ? '2 minutes' : '1 minute'}, please upload a shorter audio file`);
+                    sourceFile.value = ''; // Clear the file input
+                    document.getElementById('sourcePreviewSection').style.display = 'none';
+                }
+            };
+            
+            // Clear any recorded audio to avoid conflicts
+            sourceRecordedBlob = null;
+        } else {
+            document.getElementById('sourcePreviewSection').style.display = 'none';
+        }
+    });
+    
+    // Target file preview
+    targetFile.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const targetPreview = document.getElementById('targetPreview');
+            targetPreview.src = URL.createObjectURL(file);
+            document.getElementById('targetPreviewSection').style.display = 'block';
+            
+            // Check audio duration when metadata is loaded
+            targetPreview.onloadedmetadata = function() {
+                if (targetPreview.duration > 60) {
+                    showError('Target voice file exceeds 60 seconds, please upload a shorter audio file');
+                    targetFile.value = ''; // Clear the file input
+                    document.getElementById('targetPreviewSection').style.display = 'none';
+                }
+            };
+            
+            // Clear any recorded audio to avoid conflicts
+            targetRecordedBlob = null;
+        } else {
+            document.getElementById('targetPreviewSection').style.display = 'none';
+        }
+    });
+    
+    // WaveSurfer instance
+    let wavesurfer = null;
+    
+    // Make play button work
+    function setupPlayButton() {
+        // Remove any existing click handlers to prevent duplicates
+        playBtn.onclick = null;
+        
+        // Add fresh click handler
+        playBtn.onclick = function() {
+            if (!wavesurfer) return;
+            
+            if (wavesurfer.isPlaying()) {
+                wavesurfer.pause();
+                playBtn.innerHTML = '<i class="fas fa-play me-2"></i>Play';
+            } else {
+                wavesurfer.play();
+                playBtn.innerHTML = '<i class="fas fa-pause me-2"></i>Pause';
+            }
+        };
+    }
+    
+    // Helper function to create a File from a Blob
+    function blobToFile(blob, name) {
+        // Convert Blob to File object
+        return new File([blob], name, { type: blob.type });
+    }
+    
+    // Form submission handler
+    vcForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Check authentication
+        const isAuthenticated = convertBtn.getAttribute('data-is-authenticated') === 'true';
+        if (!isAuthenticated) {
+            window.location.href = '/login';
+            return;
+        }
+        
+        // Get the preview elements
+        const sourcePreview = document.getElementById('sourcePreview');
+        const targetPreview = document.getElementById('targetPreview');
+        const sourcePreviewSection = document.getElementById('sourcePreviewSection');
+        const targetPreviewSection = document.getElementById('targetPreviewSection');
+        
+        // Check if we have valid source audio by verifying the preview is visible and has content
+        if (sourcePreviewSection.style.display === 'none' || 
+            !sourcePreview || 
+            !sourcePreview.src || 
+            sourcePreview.src === '') {
+            showError('Please upload or record source audio file');
+            return;
+        }
+        
+        // Check if we have valid target audio by verifying the preview is visible and has content
+        if (targetPreviewSection.style.display === 'none' || 
+            !targetPreview || 
+            !targetPreview.src || 
+            targetPreview.src === '') {
+            showError('Please upload or record target voice file');
+            return;
+        }
+        
+        // We don't need to check duration here - it's checked during upload/recording
+        
+        // Hide any previous error
+        errorAlert.style.display = 'none';
+        
+        // Show loading spinner
+        loadingSpinner.style.display = 'block';
+        audioContainer.style.display = 'none';
+        convertBtn.disabled = true;
+        
+        // Create form data
+        const formData = new FormData();
+        
+        // Add source file (either uploaded or recorded)
+        if (sourceFile.files[0]) {
+            formData.append('source_file', sourceFile.files[0]);
+        } else if (sourceRecordedBlob) {
+            const sourceFileObj = blobToFile(sourceRecordedBlob, 'source_recording.wav');
+            formData.append('source_file', sourceFileObj);
+        } else if (sourcePreview.src) {
+            // If we have a valid preview but no file or blob, fetch the audio from the preview
+            try {
+                const response = await fetch(sourcePreview.src);
+                const blob = await response.blob();
+                const sourceFileObj = blobToFile(blob, 'source_audio.wav');
+                formData.append('source_file', sourceFileObj);
+            } catch (error) {
+                console.error('Error fetching source audio:', error);
+                showError('Unable to process source audio file, please re-record or upload');
+                loadingSpinner.style.display = 'none';
+                convertBtn.disabled = false;
+                return;
+            }
+        }
+        
+        // Add target file (either uploaded or recorded)
+        if (targetFile.files[0]) {
+            formData.append('target_file', targetFile.files[0]);
+        } else if (targetRecordedBlob) {
+            const targetFileObj = blobToFile(targetRecordedBlob, 'target_recording.wav');
+            formData.append('target_file', targetFileObj);
+        } else if (targetPreview.src) {
+            // If we have a valid preview but no file or blob, fetch the audio from the preview
+            try {
+                const response = await fetch(targetPreview.src);
+                const blob = await response.blob();
+                const targetFileObj = blobToFile(blob, 'target_audio.wav');
+                formData.append('target_file', targetFileObj);
+            } catch (error) {
+                console.error('Error fetching target audio:', error);
+                showError('Unable to process target voice file, please re-record or upload');
+                loadingSpinner.style.display = 'none';
+                convertBtn.disabled = false;
+                return;
+            }
+        }
+        
+        formData.append('song_or_not', songCheck.checked);
+        
+        try {
+            // Send conversion request
+            const response = await fetch('/voice_conversion', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Voice conversion failed, please try again later');
+            }
+            
+            // Parse response
+            const data = await response.json();
+            
+            if (!data.success || !data.file_url) {
+                throw new Error(data.message || 'The audio URL returned by the server is invalid, please try again later');
+            }
+            
+            // Get audio URL
+            const audioUrl = data.file_url;
+            
+            // Set download link
+            downloadBtn.href = audioUrl;
+            downloadBtn.download = 'converted_voice.wav';
+            
+            // Initialize WaveSurfer
+            if (wavesurfer) {
+                wavesurfer.destroy();
+            }
+            
+            wavesurfer = WaveSurfer.create({
+                container: '#waveform',
+                waveColor: '#64B5F6',
+                progressColor: '#1976D2',
+                cursorColor: '#2C3E50',
+                barWidth: 2,
+                barRadius: 3,
+                cursorWidth: 1,
+                height: 100,
+                barGap: 3,
+                normalize: true,
+                backend: 'WebAudio'
+            });
+            
+            // Setup error handling
+            wavesurfer.on('error', function(err) {
+                console.error('WaveSurfer error:', err);
+                showError('Audio loading failed, please try again: ' + err.message);
+                loadingSpinner.style.display = 'none';
+                convertBtn.disabled = false;
+            });
+            
+            // Update play button when playback ends
+            wavesurfer.on('finish', function() {
+                playBtn.innerHTML = '<i class="fas fa-play me-2"></i>Play';
+            });
+            
+            // When audio is ready to play
+            wavesurfer.on('ready', function() {
+                audioContainer.style.display = 'block';
+                loadingSpinner.style.display = 'none';
+                convertBtn.disabled = false;
+                
+                // Make sure the play button is set up
+                setupPlayButton();
+                
+                // Clear recorded blobs after successful conversion
+                sourceRecordedBlob = null;
+                targetRecordedBlob = null;
+                
+                // Scroll to audio container
+                setTimeout(() => {
+                    const rect = audioContainer.getBoundingClientRect();
+                    const isVisible = (
+                        rect.top >= 0 &&
+                        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+                    );
+                    
+                    if (!isVisible) {
+                        audioContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
+                }, 100);
+            });
+            
+            // Load audio
+            wavesurfer.load(audioUrl);
+            
+        } catch (error) {
+            console.error('Error during voice conversion:', error);
+            showError(error.message || 'An error occurred during voice conversion, please try again later');
+            loadingSpinner.style.display = 'none';
+            convertBtn.disabled = false;
+        }
+    });
+    
+    // Initial setup for play button
+    setupPlayButton();
+    
+    // Helper function to show error message
+    function showError(message) {
+        errorMessage.textContent = message;
+        errorAlert.style.display = 'block';
+        
+        // Scroll to error message
+        errorAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Override the membership activation form submission to prevent page redirects
+    const activateKeyForm = document.getElementById('activateKeyForm');
+    if (activateKeyForm) {
+        // Remove the existing form action to prevent direct submissions
+        activateKeyForm.removeAttribute('action');
+        activateKeyForm.removeAttribute('method');
+        
+        // Set iframe as target to prevent page reload
+        activateKeyForm.target = "hiddenFrame";
+        
+        // Override the form's submit event
+        activateKeyForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const activationKey = document.getElementById('activationKey').value.trim();
+            const activateBtn = document.getElementById('activateKeyBtn');
+            
+            if (!activationKey) {
+                alert('Please enter an activation code');
+                return;
+            }
+            
+            // Disable button and show loading
+            activateBtn.disabled = true;
+            activateBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Activating...';
+            
+            // Log activation attempt
+            console.log('Attempting to activate key:', activationKey);
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('activation_key', activationKey);
+            
+            // Get CSRF token if available
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            
+            // Submit using fetch API
+            fetch('/activate_membership', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Server responded with status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle successful activation
+                console.log('Activation response:', data);
+                
+                // Reset button state
+                activateBtn.disabled = false;
+                activateBtn.innerHTML = '<i class="fas fa-check-circle me-1"></i>Activate';
+                
+                if (data.success) {
+                    // Show success modal
+                    document.getElementById('successMessage').textContent = data.message || 'Your membership has been successfully activated!';
+                    document.getElementById('membershipDetails').textContent = `Membership: ${data.days_remaining} days`;
+                    
+                    // Hide membership modal and show success modal
+                    const membershipModal = bootstrap.Modal.getInstance(document.getElementById('membershipModal'));
+                    membershipModal.hide();
+                    
+                    // Show success modal
+                    const successModal = new bootstrap.Modal(document.getElementById('activationSuccessModal'));
+                    successModal.show();
+                    
+                    // Update membership display if function exists
+                    if (typeof updateMembershipDisplay === 'function') {
+                        updateMembershipDisplay(true, data.days_remaining);
+                    }
+                    
+                    // Clear the input
+                    document.getElementById('activationKey').value = '';
+                } else {
+                    // Show error message
+                    alert(data.message || 'Activation failed, please check if your activation code is correct');
+                }
+            })
+            .catch(error => {
+                console.error('Error activating membership:', error);
+                
+                // Reset button state
+                activateBtn.disabled = false;
+                activateBtn.innerHTML = '<i class="fas fa-check-circle me-1"></i>Activate';
+                
+                // Show error message
+                alert('An error occurred during activation, please try again later');
+            });
+        });
+    }
+});
+</script>
+{% endblock %} 

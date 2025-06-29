@@ -1,0 +1,2254 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-584FXGMJ57"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-584FXGMJ57');
+</script>
+{% endblock %}
+
+{% macro render_avatar(user, size=40, extra_classes='') %}
+    {% if user.is_authenticated %}
+        <img src="{{ user.avatar_url if user.avatar_url else user.get_avatar() }}"
+             alt="avatar" class="avatar rounded-circle {{ extra_classes }}" style="width: {{ size }}px; height: {{ size }}px;">
+    {% else %}
+        <img src="{{ get_default_avatar() }}"
+             alt="avatar" class="avatar rounded-circle {{ extra_classes }}" style="width: {{ size }}px; height: {{ size }}px;">
+    {% endif %}
+{% endmacro %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8-5">
+            <div class="post-container">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ url_for('forum') }}">书梦社</a></li>
+                        <li class="breadcrumb-item active">{{ post.title }}</li>
+                    </ol>
+                </nav>
+                
+                <!-- Post Header -->
+                <div class="post-header mb-4">
+                    <div class="post-meta d-flex align-items-center mb-3">
+                        <a href="{{ url_for('user_profile', user_id=post.user.id) }}" class="user-profile-link d-flex align-items-center text-decoration-none">
+                            {{ render_avatar(post.user, 48, 'me-3') }}
+                            <div class="meta-info">
+                                <div class="author">{{ post.user.username }}
+                                    {% if post.user.username == "书梦官方" %}
+                                    <i class="fas fa-check-circle text-primary" title="官方认证账号" style="font-size: 0.8em; margin-left: 5px; vertical-align: middle; position: relative; top: -1.5px;"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="user-meta text-muted">
+                                    {% if post.user.bio %}
+                                    <span class="user-bio">{{ post.user.bio }}</span>
+                                    <span class="mx-2"></span>
+                                    {% endif %}
+                                    <span class="time">{{ (post.created_at|add_hours).strftime('%m-%d %H:%M') }}</span>
+                                </div>
+                            </div>
+                        </a>
+                        {% if current_user.is_authenticated and current_user.id != post.user_id %}
+                        <div class="follow-btn ms-3">
+                            <button class="btn btn-sm {% if current_user.is_following(post.user) %}btn-primary{% else %}btn-outline-primary{% endif %} follow-toggle"
+                                    onclick="toggleFollow({{ post.user.id }})"
+                                    data-user-id="{{ post.user.id }}">
+                                <i class="fas {% if current_user.is_following(post.user) %}fa-user-minus{% else %}fa-user-plus{% endif %} me-1"></i>
+                                <span class="follow-text">{{ '取消关注' if current_user.is_following(post.user) else '关注' }}</span>
+                                <span class="followers-count">({{ post.user.get_followers_count() }})</span>
+                            </button>
+                        </div>
+                        {% endif %}
+                        {% if current_user.is_authenticated and current_user.id == post.user_id %}
+                        <div class="post-actions ms-auto">
+                            <button class="btn btn-sm btn-outline-primary me-2" onclick="editPost({{ post.id }})">
+                                <i class="fas fa-edit"></i> 编辑
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="confirmDeletePost({{ post.id }})">
+                                <i class="fas fa-trash-alt"></i> 删除
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <h1 class="post-title">
+                        {{ post.title }}
+                        {% if post.is_private and current_user.is_authenticated and current_user.id == post.user_id %}
+                        <i class="fas fa-lock text-secondary ms-2" title="私密分享" style="font-size: 0.5em; vertical-align: middle; position: relative; top: -2px;"></i>
+                        {% endif %}
+                        {% if '智能体设定：' in post.content and '角色背景设定：' in post.content %}
+                        <button class="btn btn-chat-agent" onclick="chatWithAgent()">
+                            <i class="fas fa-comments me-2"></i>对话智能体
+                            <div class="btn-glow"></div>
+                        </button>
+                        {% endif %}
+                        <span class="post-title-tags">
+                            {% for tag in post.tag_list %}
+                            <span class="title-tag">
+                                <a href="{{ url_for('forum', tag=tag, sort=request.args.get('sort', 'time')) }}" class="text-decoration-none text-dark">
+                                {% if tag == '小说' %}
+                                <i class="fas fa-book me-1"></i>
+                                {% elif tag == '电影' %}
+                                <i class="fas fa-film me-1"></i>
+                                {% elif tag == '电视剧' %}
+                                <i class="fas fa-tv me-1"></i>
+                                {% elif tag == '动漫' %}
+                                <i class="fas fa-dragon me-1"></i>
+                                {% elif tag == '漫画' %}
+                                <i class="fas fa-image me-1"></i>
+                                {% elif tag == '随想' %}
+                                <i class="fas fa-feather-alt me-1"></i>
+                                {% elif tag == '读后感' %}
+                                <i class="fas fa-comment-dots me-1"></i>
+                                {% elif tag == '新结局' %}
+                                <i class="fas fa-magic me-1"></i>
+                                {% elif tag == '角色畅聊' %}
+                                <i class="fas fa-comments me-1"></i>
+                                {% elif tag == '绘梦' %}
+                                <i class="fas fa-paint-brush me-1"></i>
+                                {% elif tag == '梦语' %}
+                                <i class="fas fa-cloud-moon me-1"></i>
+                                {% elif tag == '游戏' %}
+                                <i class="fas fa-gamepad me-1"></i>
+                                {% elif tag == '虐心' %}
+                                <i class="fas fa-heart-broken me-1"></i>
+                                {% elif tag == '意难平' %}
+                                <i class="fas fa-cloud-rain me-1"></i>
+                                {% elif tag == '意满离' %}
+                                <i class="fas fa-sun me-1"></i>
+                                {% elif tag == '青春校园' %}
+                                <i class="fas fa-school me-1"></i>
+                                {% elif tag == '恋爱' %}
+                                <i class="fas fa-heartbeat me-1"></i>
+                                {% elif tag == '霸道总裁' %}
+                                <i class="fas fa-crown me-1"></i>
+                                {% elif tag == '科幻' %}
+                                <i class="fas fa-rocket me-1"></i>
+                                {% elif tag == '职场' %}
+                                <i class="fas fa-briefcase me-1"></i>
+                                {% elif tag == '晋江' %}
+                                <i class="fas fa-champagne-glasses"></i>
+                                {% elif tag == '树洞' %}
+                                <i class="fas fa-tree me-1"></i>
+                                {% elif tag == '悄悄话' %}
+                                <i class="fas fa-comment-dots me-1"></i>
+                                {% elif tag == '其他' %}
+                                <i class="fas fa-ellipsis me-1"></i>
+                                {% elif tag == 'BE' %}
+                                <i class="fas fa-cloud-showers-heavy me-1"></i>
+                                {% elif tag == 'HE' %}
+                                <i class="fas fa-rainbow me-1"></i>
+                                {% elif tag == "绘梦" %}
+                                <span class="badge rounded-pill"><i class="fas fa-paint-brush me-1"></i>{{ tag }}</span>
+                                {% else %}
+                                <i class="fas fa-tag me-1"></i>
+                                {% endif %}
+                                {{ tag }}
+                                </a>
+                            </span>
+                            {% endfor %}
+                        </span>
+                    </h1>
+                </div>
+                
+                <!-- Cover Image -->
+                {% if post.cover_image %}
+                <div class="post-cover-image mb-4">
+                    <img src="{{ post.cover_image }}" 
+                         alt="Cover for {{ post.title }}"
+                         class="img-fluid rounded">
+                    {% if current_user.is_authenticated and current_user.id == post.user_id %}
+                    <div class="cover-image-actions">
+                        <button type="button" class="btn btn-light btn-sm me-2" onclick="showCoverImageUpload()">
+                            <i class="fas fa-camera"></i> 更换封面
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm" style="color: #f52f39;" onclick="deleteCoverImage({{ post.id }})">
+                            <i class="fas fa-trash-alt"></i> 删除封面
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+                {% elif current_user.is_authenticated and current_user.id == post.user_id %}
+                <div class="add-cover-image mb-4">
+                    <button type="button" class="btn btn-outline-primary" onclick="showCoverImageUpload()">
+                        <i class="fas fa-image me-2"></i>添加封面图片
+                    </button>
+                </div>
+                {% endif %}
+
+                <!-- Cover Image Upload Modal -->
+                <div class="modal fade" id="coverImageModal" tabindex="-1" aria-labelledby="coverImageModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="coverImageModalLabel">上传封面图片</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="cover-image-upload">
+                                    <input type="file" class="form-control" id="cover-image" name="cover_image" 
+                                           accept="image/*" style="display: none;">
+                                    <div class="upload-preview" id="image-preview">
+                                        <div class="upload-placeholder">
+                                            <i class="fas fa-image fa-2x mb-2"></i>
+                                            <div>点击上传封面图片</div>
+                                            <small class="text-muted">支持 JPG、PNG、GIF、WebP 格式，图片大小不超过 8MB</small>
+                                        </div>
+                                        <img src="" alt="Preview" style="display: none;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                                <button type="button" class="btn btn-primary" onclick="uploadCoverImage({{ post.id }})">
+                                    <i class="fas fa-upload me-2"></i>上传
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Post Content -->
+                <div class="post-content mb-4">
+                    <span class="first-two-chars">{{ post.content[:2] }}</span><span class="remaining-content">{{ post.content[2:] }}</span>
+                </div>
+                
+                <!-- Chat History -->
+                {% if post.chat_history %}
+                <div class="chat-history mb-4">
+                    <h4 class="mb-3">对话记录</h4>
+                    <div class="chat-container">
+                        {% for message in post.chat_history|json_loads %}
+                        <div class="chat-message {{ 'user' if message.role == 'user' else 'ai' }}">
+                            <div class="message-content">{{ message.content }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Post Actions -->
+                <div class="post-actions mb-4">
+                    <button class="btn btn-like {% if current_user.is_authenticated and current_user.has_liked_post(post.id) %}liked{% endif %}"
+                            onclick="handleLike({{ post.id }})"
+                            type="button">
+                        <i class="fas fa-heart"></i>
+                        <span class="like-count">{{ post.like_count }}</span>
+                    </button>
+                </div>
+                
+                <!-- Comments Section -->
+                <div class="comments-section mt-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="mb-0">评论 ({{ post.comments|length }})</h4>
+                        <div class="dropdown">
+                            <button class="btn btn-sort dropdown-toggle" type="button" id="commentSortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-sort-amount-down me-2"></i>
+                                {% if request.args.get('sort') == 'likes' %}
+                                    按点赞数排序
+                                {% else %}
+                                    最新发布
+                                {% endif %}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="commentSortDropdown">
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center {% if not request.args.get('sort') or request.args.get('sort') == 'newest' %}active{% endif %}" 
+                                       href="javascript:void(0);"
+                                       onclick="handleSort('newest')">
+                                        <i class="fas fa-clock me-2"></i>
+                                        <span>最新发布</span>
+                                        {% if not request.args.get('sort') or request.args.get('sort') == 'newest' %}
+                                        <i class="fas fa-check ms-auto"></i>
+                                        {% endif %}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center {% if request.args.get('sort') == 'likes' %}active{% endif %}" 
+                                       href="javascript:void(0);"
+                                       onclick="handleSort('likes')">
+                                        <i class="fas fa-heart me-2"></i>
+                                        <span>按点赞数排序</span>
+                                        {% if request.args.get('sort') == 'likes' %}
+                                        <i class="fas fa-check ms-auto"></i>
+                                        {% endif %}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    {% if current_user.is_authenticated %}
+                        <div class="add-comment mb-4">
+                            <div class="d-flex">
+                                {{ render_avatar(current_user, 40, 'me-3') }}
+                                <div class="flex-grow-1">
+                                    <div class="position-relative">
+                                        <textarea class="form-control" id="comment-input" rows="2" 
+                                                 placeholder="写下你的友好评论吧～" maxlength="300"
+                                                 oninput="updateWordCount(this, 'main-word-count')"></textarea>
+                                        <div class="word-count" id="main-word-count">0/300字</div>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                        <small class="text-muted" id="main-word-count">0/300</small>
+                                        <button class="btn btn-primary" onclick="submitComment()" id="submit-comment-btn">
+                                            <i class="fas fa-paper-plane me-2"></i>
+                                            <span class="normal-text">发送</span>
+                                            <span class="loading-text d-none">
+                                                <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                                发送中...
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            登录后即可发表评论。<a href="{{ url_for('login') }}" class="alert-link">立即登录</a>
+                        </div>
+                    {% endif %}
+                    
+                    <div id="comments-list">
+                        {% for comment in post.comments|sort(attribute='created_at' if not request.args.get('sort') or request.args.get('sort') in ['newest', 'oldest'] else 'like_count', 
+                                                          reverse=True if not request.args.get('sort') or request.args.get('sort') in ['newest', 'likes'] else False) if not comment.parent_id %}
+                            <div class="comment-item" id="comment-{{ comment.id }}">
+                                <div class="d-flex">
+                                    {{ render_avatar(comment.user, 36, 'me-3') }}
+                                    <div class="flex-grow-1">
+                                        <div class="meta-info">
+                                            <div class="author">{{ comment.user.username }}
+                                                {% if comment.user.username == "书梦官方" %}
+                                                <i class="fas fa-check-circle text-primary" title="官方认证账号" style="font-size: 0.8em; margin-left: 5px; vertical-align: middle; position: relative; top: -1.5px;"></i>
+                                                {% endif %}
+                                            </div>
+                                            <div class="time">{{ (comment.created_at|add_hours).strftime('%m-%d %H:%M') }}</div>
+                                        </div>
+                                        <div class="comment-content">
+                                            {{ comment.content }}
+                                        </div>
+                                        <div class="comment-actions">
+                                            {% if current_user.is_authenticated %}
+                                                <button class="btn btn-sm btn-link" onclick="showReplyForm({{ comment.id }}, '{{ comment.user.username }}')">
+                                                    <i class="fas fa-reply"></i> 回复
+                                                </button>
+                                                <button class="btn btn-sm btn-link like-button {% if current_user.has_liked_comment(comment.id) %}liked{% endif %}"
+                                                        onclick="handleCommentLike({{ comment.id }})">
+                                                    <i class="fas fa-heart"></i>
+                                                    <span class="like-count">{{ comment.like_count }}</span>
+                                                </button>
+                                                {% if current_user.id == comment.user_id or current_user.is_admin %}
+                                                <button class="btn btn-sm btn-link text-primary" onclick="editComment({{ comment.id }})">
+                                                    <i class="fas fa-edit"></i> 编辑
+                                                </button>
+                                                <button class="btn btn-sm btn-link text-danger" onclick="confirmDeleteComment({{ comment.id }})">
+                                                    <i class="fas fa-trash-alt"></i> 删除
+                                                </button>
+                                                {% endif %}
+                                            {% else %}
+                                                <button class="btn btn-sm btn-link" onclick="window.location.href='{{ url_for('login') }}'">
+                                                    <i class="fas fa-reply"></i> 登录后回复
+                                                </button>
+                                                <button class="btn btn-sm btn-link like-button">
+                                                    <i class="fas fa-heart"></i>
+                                                    <span class="like-count">{{ comment.like_count }}</span>
+                                                </button>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <!-- Nested replies -->
+                                        <div class="nested-comments">
+                                            {% for reply in comment.replies %}
+                                                <div class="comment-item nested" id="comment-{{ reply.id }}">
+                                                    <div class="d-flex">
+                                                        {{ render_avatar(reply.user, 32, 'me-2') }}
+                                                        <div class="flex-grow-1">
+                                                            <div class="meta-info">
+                                                                <div class="author">{{ reply.user.username }}
+                                                                    {% if reply.user.username == "书梦官方" %}
+                                                                    <i class="fas fa-check-circle text-primary" title="官方认证账号" style="font-size: 0.8em; margin-left: 5px; vertical-align: middle; position: relative; top: -1.5px;"></i>
+                                                                    {% endif %}
+                                                                </div>
+                                                                <div class="time">{{ (reply.created_at|add_hours).strftime('%m-%d %H:%M') }}</div>
+                                                            </div>
+                                                            <div class="comment-content">
+                                                                {{ reply.content }}
+                                                            </div>
+                                                            <div class="comment-actions">
+                                                                {% if current_user.is_authenticated %}
+                                                                    <button class="btn btn-sm btn-link" onclick="showReplyForm({{ comment.id }}, '{{ reply.user.username }}')">
+                                                                        <i class="fas fa-reply"></i> 回复
+                                                                    </button>
+                                                                    <button class="btn btn-sm btn-link like-button {% if current_user.has_liked_comment(reply.id) %}liked{% endif %}"
+                                                                            onclick="handleCommentLike({{ reply.id }})">
+                                                                        <i class="fas fa-heart"></i>
+                                                                        <span class="like-count">{{ reply.like_count }}</span>
+                                                                    </button>
+                                                                    {% if current_user.id == reply.user_id or current_user.is_admin %}
+                                                                    <button class="btn btn-sm btn-link text-primary" onclick="editComment({{ reply.id }})">
+                                                                        <i class="fas fa-edit"></i> 编辑
+                                                                    </button>
+                                                                    <button class="btn btn-sm btn-link text-danger" onclick="confirmDeleteComment({{ reply.id }})">
+                                                                        <i class="fas fa-trash-alt"></i> 删除
+                                                                    </button>
+                                                                    {% endif %}
+                                                                {% else %}
+                                                                    <button class="btn btn-sm btn-link" onclick="window.location.href='{{ url_for('login') }}'">
+                                                                        <i class="fas fa-reply"></i> 登录后回复
+                                                                    </button>
+                                                                    <button class="btn btn-sm btn-link like-button">
+                                                                        <i class="fas fa-heart"></i>
+                                                                        <span class="like-count">{{ reply.like_count }}</span>
+                                                                    </button>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                            
+                                            <!-- Reply form container -->
+                                            <div class="reply-form-container" id="reply-form-container-{{ comment.id }}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+body {
+    background: linear-gradient(135deg, #fff3d4, #fff8e5) !important;
+}
+
+
+.col-lg-8-5 {
+    flex: 0 0 72.833%;  /* 8.5 out of 12 columns (8.5 / 12 * 100) */
+    max-width: 72.833%;
+}
+
+@media (max-width: 991.98px) {
+    .col-lg-8-5 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+.container.my-5 {
+    background: linear-gradient(135deg, #fff3d4, #fff8e5);
+    border-radius: 20px;
+    padding: 2rem;
+    min-height: calc(100vh - 4rem);
+}
+
+@media (max-width: 767.98px) {
+    .container.my-5 {
+        padding: 1rem;
+    }
+}
+
+.post-container {
+    background: linear-gradient(135deg, #fff3d4, #fff8e5);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 767.98px) {
+    .post-container {
+        padding: 1.5rem;
+        border-radius: 15px;
+    }
+}
+
+.breadcrumb {
+    margin-bottom: 2rem;
+}
+
+.breadcrumb-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--secondary-color);
+}
+
+.avatar {
+    width: 48px;
+    height: 48px;
+    margin-right: 1rem;
+    border: 2px solid var(--primary-color);
+    padding: 2px;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.avatar:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.meta-info .author {
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 1.1rem;
+}
+
+.meta-info .time {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.post-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+    display: block;
+}
+
+.post-title-tags {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #666;
+}
+
+.title-tag a {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.title-tag a:hover {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.title-tag {
+    display: inline-block;
+    margin-right: 1rem;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.title-tag i {
+    color: var(--primary-color);
+    opacity: 0.8;
+}
+
+.title-tag:hover {
+    color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+.title-tag:hover i {
+    opacity: 1;
+}
+
+.story-info .badge {
+    font-size: 1rem;
+    padding: 0.6rem 1.2rem;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)) !important;
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
+}
+
+.story-info .badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(var(--primary-rgb), 0.3);
+}
+
+.post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.tag-badge {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(45deg, #f8f9fa, #ffffff) !important;
+    border: 1px solid rgba(0,0,0,0.05);
+    color: #666 !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.tag-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.tag-badge i {
+    color: var(--primary-color);
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.tag-badge:hover i {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.post-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-color);
+    white-space: pre-wrap;
+    padding: 2rem;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #fff6e0, #fff9e8);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+    margin: 2rem -2.5rem;
+    text-align: left;
+}
+
+@media (max-width: 767.98px) {
+    .post-content {
+        font-size: 1rem;
+        padding: 1.5rem;
+        margin: 1.5rem -1.5rem;
+        border-radius: 12px;
+    }
+    
+    .first-two-chars {
+        font-size: 1.5rem;
+        margin-left: -2rem;
+    }
+}
+
+.first-two-chars {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-right: 0.4rem;
+    margin-left: -3.2rem;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--primary-color), #666);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0.9;
+}
+
+.remaining-content {
+    white-space: pre-wrap;
+    color: rgb(0, 0, 0);
+}
+
+@media (max-width: 768px) {
+    .remaining-content {
+        font-size: 1.1rem;
+        line-height: 1.8;
+    }
+}
+
+.chat-container {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.chat-message {
+    margin-bottom: 1.2rem;
+    max-width: 85%;
+}
+
+.chat-message.user {
+    margin-left: auto;
+}
+
+.chat-message .message-content {
+    padding: 1rem 1.5rem;
+    border-radius: 15px;
+    background: var(--message-user);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    line-height: 1.6;
+}
+
+.chat-message.ai .message-content {
+    background: var(--message-ai);
+}
+
+.btn-like {
+    background: none;
+    border: none;
+    color: #666;
+    padding: 0.8rem 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+    border-radius: 12px;
+}
+
+.btn-like:hover {
+    color: var(--primary-color);
+    background: rgba(var(--primary-rgb), 0.05);
+    transform: translateY(-2px);
+}
+
+.btn-like.liked {
+    color: var(--primary-color);
+    background: rgba(var(--primary-rgb), 0.1);
+}
+
+.btn-like.liked i {
+    animation: heartBeat 0.6s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.comments-section {
+    background: linear-gradient(135deg, #fff6e0, #fff9e8);
+    border-radius: 15px;
+    padding: 2rem;
+    margin: 2rem -2.5rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+}
+
+.comment-item {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.comment-item:hover {
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.comment-item.nested {
+    margin-left: 2rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.comment-actions {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.comment-actions .btn-link {
+    color: #666;
+    padding: 0;
+    margin-right: 1rem;
+    text-decoration: none;
+}
+
+.comment-actions .btn-link:hover {
+    color: var(--primary-color);
+}
+
+.like-button {
+    color: #666;
+}
+
+.like-button.liked {
+    color: #dc3545;
+}
+
+.like-button .like-count {
+    margin-left: 0.25rem;
+}
+
+.reply-form {
+    margin-top: 0.5rem;
+    margin-left: 2rem;
+}
+
+.nested-comments {
+    margin-left: 2.5rem;
+    padding: 0.5rem 0;
+    width: calc(100% - 2.5rem);
+    border-left: none;
+}
+
+.comment-item .nested-comments:not(:empty) {
+    border-left: 2px solid #e9ecef;
+}
+
+@media (max-width: 768px) {
+    .nested-comments {
+        margin-left: 0.5rem;
+        width: calc(100% - 0.5rem);
+        padding: 0.5rem;
+        border-left: none;
+    }
+
+    .comment-item .nested-comments:not(:empty) {
+        border-left: 3px solid #e9ecef;
+    }
+}
+
+.nested-comments:not(:empty) {
+    border-left: 2px solid #e9ecef;
+}
+
+.comment-content {
+    flex: 1;
+    min-width: 0;
+    padding-right: 1rem;
+}
+
+@media (max-width: 768px) {
+    .nested-comments {
+        margin-left: -0.5rem;
+        width: calc(100% - 0.5rem);
+        padding: 0.5rem;
+    }
+
+    .nested-comments:not(:empty) {
+        border-left: -10px solid #e9ecef;
+    }
+
+    .comment-content {
+        padding-right: 0.5rem;
+    }
+
+    .comment-avatar {
+        width: 32px;
+        height: 32px;
+        margin-right: 0.5rem;
+    }
+
+    .comment-text {
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .comment-actions {
+        margin-top: 0.5rem;
+    }
+
+    .reply-form-container {
+        margin-left: 0.5rem;
+    }
+
+    .normal-text {
+        display: none;
+    }
+
+    .btn-reply {
+        padding: 0.375rem 0.75rem;
+        min-width: 40px;
+    }
+
+    .btn-reply i.fas.fa-paper-plane {
+        display: inline-block !important;
+        margin-right: 0 !important;
+    }
+
+    .btn-reply .normal-text {
+        display: none;
+    }
+
+    .reply-form-container {
+        margin-left: 0.5rem;
+    }
+}
+
+.reply-form-container {
+    margin-top: 0.5rem;
+    margin-left: 2rem;
+}
+
+.word-count {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    font-size: 0.8rem;
+    color: #6c757d;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.word-count.near-limit {
+    color: #ffc107;
+}
+
+.word-count.at-limit {
+    color: #dc3545;
+}
+
+.position-relative {
+    position: relative;
+}
+
+.post-cover-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    margin: 1.5rem -2.5rem;  /* Negative margin to extend beyond container */
+    width: calc(100% + 5rem);  /* Full width plus the margins */
+    max-height: 500px;  /* Increased max height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.post-cover-image img {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    object-fit: cover;  /* Changed to cover to fill width */
+    transition: transform 0.3s ease;
+}
+
+.post-cover-image:hover img {
+    transform: scale(1.02);
+}
+
+.post-cover-image::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.9));
+    pointer-events: none;
+}
+
+.cover-image-actions {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.post-cover-image:hover .cover-image-actions {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.cover-image-actions .btn {
+    backdrop-filter: blur(5px);
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.cover-image-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.add-cover-image {
+    text-align: center;
+    padding: 2rem;
+    border: 2px dashed rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+}
+
+.add-cover-image:hover {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: var(--primary-color);
+}
+
+.cover-image-upload {
+    border: 2px dashed rgba(0,0,0,0.1);
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(255,255,255,0.5);
+}
+
+.cover-image-upload:hover {
+    border-color: var(--primary-color);
+    background: rgba(var(--primary-rgb), 0.05);
+}
+
+.upload-preview {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.upload-placeholder {
+    color: #666;
+}
+
+.upload-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.edit-comment-form {
+    margin: 0.5rem 0;
+}
+
+.edit-comment-form textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.1);
+    resize: vertical;
+}
+
+.edit-comment-form .word-count {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    font-size: 0.8rem;
+    color: #6c757d;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.post-actions .btn {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.9rem;
+}
+
+.post-actions .btn i {
+    margin-right: 0.3rem;
+}
+
+.comment-actions .btn-link {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.comment-actions .btn-link:hover {
+    text-decoration: none;
+    opacity: 0.8;
+}
+
+.edit-post-form {
+    background: #fff;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+}
+
+.edit-post-form .form-label {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.edit-post-form .form-control {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.edit-post-form .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb), 0.15);
+}
+
+.edit-post-form textarea {
+    min-height: 200px;
+    line-height: 1.8;
+    resize: vertical;
+}
+
+.cover-image-edit {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.current-cover {
+    position: relative;
+    max-height: 300px;
+    overflow: hidden;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.current-cover img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.cover-image-edit .cover-image-upload {
+    border: 2px dashed rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cover-image-edit .cover-image-upload:hover {
+    border-color: var(--primary-color);
+    background: rgba(var(--primary-rgb), 0.05);
+}
+
+.cover-image-edit .upload-preview {
+    width: 100%;
+    max-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.cover-image-edit .upload-placeholder {
+    color: #666;
+}
+
+.cover-image-edit .upload-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.edit-post-form .word-count {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    font-size: 0.8rem;
+    color: #6c757d;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.mention-text {
+    color: var(--primary-color);
+    font-weight: 500;
+    padding: 4px 8px;
+    background: rgba(var(--primary-rgb), 0.1);
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.follow-btn .btn {
+    transition: all 0.3s ease;
+}
+
+.follow-btn .btn:hover {
+    transform: translateY(-2px);
+}
+
+.follow-btn .followers-count {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    margin-left: 0.25rem;
+}
+
+.follower-info {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    color: #6c757d;
+}
+
+.follower-info i {
+    font-size: 0.8rem;
+}
+
+.user-profile-link {
+    color: inherit;
+    transition: all 0.2s ease;
+    padding: 8px;
+    border-radius: 12px;
+    margin: -8px;
+}
+
+.user-profile-link:hover {
+    background-color: rgba(var(--primary-rgb), 0.05);
+    color: inherit;
+}
+
+.user-profile-link .author {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text-color);
+}
+
+.user-profile-link .time {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.user-profile-link .follower-info {
+    font-size: 0.85rem;
+}
+
+.btn-sort {
+    background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.05), rgba(var(--primary-rgb), 0.1));
+    border: 1px solid rgba(var(--primary-rgb), 0.1);
+    color: var(--text-color);
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.btn-sort:hover, .btn-sort:focus {
+    background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.1), rgba(var(--primary-rgb), 0.15));
+    border-color: rgba(var(--primary-rgb), 0.2);
+    color: var(--text-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.1);
+}
+
+.dropdown-menu {
+    border-radius: 12px;
+    border: 1px solid rgba(var(--primary-rgb), 0.1);
+    padding: 0.5rem;
+    background: white;
+    margin-top: 0.5rem;
+}
+
+.dropdown-item {
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    color: var(--text-color);
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.05), rgba(var(--primary-rgb), 0.1));
+    color: var(--text-color);
+}
+
+.dropdown-item.active {
+    background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.1), rgba(var(--primary-rgb), 0.15));
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.dropdown-item i {
+    color: var(--primary-color);
+    opacity: 0.8;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover i {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.dropdown-item .fa-check {
+    color: var(--primary-color);
+    font-size: 0.8rem;
+}
+
+.loading-text {
+    display: flex;
+    align-items: center;
+}
+
+.btn-chat-agent {
+    background: linear-gradient(45deg, #FFB6C1, #FFD700);
+    color: #333;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 25px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 182, 193, 0.4);
+    margin-left: 15px;
+    transform-origin: center;
+    animation: buttonPulse 2s infinite;
+}
+
+.btn-chat-agent:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(255, 182, 193, 0.6);
+    color: #333;
+    background: linear-gradient(45deg, #FFD700, #FFB6C1);
+}
+
+.btn-chat-agent:active {
+    transform: translateY(1px);
+}
+
+.btn-chat-agent .fas {
+    animation: robotWiggle 3s infinite;
+    color: #333;
+}
+
+.btn-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 70%);
+    opacity: 0;
+    animation: glowEffect 3s infinite;
+    pointer-events: none;
+}
+
+@keyframes buttonPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+}
+
+@keyframes robotWiggle {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+    100% { transform: rotate(0deg); }
+}
+
+@keyframes glowEffect {
+    0% { transform: rotate(0deg); opacity: 0; }
+    25% { opacity: 0.5; }
+    50% { opacity: 0; }
+    100% { transform: rotate(360deg); opacity: 0; }
+}
+</style>
+
+<script>
+function handleLike(postId) {
+    if (!{{ current_user.is_authenticated|tojson }}) {
+        // Show a beautiful toast notification
+        const toast = document.createElement('div');
+        toast.className = 'position-fixed bottom-0 end-0 p-3';
+        toast.style.zIndex = '11';
+        toast.innerHTML = `
+            <div class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        请先登录后再点赞 <a href="{{ url_for('login') }}" class="text-white text-decoration-underline">立即登录</a>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(toast);
+        const toastEl = new bootstrap.Toast(toast.querySelector('.toast'));
+        toastEl.show();
+        return;
+    }
+    
+    fetch(`/forum/post/${postId}/like`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const likeBtn = document.querySelector('.btn-like');
+            const likeCount = likeBtn.querySelector('.like-count');
+            
+            if (data.action === 'liked') {
+                likeBtn.classList.add('liked');
+            } else {
+                likeBtn.classList.remove('liked');
+            }
+            
+            likeCount.textContent = data.like_count;
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function showReplyForm(commentId, replyToUsername) {
+    const isAuthenticated = {{ current_user.is_authenticated|tojson }};
+    let avatarHtml = '';
+    
+    if (isAuthenticated) {
+        const avatarUrl = "{{ current_user.avatar_url if current_user.avatar_url else current_user.get_avatar() }}";
+        avatarHtml = `<img src="${avatarUrl}" alt="avatar" class="avatar rounded-circle me-2" style="width: 32px; height: 32px;">`;
+    } else {
+        const defaultAvatarUrl = "{{ get_default_avatar() }}";
+        avatarHtml = `<img src="${defaultAvatarUrl}" alt="avatar" class="avatar rounded-circle me-2" style="width: 32px; height: 32px;">`;
+    }
+    
+    // Create reply form HTML with word count
+    const replyFormHtml = isAuthenticated ? `
+        <div class="reply-form mt-2" id="reply-form-${commentId}">
+            <div class="d-flex">
+                ${avatarHtml}
+                <div class="flex-grow-1">
+                    <div class="position-relative">
+                        <textarea class="form-control form-control-sm" rows="2" 
+                                  id="reply-input-${commentId}"
+                                  maxlength="300"
+                                  oninput="updateWordCount(this, 'reply-word-count-${commentId}')"
+                                  placeholder="回复 @${replyToUsername}"></textarea>
+                        <div class="word-count" id="reply-word-count-${commentId}">0/300字</div>
+                    </div>
+                    <div class="mt-2">
+                        <button class="btn btn-primary btn-sm btn-reply" onclick="submitReply(${commentId})" id="submit-reply-btn-${commentId}">
+                            <i class="fas fa-paper-plane me-2"></i>
+                            <span class="normal-text">发送回复</span>
+                            <span class="loading-text d-none">
+                                <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                发送中...
+                            </span>
+                        </button>
+                        <button class="btn btn-link btn-sm" onclick="hideReplyForm(${commentId})">
+                            取消
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    ` : `
+        <div class="alert alert-info mt-2">
+            <i class="fas fa-info-circle me-2"></i>
+            登录后即可回复评论。<a href="{{ url_for('login') }}" class="alert-link">立即登录</a>
+        </div>
+    `;
+    
+    // Insert the reply form into the container
+    const container = document.getElementById(`reply-form-container-${commentId}`);
+    container.innerHTML = replyFormHtml;
+}
+
+function hideReplyForm(commentId) {
+    const container = document.getElementById(`reply-form-container-${commentId}`);
+    container.innerHTML = '';
+}
+
+async function submitReply(commentId) {
+    const replyBtn = document.getElementById(`submit-reply-btn-${commentId}`);
+    const normalText = replyBtn.querySelector('.normal-text');
+    const loadingText = replyBtn.querySelector('.loading-text');
+    const replyContent = document.getElementById(`reply-input-${commentId}`).value.trim();
+    
+    if (!replyContent) {
+        alert('请输入回复内容');
+        return;
+    }
+    
+    if (replyContent.length > 300) {
+        alert('回复内容不能超过300字');
+        return;
+    }
+    
+    // Show loading state immediately
+    replyBtn.disabled = true;
+    normalText.classList.add('d-none');
+    loadingText.classList.remove('d-none');
+    
+    // Start sending the request immediately
+    const response = await fetch(`/forum/post/{{ post.id }}/comment`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            content: replyContent,
+            parent_id: commentId
+        })
+    });
+    
+    try {
+        const data = await response.json();
+        if (response.ok) {
+            location.reload();
+        } else {
+            throw new Error(data.error || '回复失败');
+        }
+    } catch (error) {
+        alert(error.message);
+        // Reset button state on error
+        replyBtn.disabled = false;
+        normalText.classList.remove('d-none');
+        loadingText.classList.add('d-none');
+    }
+}
+
+async function handleCommentLike(commentId) {
+    if (!{{ current_user.is_authenticated|tojson }}) {
+        // Show a beautiful toast notification
+        const toast = document.createElement('div');
+        toast.className = 'position-fixed bottom-0 end-0 p-3';
+        toast.style.zIndex = '11';
+        toast.innerHTML = `
+            <div class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        请先登录后再点赞 <a href="{{ url_for('login') }}" class="text-white text-decoration-underline">立即登录</a>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(toast);
+        const toastEl = new bootstrap.Toast(toast.querySelector('.toast'));
+        toastEl.show();
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/forum/comment/${commentId}/like`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'  // Include cookies
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Find the like button for this comment
+            const likeButton = document.querySelector(`#comment-${commentId} .like-button`);
+            const likeCount = likeButton.querySelector('.like-count');
+            
+            if (data.action === 'liked') {
+                likeButton.classList.add('liked');
+            } else {
+                likeButton.classList.remove('liked');
+            }
+            
+            likeCount.textContent = data.like_count;
+        } else {
+            throw new Error(data.error || '点赞失败');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('点赞失败，请重试');
+    }
+}
+
+async function submitComment() {
+    const textarea = document.getElementById('comment-input');
+    const content = textarea.value.trim();
+    const submitBtn = document.getElementById('submit-comment-btn');
+    const normalText = submitBtn.querySelector('.normal-text');
+    const loadingText = submitBtn.querySelector('.loading-text');
+    
+    if (!content) return;
+    
+    if (content.length > 300) {
+        alert('评论内容不能超过300字');
+        return;
+    }
+    
+    // Show loading state immediately
+    submitBtn.disabled = true;
+    normalText.classList.add('d-none');
+    loadingText.classList.remove('d-none');
+    
+    // Start sending the request immediately
+    const response = await fetch(`/forum/post/{{ post.id }}/comment`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            content: content
+        })
+    });
+    
+    try {
+        const data = await response.json();
+        if (response.ok) {
+            location.reload();
+        } else {
+            throw new Error(data.error || '评论失败');
+        }
+    } catch (error) {
+        alert(error.message);
+        // Reset button state on error
+        submitBtn.disabled = false;
+        normalText.classList.remove('d-none');
+        loadingText.classList.add('d-none');
+    }
+}
+
+function updateWordCount(textarea, counterId) {
+    const maxLength = 300;
+    const currentLength = textarea.value.length;
+    const counter = document.getElementById(counterId);
+    counter.textContent = `${currentLength}/${maxLength}字`;
+    
+    // Update counter color based on length
+    counter.classList.remove('near-limit', 'at-limit');
+    if (currentLength >= maxLength) {
+        counter.classList.add('at-limit');
+    } else if (currentLength >= maxLength * 0.9) {  // 90% of limit
+        counter.classList.add('near-limit');
+    }
+}
+
+// Initialize Bootstrap toasts
+document.addEventListener('DOMContentLoaded', function() {
+    var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+    var toastList = toastElList.map(function(toastEl) {
+        return new bootstrap.Toast(toastEl);
+    });
+});
+
+function confirmDeletePost(postId) {
+    if (confirm('确定要删除这篇帖子吗？此操作不可撤销。')) {
+        fetch(`/forum/post/${postId}/delete`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = '/forum';
+            } else {
+                throw new Error('删除失败');
+            }
+        })
+        .catch(error => {
+            alert('删除失败，请重试');
+            console.error('Error:', error);
+        });
+    }
+}
+
+function editComment(commentId) {
+    const commentDiv = document.querySelector(`#comment-${commentId} .comment-content`);
+    const originalContent = commentDiv.textContent.trim();
+    
+    // Check if this is a nested comment (has @username)
+    const mentionMatch = originalContent.match(/^(@\S+\s)(.*)/);
+    const mention = mentionMatch ? mentionMatch[1] : '';
+    const editableContent = mentionMatch ? mentionMatch[2] : originalContent;
+    
+    // Create edit form
+    const editForm = document.createElement('div');
+    editForm.className = 'edit-comment-form';
+    editForm.innerHTML = `
+        <div class="position-relative">
+            ${mention ? `<div class="mention-text mb-2">${mention}</div>` : ''}
+            <textarea class="form-control" maxlength="300" rows="3" 
+                      oninput="updateWordCount(this, 'edit-word-count-${commentId}')">${editableContent}</textarea>
+            <div class="word-count" id="edit-word-count-${commentId}">0/300字</div>
+        </div>
+        <div class="mt-2">
+            <button class="btn btn-sm btn-primary save-edit">保存</button>
+            <button class="btn btn-sm btn-link cancel-edit">取消</button>
+        </div>
+    `;
+    
+    // Replace content with edit form
+    commentDiv.replaceWith(editForm);
+    
+    const textarea = editForm.querySelector('textarea');
+    const wordCount = editForm.querySelector('.word-count');
+    
+    // Initial word count update
+    updateWordCount(textarea, `edit-word-count-${commentId}`);
+    
+    // Handle save
+    editForm.querySelector('.save-edit').addEventListener('click', function() {
+        const newContent = textarea.value.trim();
+        if (!newContent) {
+            alert('评论内容不能为空');
+            return;
+        }
+        
+        if (newContent.length > 300) {
+            alert('评论内容不能超过300字');
+            return;
+        }
+        
+        // Combine mention with new content if it exists
+        const finalContent = mention ? mention + newContent : newContent;
+        
+        fetch(`/forum/comment/${commentId}/edit`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ content: finalContent })
+        })
+        .then(response => {
+            if (response.ok) {
+                // Update the comment content
+                const newCommentDiv = document.createElement('div');
+                newCommentDiv.className = 'comment-content';
+                newCommentDiv.textContent = finalContent;
+                editForm.replaceWith(newCommentDiv);
+            } else {
+                alert(data.error || '编辑失败，请重试');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('编辑失败，请重试');
+        });
+    });
+    
+    // Handle cancel
+    editForm.querySelector('.cancel-edit').addEventListener('click', function() {
+        const newCommentDiv = document.createElement('div');
+        newCommentDiv.className = 'comment-content';
+        newCommentDiv.textContent = originalContent;
+        editForm.replaceWith(newCommentDiv);
+    });
+}
+
+function confirmDeleteComment(commentId) {
+    if (confirm('确定要删除这条评论吗？此操作不可撤销。')) {
+        fetch(`/forum/comment/${commentId}/delete`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                // Remove the comment element from the DOM
+                const commentElement = document.getElementById(`comment-${commentId}`);
+                if (commentElement) {
+                    commentElement.remove();
+                    // Update comment count
+                    const commentCount = document.querySelector('h4.mb-3');
+                    if (commentCount) {
+                        const currentCount = parseInt(commentCount.textContent.match(/\d+/)[0]) - 1;
+                        commentCount.textContent = `评论 (${currentCount})`;
+                    }
+                }
+            } else {
+                throw new Error('删除失败');
+            }
+        })
+        .catch(error => {
+            alert('删除失败，请重试');
+            console.error('Error:', error);
+        });
+    }
+}
+
+function editPost(postId) {
+    // Get the post content and title elements
+    const postContent = document.querySelector('.post-content');
+    const postTitle = document.querySelector('.post-title');
+    // Get only the text content of the title, excluding tags
+    const titleText = postTitle.childNodes[0].textContent.trim();
+    const originalContent = postContent.textContent.trim();
+    
+    // Create edit form
+    const editForm = document.createElement('div');
+    editForm.className = 'edit-post-form';
+    editForm.innerHTML = `
+        <div class="mb-3">
+            <label for="edit-title" class="form-label">标题</label>
+            <div class="position-relative">
+                <input type="text" class="form-control" id="edit-title" value="${titleText}" maxlength="30">
+                <div class="word-count" id="edit-title-word-count">${titleText.length}/30</div>
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <label for="edit-content" class="form-label">内容</label>
+            <div class="position-relative">
+                <textarea class="form-control" id="edit-content" rows="10" maxlength="8000">${originalContent}</textarea>
+                <div class="word-count" id="edit-content-word-count">${originalContent.length}/8000</div>
+            </div>
+        </div>
+        
+        <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary" onclick="cancelEdit()">
+                取消
+            </button>
+            <button type="button" class="btn btn-primary" onclick="saveEdit(${postId})">
+                <i class="fas fa-save me-1"></i>保存
+            </button>
+        </div>
+    `;
+    
+    // Replace content with edit form
+    postContent.replaceWith(editForm);
+    postTitle.style.display = 'none';
+    
+    // Add word count tracking
+    const titleInput = document.getElementById('edit-title');
+    const contentTextarea = document.getElementById('edit-content');
+    const titleWordCount = document.getElementById('edit-title-word-count');
+    const contentWordCount = document.getElementById('edit-content-word-count');
+    
+    titleInput.addEventListener('input', function() {
+        const maxLength = 30;
+        const currentLength = this.value.length;
+        titleWordCount.textContent = `${currentLength}/${maxLength}`;
+        
+        if (currentLength >= maxLength) {
+            titleWordCount.classList.add('at-limit');
+            titleWordCount.classList.remove('near-limit');
+        } else if (currentLength >= maxLength * 0.8) {
+            titleWordCount.classList.add('near-limit');
+            titleWordCount.classList.remove('at-limit');
+        } else {
+            titleWordCount.classList.remove('near-limit', 'at-limit');
+        }
+    });
+    
+    contentTextarea.addEventListener('input', function() {
+        const maxLength = 8000;
+        const currentLength = this.value.length;
+        contentWordCount.textContent = `${currentLength}/${maxLength}`;
+        
+        if (currentLength >= maxLength) {
+            contentWordCount.classList.add('at-limit');
+            contentWordCount.classList.remove('near-limit');
+        } else if (currentLength >= maxLength * 0.8) {
+            contentWordCount.classList.add('near-limit');
+            contentWordCount.classList.remove('at-limit');
+        } else {
+            contentWordCount.classList.remove('near-limit', 'at-limit');
+        }
+    });
+}
+
+function cancelEdit() {
+    location.reload();
+}
+
+async function saveEdit(postId) {
+    const title = document.getElementById('edit-title').value.trim();
+    const content = document.getElementById('edit-content').value.trim();
+    
+    if (!title || !content) {
+        alert('请填写完整的帖子信息');
+        return;
+    }
+    
+    if (title.length > 30) {
+        alert('标题不能超过30个字符');
+        return;
+    }
+    
+    if (content.length > 8000) {
+        alert('内容不能超过8000个字符');
+        return;
+    }
+    
+    // Show loading state
+    const saveButton = document.querySelector('.edit-post-form .btn-primary');
+    const originalText = saveButton.innerHTML;
+    saveButton.disabled = true;
+    saveButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>保存中...';
+    
+    try {
+        const response = await fetch(`/forum/post/${postId}/edit`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: title,
+                content: content
+            })
+        });
+        
+        if (!response.ok) {
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                const data = await response.json();
+                throw new Error(data.error || '保存失败，请重试');
+            } else {
+                throw new Error('保存失败，请重试');
+            }
+        }
+        
+        const data = await response.json();
+        if (data.success) {
+            location.reload();
+        } else {
+            throw new Error(data.error || '保存失败，请重试');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert(error.message || '保存失败，请重试');
+        saveButton.disabled = false;
+        saveButton.innerHTML = originalText;
+    }
+}
+
+let isDeleteCover = false;
+
+function handleDeleteCover() {
+    const currentCover = document.querySelector('.current-cover');
+    if (currentCover) {
+        currentCover.style.display = 'none';
+    }
+    isDeleteCover = true;
+    showToast('info', '封面图片将在保存时删除');
+}
+
+function toggleFollow(userId) {
+    const button = document.querySelector(`.follow-toggle[data-user-id="${userId}"]`);
+    const isFollowing = button.classList.contains('btn-primary');
+    const endpoint = isFollowing ? 'unfollow' : 'follow';
+    
+    fetch(`/user/${userId}/${endpoint}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update button appearance
+            button.classList.toggle('btn-primary');
+            button.classList.toggle('btn-outline-primary');
+            
+            // Update icon
+            const icon = button.querySelector('i');
+            icon.classList.toggle('fa-user-plus');
+            icon.classList.toggle('fa-user-minus');
+            
+            // Update text
+            const text = button.querySelector('.follow-text');
+            text.textContent = isFollowing ? '关注' : '取消关注';
+            
+            // Update count
+            const count = button.querySelector('.followers-count');
+            count.textContent = `(${data.followers_count})`;
+            
+            // Show success toast
+            const toast = document.createElement('div');
+            toast.className = 'position-fixed bottom-0 end-0 p-3';
+            toast.style.zIndex = '11';
+            toast.innerHTML = `
+                <div class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            ${isFollowing ? '已取消关注' : '关注成功'}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            const toastEl = new bootstrap.Toast(toast.querySelector('.toast'));
+            toastEl.show();
+        } else {
+            alert(data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('操作失败，请重试');
+    });
+}
+
+function saveScrollPosition() {
+    sessionStorage.setItem('scrollPosition', window.scrollY);
+}
+
+function restoreScrollPosition() {
+    const savedPosition = sessionStorage.getItem('scrollPosition');
+    if (savedPosition) {
+        window.scrollTo(0, parseInt(savedPosition));
+        sessionStorage.removeItem('scrollPosition');
+    }
+}
+
+function handleSort(sortType) {
+    saveScrollPosition();
+    window.location.href = `{{ url_for('view_post', post_id=post.id) }}?sort=${sortType}`;
+}
+
+// Add this to restore scroll position when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    restoreScrollPosition();
+});
+
+// Cover image management
+let coverImageModal;
+let coverImageInput;
+let imagePreview;
+let previewImage;
+let placeholder;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize cover image elements
+    coverImageModal = new bootstrap.Modal(document.getElementById('coverImageModal'));
+    coverImageInput = document.getElementById('cover-image');
+    imagePreview = document.getElementById('image-preview');
+    previewImage = imagePreview.querySelector('img');
+    placeholder = imagePreview.querySelector('.upload-placeholder');
+
+    // Add click handler for image preview
+    imagePreview.addEventListener('click', () => coverImageInput.click());
+
+    // Add change handler for cover image input
+    coverImageInput.addEventListener('change', function(e) {
+        if (this.files && this.files[0]) {
+            const file = this.files[0];
+            
+            // Check file size (8MB)
+            const maxSize = 8 * 1024 * 1024; // 8MB in bytes
+            if (file.size > maxSize) {
+                alert('图片大小不能超过 8MB');
+                this.value = ''; // Clear the input
+                return;
+            }
+            
+            // Check file type
+            if (!file.type.match('image.*')) {
+                alert('请上传图片文件');
+                this.value = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+                placeholder.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+});
+
+function showCoverImageUpload() {
+    // Reset the form
+    coverImageInput.value = '';
+    previewImage.style.display = 'none';
+    placeholder.style.display = 'block';
+    
+    // Show the modal
+    coverImageModal.show();
+}
+
+function uploadCoverImage(postId) {
+    const file = coverImageInput.files[0];
+    if (!file) {
+        alert('请选择要上传的图片');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('cover_image', file);
+
+    // Disable the upload button and show loading state
+    const uploadButton = document.querySelector('#coverImageModal .btn-primary');
+    const originalText = uploadButton.innerHTML;
+    uploadButton.disabled = true;
+    uploadButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>上传中...';
+
+    fetch(`/forum/post/${postId}/cover`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the cover image on the page
+            const coverImage = document.querySelector('.post-cover-image img');
+            if (coverImage) {
+                coverImage.src = data.cover_image_url;
+            } else {
+                // If there was no cover image before, reload the page to show the new one
+                location.reload();
+            }
+            
+            // Show success message
+            showToast('success', '封面图片已更新');
+            
+            // Close the modal
+            coverImageModal.hide();
+        } else {
+            throw new Error(data.error || '上传失败，请重试');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('error', error.message || '上传失败，请重试');
+    })
+    .finally(() => {
+        // Reset the upload button
+        uploadButton.disabled = false;
+        uploadButton.innerHTML = originalText;
+    });
+}
+
+function deleteCoverImage(postId) {
+    if (!confirm('确定要删除封面图片吗？')) {
+        return;
+    }
+
+    fetch(`/forum/post/${postId}/cover`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Remove the cover image section and show the add button
+            const coverImageSection = document.querySelector('.post-cover-image');
+            coverImageSection.outerHTML = `
+                <div class="add-cover-image mb-4">
+                    <button type="button" class="btn btn-outline-primary" onclick="showCoverImageUpload()">
+                        <i class="fas fa-image me-2"></i>添加封面图片
+                    </button>
+                </div>
+            `;
+            
+            showToast('success', '封面图片已删除');
+        } else {
+            throw new Error(data.error || '删除失败，请重试');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('error', error.message || '删除失败，请重试');
+    });
+}
+
+function showToast(type, message) {
+    const toast = document.createElement('div');
+    toast.className = 'position-fixed bottom-0 end-0 p-3';
+    toast.style.zIndex = '11';
+    toast.innerHTML = `
+        <div class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(toast);
+    const toastEl = new bootstrap.Toast(toast.querySelector('.toast'));
+    toastEl.show();
+    
+    // Remove the toast element after it's hidden
+    toast.addEventListener('hidden.bs.toast', function () {
+        document.body.removeChild(toast);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const content = document.querySelector('.post-content').textContent;
+    const agentSettingsMatch = content.match(/智能体设定：([\s\S]*?)角色背景设定：([\s\S]*)/);
+    
+    if (agentSettingsMatch) {
+        document.getElementById('chatWithAgentBtn').style.display = 'inline-block';
+    }
+});
+
+async function chatWithAgent() {
+    if (!{{ current_user.is_authenticated|tojson }}) {
+        showToast('error', `请先登录再使用对话功能 <a href="{{ url_for('login') }}" class="text-white text-decoration-underline">立即登录</a>`);
+        return;
+    }
+
+    const content = document.querySelector('.post-content').textContent;
+    const agentSettingsMatch = content.match(/智能体设定：([\s\S]*?)角色背景设定：([\s\S]*)/);
+    
+    if (agentSettingsMatch) {
+        try {
+            // Clear chat history before storing new settings
+            const clearResponse = await fetch('/clear-chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!clearResponse.ok) {
+                throw new Error('Failed to clear chat history');
+            }
+            
+            const agentSettings = agentSettingsMatch[1].trim();
+            const storySettings = agentSettingsMatch[2].trim();
+            
+            // Store the settings and flags in sessionStorage
+            sessionStorage.setItem('agentSettings', agentSettings);
+            sessionStorage.setItem('storySettings', storySettings);
+            sessionStorage.setItem('shouldExpandSections', 'true');
+            sessionStorage.setItem('shouldInitChatMode', 'true');
+            sessionStorage.setItem('hideSearchBar', 'true');
+            
+            // Redirect to index page
+            window.location.href = '/';
+        } catch (error) {
+            console.error('Error clearing chat history:', error);
+            showToast('error', '清除对话历史时发生错误，请重试');
+        }
+    } else {
+        showToast('error', '未找到正确的智能体设定和角色背景设定');
+    }
+}
+
+// Add event listener to check and populate chat inputs when on index page
+if (window.location.pathname === '/') {
+    document.addEventListener('DOMContentLoaded', function() {
+        const agentSettings = sessionStorage.getItem('agentSettings');
+        const storySettings = sessionStorage.getItem('storySettings');
+        const shouldExpand = sessionStorage.getItem('shouldExpandSections');
+        
+        if (agentSettings && storySettings) {
+            // Expand the chat mode first
+            const chatModeBtn = document.querySelector('button[data-mode="chat"]');
+            if (chatModeBtn) chatModeBtn.click();
+
+            // Show story content section
+            const storyContent = document.getElementById('story-content');
+            if (storyContent) storyContent.style.display = 'block';
+
+            // Find and populate the chat input and story editor
+            const chatInput = document.getElementById('chat-input');
+            const storyEditor = document.getElementById('story-editor');
+            
+            if (chatInput) chatInput.value = agentSettings;
+            if (storyEditor) storyEditor.value = storySettings;
+            
+            // Clear the stored settings
+            sessionStorage.removeItem('agentSettings');
+            sessionStorage.removeItem('storySettings');
+            sessionStorage.removeItem('shouldExpandSections');
+        }
+    });
+}
+</script>
+{% endblock %} 

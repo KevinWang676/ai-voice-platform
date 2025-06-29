@@ -1,0 +1,400 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-584FXGMJ57"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-584FXGMJ57');
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="hero-section text-center text-white">
+    <div class="container">
+        <h1 class="display-4 animate__animated animate__fadeIn mb-4">Create an Account</h1>
+        <p class="lead animate__animated animate__fadeIn animate__delay-0.2s">Join TalkTalkAI and create what you love</p>
+    </div>
+</section>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg" style="margin-top: -1rem;">
+                <div class="card-body p-5">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-danger animate__animated animate__fadeIn">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    
+                    <form method="POST" class="animate__animated animate__fadeIn animate__delay-0.4s">
+                        <div class="mb-4">
+                            <label for="username" class="form-label">
+                                <i class="fas fa-user me-2"></i>Username
+                            </label>
+                            <input type="text" class="form-control form-control-sm" id="username" 
+                                   name="username" required autocomplete="username"
+                                   pattern="^[a-zA-Z0-9\u4e00-\u9fa5!@#$%&*()_+\-=[\]{}:,.<>?|/\\]{1,10}$"
+                                   maxlength="10"
+                                   placeholder="Choose a username">
+                            <div class="form-text">
+                                <ul class="mb-0 mt-1">
+                                    <li>1-10 characters, allowing letters, numbers, and symbols. No spaces.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="email" class="form-label">
+                                <i class="fas fa-envelope me-2"></i>Email Address
+                            </label>
+                            <div class="input-group">
+                                <input type="email" class="form-control form-control-sm" id="email" 
+                                       name="email" required
+                                       placeholder="Enter your email address">
+                                <button type="button" class="btn btn-outline-primary" id="send-code-btn">
+                                    <i class="fas fa-paper-plane me-1"></i>Send Code
+                                </button>
+                            </div>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>We'll send a 4-digit verification code to this email
+                                <br>
+                                <i class="fas fa-info-circle me-1"></i>Check your spam folder if you don't see it in your inbox
+                            </div>
+                        </div>
+
+                        <div class="mb-4" id="verification-code-group">
+                            <label for="verification_code" class="form-label">
+                                <i class="fas fa-key me-2"></i>Verification Code
+                            </label>
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" id="verification_code" 
+                                       name="verification_code" required
+                                       pattern="[0-9]{4}" maxlength="4"
+                                       placeholder="Enter 4-digit code">
+                            </div>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>Enter the 4-digit code sent to your email
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="password" class="form-label">
+                                <i class="fas fa-lock me-2"></i>Password
+                            </label>
+                            <input type="password" class="form-control form-control-sm" id="password" 
+                                   name="password" required autocomplete="new-password"
+                                   pattern="^[a-zA-Z0-9]{6,15}$"
+                                   maxlength="15"
+                                   placeholder="Create a password">
+                            <div class="form-text">
+                                <ul class="mb-0 mt-1">
+                                    <li>6-15 characters, letters and numbers only. No spaces.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="confirm_password" class="form-label">
+                                <i class="fas fa-lock me-2"></i>Confirm Password
+                            </label>
+                            <input type="password" class="form-control form-control-sm" id="confirm_password" 
+                                   name="confirm_password" required autocomplete="new-password"
+                                   pattern="^[a-zA-Z0-9]{6,15}$"
+                                   maxlength="15"
+                                   placeholder="Confirm your password">
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>Please re-enter your password to confirm
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-lg w-100 mb-4" id="submit-btn">
+                            <i class="fas fa-user-plus me-2"></i>Register
+                        </button>
+                        
+                        <div class="text-center">
+                            <p class="mb-0">
+                                Already have an account?
+                                <a href="{{ url_for('login') }}" class="text-decoration-none">Sign in</a>
+                            </p>
+                            <small class="text-muted mt-2 d-block">
+                                <i class="fas fa-shield-alt me-1"></i>We will protect your account security
+                            </small>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hero-section {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    padding: 6rem 0;
+    margin-bottom: -4rem;
+    margin-top: 0rem;
+    border-radius: 0;
+}
+
+.card {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    margin-top: -3rem;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12) !important;
+}
+
+.form-control {
+    border-radius: 12px;
+    padding: 0.8rem 1.2rem;
+    border: 1px solid rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(var(--primary-rgb), 0.15);
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.3);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(var(--primary-rgb), 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(var(--primary-rgb), 0.2);
+}
+
+.btn-outline-primary {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.btn-check:checked + .btn-outline-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.form-text {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+.form-text ul {
+    padding-left: 1.2rem;
+}
+
+a {
+    color: var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    color: var(--secondary-color);
+}
+
+.alert {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Added styles for the verification code UI */
+.input-group .form-control {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.input-group .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 3rem 0;
+        border-radius: 0 0 30px 30px;
+    }
+    
+    .card {
+        margin: 0 1rem;
+    }
+    
+    .display-4 {
+        font-size: 2.5rem;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sendCodeBtn = document.getElementById('send-code-btn');
+    const emailInput = document.getElementById('email');
+    const verificationCodeInput = document.getElementById('verification_code');
+    let cooldownTimer = null;
+    
+    // Function to send verification code
+    function sendVerificationCode() {
+        const email = emailInput.value.trim();
+        
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email || !emailRegex.test(email)) {
+            alert('Please enter a valid email address');
+            return;
+        }
+        
+        // Disable button and show loading state
+        sendCodeBtn.disabled = true;
+        const originalText = sendCodeBtn.innerHTML;
+        sendCodeBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Sending...';
+        
+        // Send AJAX request to backend
+        fetch('/send-verification-code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: email }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Show the response message
+            if (data.success) {
+                // Show success message
+                alert(data.message);
+                // Focus on verification code field
+                verificationCodeInput.focus();
+                
+                // Start 1-minute cooldown timer
+                let secondsLeft = 60;
+                sendCodeBtn.innerHTML = `<i class="fas fa-clock me-1"></i>Wait (${secondsLeft}s)`;
+                
+                cooldownTimer = setInterval(() => {
+                    secondsLeft--;
+                    sendCodeBtn.innerHTML = `<i class="fas fa-clock me-1"></i>Wait (${secondsLeft}s)`;
+                    
+                    if (secondsLeft <= 0) {
+                        clearInterval(cooldownTimer);
+                        sendCodeBtn.disabled = false;
+                        sendCodeBtn.innerHTML = originalText;
+                    }
+                }, 1000);
+            } else {
+                // Show error message
+                alert(data.message);
+                sendCodeBtn.disabled = false;
+                sendCodeBtn.innerHTML = originalText;
+            }
+        })
+        .catch(error => {
+            // Re-enable button and restore text
+            sendCodeBtn.disabled = false;
+            sendCodeBtn.innerHTML = originalText;
+            alert('Failed to send verification code. Please try again later.');
+            console.error('Error:', error);
+        });
+    }
+    
+    // Add event listener
+    sendCodeBtn.addEventListener('click', sendVerificationCode);
+    
+    // Form validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        const confirm_password = document.getElementById('confirm_password').value;
+        const email = document.getElementById('email').value.trim();
+        const verificationCode = document.getElementById('verification_code').value.trim();
+        
+        // Password confirmation check
+        if (password !== confirm_password) {
+            e.preventDefault();
+            alert('Passwords do not match');
+            return;
+        }
+        
+        // Verification code check
+        if (!verificationCode || verificationCode.length !== 4 || !/^\d{4}$/.test(verificationCode)) {
+            e.preventDefault();
+            alert('Please enter the 4-digit verification code');
+            return;
+        }
+        
+        // Sensitive words check
+        const sensitiveWords = [
+        "fuck", "shit", "cunt", "asshole", "bitch", "damn", "hell", "piss", "cock", "pussy", 'cock', 'penis', 'vagina', 'tits', 'fucks', 'fucker', 'fucking', 'dick',
+        'masturbation', 'masterbate', 'orgasm', 'baton', 'selfdefense', 'stungun', 'taser',
+        'porn', 'anal', 'anus', 'clit', 'cocksmoker', 'cocksucker', 'cum', 'cumslut',
+        'erection', 'pussy', 'g-spot', 'vaginal', 'clitoris', 'nazi'
+        ];
+        
+        const containsSensitiveWord = sensitiveWords.some(word => 
+            username.toLowerCase().includes(word.toLowerCase())
+        );
+        
+        if (containsSensitiveWord) {
+            e.preventDefault();
+            alert('Username contains sensitive words, please enter a different one');
+            return;
+        }
+
+        if (username.includes(' ')) {
+            e.preventDefault();
+            alert('Username cannot contain spaces');
+            return;
+        }
+        
+        if (!email) {
+            e.preventDefault();
+            alert('Please enter an email address');
+            return;
+        }
+        
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            e.preventDefault();
+            alert('Please enter a valid email address');
+            return;
+        }
+    });
+});
+</script>
+{% endblock %} 

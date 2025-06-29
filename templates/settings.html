@@ -1,0 +1,732 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-584FXGMJ57"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-584FXGMJ57');
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="settings-container">
+                <h1>My Profile</h1>
+                <div class="username-display mb-4">
+                    <h4 class="text-center">{{ current_user.username }}</h4>
+                    <div class="follow-stats text-center mt-2">
+                        <a href="javascript:void(0)" class="follow-link me-4" data-bs-toggle="modal" data-bs-target="#followingModal">
+                            <i class="fas fa-user-plus me-1"></i>
+                            <span class="follow-count" style="font-weight: bold; color: #FF6B6B;">{{ current_user.get_following_count() }}</span>
+                            <span class="follow-label">Following</span>
+                        </a>
+                        <a href="javascript:void(0)" class="follow-link" data-bs-toggle="modal" data-bs-target="#followersModal">
+                            <i class="fas fa-users me-1"></i>
+                            <span class="follow-count" style="font-weight: bold; color: #FF6B6B;">{{ current_user.get_followers_count() }}</span>
+                            <span class="follow-label">Followers</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Following Modal -->
+                <div class="modal fade" id="followingModal" tabindex="-1" aria-labelledby="followingModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="followingModalLabel">Following</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="following-list">
+                                    {% for user in current_user.followed %}
+                                    <div class="user-item d-flex align-items-center mb-3" data-user-id="{{ user.id }}">
+                                        <a href="{{ url_for('user_profile', user_id=user.id) }}" class="d-flex align-items-center text-decoration-none flex-grow-1">
+                                            <img src="{{ user.avatar_url if user.avatar_url else user.get_avatar() }}" 
+                                                 alt="{{ user.username }}" class="user-avatar me-3">
+                                            <div class="user-info">
+                                                <div class="username">{{ user.username }}</div>
+                                                {% if user.bio %}
+                                                <div class="bio text-muted small">{{ user.bio }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </a>
+                                        <button class="btn btn-sm btn-primary unfollow-btn" onclick="toggleFollow({{ user.id }}, this)">
+                                            <i class="fas fa-user-minus me-1"></i>Unfollow
+                                        </button>
+                                    </div>
+                                    {% else %}
+                                    <div class="text-center text-muted py-4">
+                                        <i class="fas fa-user-plus fa-2x mb-3"></i>
+                                        <p>You are not following anyone</p>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Followers Modal -->
+                <div class="modal fade" id="followersModal" tabindex="-1" aria-labelledby="followersModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="followersModalLabel">Followers</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="followers-list">
+                                    {% for user in current_user.followers %}
+                                    <div class="user-item d-flex align-items-center mb-3" data-user-id="{{ user.id }}">
+                                        <a href="{{ url_for('user_profile', user_id=user.id) }}" class="d-flex align-items-center text-decoration-none flex-grow-1">
+                                            <img src="{{ user.avatar_url if user.avatar_url else user.get_avatar() }}" 
+                                                 alt="{{ user.username }}" class="user-avatar me-3">
+                                            <div class="user-info">
+                                                <div class="username">{{ user.username }}</div>
+                                                {% if user.bio %}
+                                                <div class="bio text-muted small">{{ user.bio }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </a>
+                                        <button class="btn btn-sm {% if current_user.is_following(user) %}btn-primary{% else %}btn-outline-primary{% endif %} follow-btn" 
+                                                onclick="toggleFollow({{ user.id }}, this)">
+                                            <i class="fas {% if current_user.is_following(user) %}fa-user-minus{% else %}fa-user-plus{% endif %} me-1"></i>
+                                            {{ 'Unfollow' if current_user.is_following(user) else 'Follow' }}
+                                        </button>
+                                    </div>
+                                    {% else %}
+                                    <div class="text-center text-muted py-4">
+                                        <i class="fas fa-users fa-2x mb-3"></i>
+                                        <p>No one is following you</p>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="settings-form" enctype="multipart/form-data">
+                    <div class="profile-section">
+                        <div class="current-profile-image">
+                            <div class="image-container">
+                                <img src="{{ current_user.avatar_url if current_user.avatar_url else current_user.get_avatar() }}" 
+                                     alt="Avatar" id="profile-preview" class="profile-img">
+                            </div>
+                            <div class="image-overlay">
+                                <label for="profile-upload" class="upload-label">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Change Avatar</span>
+                                </label>
+                            </div>
+                        </div>
+                        <input type="file" id="profile-upload" name="avatar_url" accept="image/*" style="display: none;">
+                        <div class="upload-info mt-2">
+                            <small class="text-muted">Supported formats: PNG, JPG, GIF</small>
+                            <br>
+                            <small class="text-muted">Remaining changes this month: {{ remaining_changes }}/20</small>
+                        </div>
+                        {% if not current_user.avatar_url %}
+                        <div class="default-avatar-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Currently using a random avatar, click on the avatar to change
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="bio" class="form-label">Dreamer Description <span class="text-muted">(Optional)</span></label>
+                        <textarea class="form-control" id="bio" name="bio" rows="3" 
+                                placeholder="Please use one sentence to introduce yourself..." maxlength="15" 
+                                oninput="updateBioWordCount(this)">{{ current_user.bio or '' }}</textarea>
+                        <div class="bio-word-count" id="bio-word-count">0/15 characters</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-outline-secondary" onclick="history.back()">
+                            <i class="fas fa-arrow-left me-2"></i>Back
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Save Settings
+                        </button>
+                    </div>
+                </form>
+
+                <div class="logout-section mt-5 text-center">
+                    <hr class="my-4">
+                    <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.settings-container {
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+h1 {
+    color: var(--text-color);
+    font-weight: 600;
+    margin-bottom: 2rem;
+    position: relative;
+    display: inline-block;
+}
+
+h1:after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 60%;
+    height: 3px;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    border-radius: 2px;
+}
+
+.profile-section {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.current-profile-image {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+}
+
+.image-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.current-profile-image:hover .image-overlay {
+    opacity: 1;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
+
+.upload-label {
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-label i {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    border-radius: 12px;
+    padding: 0.8rem 1.2rem;
+    border: 1px solid rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(var(--primary-rgb), 0.15);
+}
+
+.btn {
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(var(--primary-rgb), 0.4);
+}
+
+.btn-outline-secondary {
+    border: 1px solid rgba(0,0,0,0.1);
+    background: linear-gradient(45deg, #f8f9fa, #ffffff);
+}
+
+.btn-outline-secondary:hover {
+    transform: translateY(-2px);
+    background: #f8f9fa;
+    border-color: rgba(0,0,0,0.15);
+}
+
+.form-text {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.default-avatar-info {
+    margin-top: 0.5rem;
+    color: #6c757d;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    background: rgba(var(--primary-rgb), 0.05);
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.default-avatar-info i {
+    color: var(--primary-color);
+}
+
+.upload-info {
+    color: #6c757d;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.bio-word-count {
+    color: #6c757d;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    text-align: right;
+    transition: color 0.3s ease;
+}
+
+.bio-word-count.near-limit {
+    color: #ffc107;
+}
+
+.bio-word-count.at-limit {
+    color: #dc3545;
+}
+
+.profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.logout-section {
+    margin-top: 3rem;
+}
+
+.logout-section hr {
+    border-color: rgba(0,0,0,0.1);
+    margin: 2rem 0;
+}
+
+.btn-outline-danger {
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
+}
+
+.follow-stats {
+    margin-top: 1rem;
+    color: #6c757d;
+}
+
+.follow-link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-color);
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    background: transparent;
+    cursor: pointer;
+}
+
+.follow-link:hover {
+    background-color: rgba(var(--primary-rgb), 0.1);
+    color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.follow-link .follow-count {
+    font-weight: 600;
+    color: var(--primary);
+    margin-right: 4px;
+}
+
+.follow-link .follow-label {
+    color: inherit;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-item {
+    padding: 0.75rem;
+    border-radius: 12px;
+    transition: background-color 0.3s ease;
+}
+
+.user-item:hover {
+    background-color: rgba(var(--primary-rgb), 0.05);
+}
+
+.user-item .username {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.user-item .bio {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.modal-content {
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.follow-btn, .unfollow-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.follow-btn:hover, .unfollow-btn:hover {
+    transform: translateY(-2px);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('settings-form');
+    const imageInput = document.getElementById('profile-upload');
+    const preview = document.getElementById('profile-preview');
+    const bioInput = document.getElementById('bio');
+
+    imageInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            // Check remaining changes
+            const remainingChanges = parseInt("{{ remaining_changes }}");
+            if (remainingChanges <= 0) {
+                alert('You have used all your avatar changes for this month. Please try again next month.');
+                this.value = ''; // Clear the file input
+                return;
+            }
+
+            // Validate file type
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            if (!validTypes.includes(file.type)) {
+                alert('Please upload a PNG, JPG, or GIF image');
+                this.value = ''; // Clear the file input
+                return;
+            }
+
+            // Validate file size (max 10MB)
+            const maxSize = 8 * 1024 * 1024; // 10MB in bytes
+            if (file.size > maxSize) {
+                alert('Image size cannot exceed 10MB');
+                this.value = ''; // Clear the file input
+                return;
+            }
+
+            // Preview the image
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                preview.style.width = '100%';
+                preview.style.height = '100%';
+                preview.style.objectFit = 'cover';
+            };
+            
+            reader.onerror = function() {
+                alert('Image preview failed. Please try again');
+                this.value = ''; // Clear the file input
+            };
+
+            reader.readAsDataURL(file);
+        }
+    });
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Create FormData object
+        const formData = new FormData();
+        
+        // Add the image file if one is selected
+        if (imageInput.files[0]) {
+            formData.append('avatar_url', imageInput.files[0]);
+        }
+        
+        // Add the bio
+        formData.append('bio', bioInput.value);
+        
+        // Validate image size again before submission
+        if (imageInput.files[0] && imageInput.files[0].size > 8 * 1024 * 1024) {
+            alert('Image size cannot exceed 10MB');
+            return;
+        }
+        
+        // Disable the submit button to prevent double submission
+        const submitButton = this.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+        
+        fetch('/settings', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Save failed. Please try again');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Show success message
+                const toast = document.createElement('div');
+                toast.className = 'position-fixed bottom-0 end-0 p-3';
+                toast.style.zIndex = '11';
+                toast.innerHTML = `
+                    <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                <i class="fas fa-check-circle me-2"></i>Settings saved
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(toast);
+                const toastEl = new bootstrap.Toast(toast.querySelector('.toast'));
+                toastEl.show();
+                
+                // Update the profile image if a new one was uploaded
+                if (data.image_url) {
+                    const preview = document.getElementById('profile-preview');
+                    preview.src = data.image_url;
+                }
+                
+                // Reload the page after a short delay
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            } else {
+                throw new Error(data.error || 'Save failed. Please try again');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert(error.message || 'Save failed. Please try again');
+            // Re-enable the submit button
+            submitButton.disabled = false;
+            submitButton.innerHTML = '<i class="fas fa-save me-2"></i>Save Settings';
+        });
+    });
+
+    // Initialize all modals
+    var modals = [].slice.call(document.querySelectorAll('.modal'));
+    modals.forEach(function(modal) {
+        new bootstrap.Modal(modal);
+    });
+
+    // Add click handlers for follow links
+    document.querySelectorAll('.follow-link').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var targetModal = document.querySelector(this.getAttribute('data-bs-target'));
+            var modal = bootstrap.Modal.getInstance(targetModal) || new bootstrap.Modal(targetModal);
+            modal.show();
+        });
+    });
+});
+
+function updateBioWordCount(textarea) {
+    const maxLength = 15;
+    const currentLength = textarea.value.length;
+    const counter = document.getElementById('bio-word-count');
+    counter.textContent = `${currentLength}/${maxLength} characters`;
+    
+    // Update counter color based on length
+    counter.className = 'bio-word-count';
+    if (currentLength >= maxLength) {
+        counter.classList.add('at-limit');
+    } else if (currentLength >= maxLength * 0.8) {
+        counter.classList.add('near-limit');
+    }
+}
+
+// Initialize word count on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const bioTextarea = document.getElementById('bio');
+    updateBioWordCount(bioTextarea);
+});
+
+function toggleFollow(userId, button) {
+    const isFollowing = button.classList.contains('btn-primary');
+    const endpoint = isFollowing ? 'unfollow' : 'follow';
+    
+    fetch(`/user/${userId}/${endpoint}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update button appearance
+            button.classList.toggle('btn-primary');
+            button.classList.toggle('btn-outline-primary');
+            
+            // Update icon
+            const icon = button.querySelector('i');
+            icon.classList.toggle('fa-user-plus');
+            icon.classList.toggle('fa-user-minus');
+            
+            // Update text
+            button.innerHTML = `
+                <i class="fas ${isFollowing ? 'fa-user-plus' : 'fa-user-minus'} me-1"></i>
+                ${isFollowing ? 'Unfollow' : 'Follow'}
+            `;
+            
+            // Update the appropriate count based on which list we're in
+            if (button.closest('.following-list')) {
+                // We're in the following list, update the following count
+                const followingCount = document.querySelector('.follow-link[data-bs-target="#followingModal"] .follow-count');
+                if (followingCount) {
+                    const currentCount = parseInt(followingCount.textContent);
+                    followingCount.textContent = isFollowing ? currentCount - 1 : currentCount + 1;
+                }
+            } else if (button.closest('.followers-list')) {
+                // We're in the followers list, update the followers count only if the user is following/unfollowing back
+                const followersCount = document.querySelector('.follow-link[data-bs-target="#followersModal"] .follow-count');
+                if (followersCount) {
+                    followersCount.textContent = data.followers_count;
+                }
+            }
+            
+            // Show success toast
+            const toast = document.createElement('div');
+            toast.className = 'position-fixed bottom-0 end-0 p-3';
+            toast.style.zIndex = '11';
+            toast.innerHTML = `
+                <div class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            ${isFollowing ? 'Unfollowed' : 'Followed'} successfully
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            const toastEl = new bootstrap.Toast(toast.querySelector('.toast'));
+            toastEl.show();
+            
+            // If in following modal and unfollowing, remove the user item
+            if (isFollowing && button.closest('.following-list')) {
+                const userItem = button.closest('.user-item');
+                if (userItem) {
+                    userItem.remove();
+                    
+                    // Check if there are any remaining users
+                    const followingList = document.querySelector('.following-list');
+                    if (followingList && !followingList.querySelector('.user-item')) {
+                        followingList.innerHTML = `
+                            <div class="text-center text-muted py-4">
+                                <i class="fas fa-user-plus fa-2x mb-3"></i>
+                                <p>You are not following anyone</p>
+                            </div>
+                        `;
+                    }
+                }
+            }
+        } else {
+            alert(data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Operation failed. Please try again');
+    });
+}
+</script>
+{% endblock %}

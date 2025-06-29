@@ -1,0 +1,858 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-584FXGMJ57"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-584FXGMJ57');
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="main-content py-5">
+    <div class="container">
+        <div class="row">
+            <!-- User Profile Header -->
+            <div class="col-12">
+                <div class="profile-header mb-4 mt-5">
+                    <div class="d-flex align-items-center">
+                        <img src="{{ url_for('static', filename=user.background_image) if user.background_image else user.get_avatar() }}" 
+                             alt="{{ user.username }}" 
+                             class="profile-avatar rounded-circle me-3"
+                             style="width: 100px; height: 100px; object-fit: cover;">
+                        <div class="profile-info flex-grow-1">
+                            <h2 class="mb-2">{{ user.username }}
+                                {% if user.username == "书梦官方" %}
+                                <i class="fas fa-check-circle text-primary" title="官方认证账号" style="font-size: 0.8em; margin-left: 5px; vertical-align: middle; position: relative; top: -1.5px;"></i>
+                                {% endif %}
+                            </h2>
+                            {% if user.bio %}
+                            <p class="text-muted mb-2">{{ user.bio }}</p>
+                            {% endif %}
+                            <div class="d-flex flex-wrap gap-3">
+                                <div>
+                                    <a href="javascript:void(0)" class="follow-link d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#followersModal">
+                                        <i class="fas fa-users me-1"></i>
+                                        <span class="fw-bold" style="font-weight: bold; color: #FF6B6B;">{{ user.get_followers_count() }}</span>
+                                        <span class="text-muted">&nbsp;粉丝</span>
+                                    </a>
+                                </div>
+                                <div>
+                                    <a href="javascript:void(0)" class="follow-link d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#followingModal">
+                                        <i class="fas fa-user-plus me-1"></i>
+                                        <span class="fw-bold" style="font-weight: bold; color: #FF6B6B;">{{ user.get_following_count() }}</span>
+                                        <span class="text-muted">&nbsp;关注</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% if current_user.is_authenticated and current_user.id != user.id %}
+                        <div class="follow-btn">
+                            <button class="btn btn-sm {% if current_user.is_following(user) %}btn-primary{% else %}btn-outline-primary{% endif %} follow-toggle"
+                                    onclick="toggleFollow({{ user.id }}, this)"
+                                    data-user-id="{{ user.id }}">
+                                <i class="fas {% if current_user.is_following(user) %}fa-user-minus{% else %}fa-user-plus{% endif %} me-1"></i>
+                                <span class="follow-text">{{ '取消关注' if current_user.is_following(user) else '关注' }}</span>
+                                <span class="followers-count">({{ user.get_followers_count() }})</span>
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- User's Posts -->
+            <div class="col-12">
+                <h3 class="mb-4">{{ user.username }} &nbsp;&nbsp; @ <span class="fancy-poetry">书梦空间</span></h3>
+                {% if posts.items %}
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                        {% for post in posts.items %}
+                        <div class="col">
+                            <div class="forum-post-card animate__animated animate__fadeIn" data-post-id="{{ post.id }}">
+                                <div class="post-header">
+                                    <div class="post-meta text-muted mb-2">
+                                        <small>
+                                            <i class="fas fa-clock me-1"></i>{{ (post.created_at|add_hours).strftime('%m-%d %H:%M') }}
+                                            <span class="mx-2">·</span>
+                                            <i class="fas fa-eye me-1"></i>{{ post.views or 0 }} 次阅读
+                                        </small>
+                                    </div>
+                                    <h2 class="post-title">
+                                        <a href="{{ url_for('view_post', post_id=post.id) }}">
+                                            {{ post.title[:22] }}{{ '...' if post.title|length > 22 }}
+                                        </a>
+                                    </h2>
+                                    {% if post.cover_image %}
+                                    <div class="post-cover-image">
+                                        <a href="{{ url_for('view_post', post_id=post.id) }}">
+                                            <img src="{{ post.cover_image }}" 
+                                                 alt="Cover for {{ post.title }}"
+                                                 class="img-fluid rounded">
+                                        </a>
+                                    </div>
+                                    {% endif %}
+                                    <div class="post-tags">
+                                        {% for tag in post.tag_list[:6] %}
+                                        <span class="badge rounded-pill bg-light text-dark tag-badge">
+                                            <a href="{{ url_for('forum', tag=tag, sort=request.args.get('sort', 'time')) }}" class="text-decoration-none text-dark">
+                                            {% if tag == '小说' %}
+                                            <i class="fas fa-book me-1"></i>
+                                            {% elif tag == '电影' %}
+                                            <i class="fas fa-film me-1"></i>
+                                            {% elif tag == '电视剧' %}
+                                            <i class="fas fa-tv me-1"></i>
+                                            {% elif tag == '动漫' %}
+                                            <i class="fas fa-dragon me-1"></i>
+                                            {% elif tag == '漫画' %}
+                                            <i class="fas fa-image me-1"></i>
+                                            {% elif tag == '随想' %}
+                                            <i class="fas fa-feather-alt me-1"></i>
+                                            {% elif tag == '读后感' %}
+                                            <i class="fas fa-comment-dots me-1"></i>
+                                            {% elif tag == '新结局' %}
+                                            <i class="fas fa-magic me-1"></i>
+                                            {% elif tag == '角色畅聊' %}
+                                            <i class="fas fa-comments me-1"></i>
+                                            {% elif tag == '绘梦' %}
+                                            <i class="fas fa-paint-brush me-1"></i>
+                                            {% elif tag == '梦语' %}
+                                            <i class="fas fa-cloud-moon me-1"></i>
+                                            {% elif tag == '游戏' %}
+                                            <i class="fas fa-gamepad me-1"></i>
+                                            {% elif tag == '虐心' %}
+                                            <i class="fas fa-heart-broken me-1"></i>
+                                            {% elif tag == '意难平' %}
+                                            <i class="fas fa-cloud-rain me-1"></i>
+                                            {% elif tag == '意满离' %}
+                                            <i class="fas fa-sun me-1"></i>
+                                            {% elif tag == '青春校园' %}
+                                            <i class="fas fa-school me-1"></i>
+                                            {% elif tag == '恋爱' %}
+                                            <i class="fas fa-heartbeat me-1"></i>
+                                            {% elif tag == '霸道总裁' %}
+                                            <i class="fas fa-crown me-1"></i>
+                                            {% elif tag == '科幻' %}
+                                            <i class="fas fa-rocket me-1"></i>
+                                            {% elif tag == '职场' %}
+                                            <i class="fas fa-briefcase me-1"></i>
+                                            {% elif tag == '晋江' %}
+                                            <i class="fas fa-champagne-glasses"></i>
+                                            {% elif tag == '树洞' %}
+                                            <i class="fas fa-tree me-1"></i>
+                                            {% elif tag == '悄悄话' %}
+                                            <i class="fas fa-comment-dots me-1"></i>
+                                            {% elif tag == '其他' %}
+                                            <i class="fas fa-ellipsis me-1"></i>
+                                            {% elif tag == 'BE' %}
+                                            <i class="fas fa-cloud-showers-heavy me-1"></i>
+                                            {% elif tag == 'HE' %}
+                                            <i class="fas fa-rainbow me-1"></i>
+                                            {% else %}
+                                            <i class="fas fa-tag me-1"></i>
+                                            {% endif %}
+                                            {{ tag }}
+                                            </a>
+                                        </span>
+                                        {% endfor %}
+                                        {% if post.tag_list|length > 6 %}
+                                        <span class="badge rounded-pill bg-light text-dark tag-badge more-tags">
+                                            <i class="fas fa-ellipsis-h me-1"></i>
+                                            更多
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="post-content">
+                                    {{ post.content[:78] + '...' if post.content|length > 78 else post.content }}
+                                </div>
+                                <div class="post-footer">
+                                    <div class="interactions">
+                                        <button class="btn btn-like {% if current_user.is_authenticated and current_user.has_liked_post(post.id) %}liked{% endif %}"
+                                                onclick="handleLike('{{ post.id }}')"
+                                                type="button">
+                                            <i class="fas fa-heart"></i>
+                                            <span class="like-count">{{ post.likes|length }}</span>
+                                        </button>
+                                        <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-comment">
+                                            <i class="fas fa-comment"></i>
+                                            <span class="comment-count">{{ post.comments|length }}</span>
+                                        </a>
+                                        <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-read-more ms-auto">
+                                            展开好梦 <i class="fas fa-arrow-right ms-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Pagination -->
+                    {% if posts.pages > 1 %}
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            {% for page in range(1, posts.pages + 1) %}
+                            <li class="page-item {% if page == posts.page %}active{% endif %}">
+                                <a class="page-link" href="{{ url_for('user_profile', user_id=user.id, page=page) }}">{{ page }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                {% else %}
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-file-alt fa-3x mb-3"></i>
+                    <p>还没有发布任何分享</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Following Modal -->
+<div class="modal fade" id="followingModal" tabindex="-1" aria-labelledby="followingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="followingModalLabel">{{ user.username }} 的关注</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="following-list">
+                    {% for followed_user in user.followed %}
+                    <div class="user-item d-flex align-items-center mb-3" data-user-id="{{ followed_user.id }}">
+                        <a href="{{ url_for('user_profile', user_id=followed_user.id) }}" class="d-flex align-items-center text-decoration-none flex-grow-1">
+                            <img src="{{ url_for('static', filename=followed_user.background_image) if followed_user.background_image else followed_user.get_avatar() }}" 
+                                 alt="{{ followed_user.username }}" class="user-avatar me-3">
+                            <div class="user-info">
+                                <div class="username">{{ followed_user.username }}
+                                    {% if followed_user.username == "书梦官方" %}
+                                    <i class="fas fa-check-circle text-primary" title="官方认证账号" style="font-size: 0.8em; margin-left: 5px; vertical-align: middle; position: relative; top: -1.5px;"></i>
+                                    {% endif %}
+                                </div>
+                                {% if followed_user.bio %}
+                                <div class="bio text-muted small">{{ followed_user.bio }}</div>
+                                {% endif %}
+                            </div>
+                        </a>
+                        {% if current_user.is_authenticated and current_user.id != followed_user.id %}
+                        <button class="btn btn-sm {% if current_user.is_following(followed_user) %}btn-primary{% else %}btn-outline-primary{% endif %} follow-btn" 
+                                onclick="toggleFollow({{ followed_user.id }}, this)">
+                            <i class="fas {% if current_user.is_following(followed_user) %}fa-user-minus{% else %}fa-user-plus{% endif %} me-1"></i>
+                            {{ '取消关注' if current_user.is_following(followed_user) else '关注' }}
+                        </button>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-user-plus fa-2x mb-3"></i>
+                        <p>还没有关注任何人</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Followers Modal -->
+<div class="modal fade" id="followersModal" tabindex="-1" aria-labelledby="followersModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="followersModalLabel">{{ user.username }} 的粉丝</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="followers-list">
+                    {% for follower in user.followers %}
+                    <div class="user-item d-flex align-items-center mb-3" data-user-id="{{ follower.id }}">
+                        <a href="{{ url_for('user_profile', user_id=follower.id) }}" class="d-flex align-items-center text-decoration-none flex-grow-1">
+                            <img src="{{ url_for('static', filename=follower.background_image) if follower.background_image else follower.get_avatar() }}" 
+                                 alt="{{ follower.username }}" class="user-avatar me-3">
+                            <div class="user-info">
+                                <div class="username">{{ follower.username }}
+                                    {% if follower.username == "书梦官方" %}
+                                    <i class="fas fa-check-circle text-primary" title="官方认证账号" style="font-size: 0.8em; margin-left: 5px; vertical-align: middle; position: relative; top: -1.5px;"></i>
+                                    {% endif %}
+                                </div>
+                                {% if follower.bio %}
+                                <div class="bio text-muted small">{{ follower.bio }}</div>
+                                {% endif %}
+                            </div>
+                        </a>
+                        {% if current_user.is_authenticated and current_user.id != follower.id %}
+                        <button class="btn btn-sm {% if current_user.is_following(follower) %}btn-primary{% else %}btn-outline-primary{% endif %} follow-btn" 
+                                onclick="toggleFollow({{ follower.id }}, this)">
+                            <i class="fas {% if current_user.is_following(follower) %}fa-user-minus{% else %}fa-user-plus{% endif %} me-1"></i>
+                            {{ '取消关注' if current_user.is_following(follower) else '关注' }}
+                        </button>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-users fa-2x mb-3"></i>
+                        <p>还没有人关注</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.profile-header {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.profile-avatar {
+    border: 4px solid white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.profile-info h2 {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.profile-stats {
+    font-size: 0.95rem;
+}
+
+.profile-stats i {
+    color: var(--primary-color);
+}
+
+.follow-btn .btn {
+    transition: all 0.3s ease;
+}
+
+.follow-btn .btn:hover {
+    transform: translateY(-2px);
+}
+
+.follow-btn .followers-count {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    margin-left: 0.25rem;
+}
+
+.fancy-poetry {
+    background: linear-gradient(120deg, #4568dc, #b06ab3);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.5rem;
+    letter-spacing: 1.2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1s ease-in-out;
+}
+
+@media (min-width: 992px) {
+        .fancy-poetry{
+            font-family: "STKaiti", "KaiTi", serif;
+        }
+}
+
+@media (min-width: 992px) {
+        .fancy-poetry{
+            font-size: 1.6rem;
+        }
+}
+
+@media (max-width: 768px) {
+        .fancy-poetry{
+            font-size: 1.2rem;
+        }
+}
+
+.forum-post-card {
+    background: linear-gradient(135deg, #fff6e0, #fff9e8);
+    border-radius: 15px;
+    padding: 1.8rem;
+    margin-bottom: 1.8rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.4s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+.forum-post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.post-header {
+    margin-bottom: 1rem;
+}
+
+.post-meta {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.post-title {
+    font-size: 1.4rem;
+    margin: 0.8rem 0;
+    font-weight: bold;
+}
+
+.post-title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.post-title a:hover {
+    color: #0d6efd;
+}
+
+.post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.tag-badge {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+    background-color: #f8f9fa;
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.tag-badge:hover {
+    background-color: #e9ecef;
+    transform: translateY(-2px);
+}
+
+.tag-badge i {
+    color: var(--primary-color);
+}
+
+.tag-badge i.fa-book {
+    color: #8B4513;  /* Brown for novels */
+}
+
+.tag-badge i.fa-film {
+    color: #FF4500;  /* Orange-red for movies */
+}
+
+.tag-badge i.fa-tv {
+    color: #4169E1;  /* Royal blue for TV series */
+}
+
+.tag-badge i.fa-dragon {
+    color: #9932CC;  /* Purple for anime */
+}
+
+.tag-badge i.fa-image {
+    color: #20B2AA;  /* Light sea green for manga */
+}
+
+.tag-badge i.fa-feather-alt {
+    color: #6A5ACD;  /* Slate blue for thoughts */
+}
+
+.tag-badge i.fa-comment-dots {
+    color: #9370DB;  /* Steel blue for reviews */
+}
+
+.tag-badge i.fa-magic {
+    color: #9370DB;  /* Medium purple for new endings */
+}
+
+.tag-badge i.fa-comments {
+    color: #48D1CC;  /* Medium turquoise for character chats */
+}
+
+.tag-badge i.fa-cloud-moon {
+    color: #483D8B;  /* Dark slate blue for dream talk */
+}
+
+.tag-badge i.fa-gamepad {
+    color: #32CD32;  /* Lime green for games */
+}
+
+.tag-badge i.fa-heart-broken {
+    color: #DC143C;  /* Crimson for heartbreaking */
+}
+
+.tag-badge i.fa-cloud-rain {
+    color: #4682B4;  /* Steel blue for regret */
+}
+
+.tag-badge i.fa-sun {
+    color: #FFD700;  /* Gold for satisfaction */
+}
+
+.tag-badge i.fa-school {
+    color: #FF69B4;  /* Hot pink for campus */
+}
+
+.tag-badge i.fa-heartbeat {
+    color: #FF1493;  /* Deep pink for romance */
+}
+
+.tag-badge i.fa-crown {
+    color: #DAA520;  /* Goldenrod for CEO */
+}
+
+.tag-badge i.fa-rocket {
+    color: #4169E1;  /* Royal blue for sci-fi */
+}
+
+.tag-badge i.fa-briefcase {
+    color: #20B2AA;  /* Light sea green for workplace */
+}
+
+.tag-badge i.fa-champagne-glasses {
+    color: #FFD700;  /* Gold for Jinjiang */
+}
+
+.tag-badge i.fa-tree {
+    color: #228B22;  /* Forest green for tree hole */
+}
+
+.tag-badge i.fa-ellipsis {
+    color: #808080;  /* Gray for others */
+}
+
+.tag-badge i.fa-cloud-showers-heavy {
+    color: #4A5568;  /* Dark gray for bad ending */
+}
+
+.tag-badge i.fa-rainbow {
+    color: #F6AD55;  /* Warm orange for happy ending */
+}
+
+.post-content {
+    color: #000000;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.post-footer {
+    border-top: 1px solid rgba(0,0,0,0.05);
+    padding-top: 1rem;
+}
+
+.interactions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.btn-like, .btn-comment {
+    background: none;
+    border: none;
+    color: #666;
+    padding: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-like:hover, .btn-comment:hover {
+    color: #0d6efd;
+}
+
+.btn-like.liked {
+    color: #dc3545;
+}
+
+.btn-read-more {
+    color: #0d6efd;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-read-more:hover {
+    transform: translateX(5px);
+}
+
+.pagination {
+    margin-top: 2rem;
+}
+
+.pagination .page-link {
+    border: none;
+    color: #6c757d;
+    padding: 0.5rem 1rem;
+    margin: 0 0.2rem;
+    border-radius: 4px;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.pagination .page-link:hover {
+    background-color: #e9ecef;
+    color: #0d6efd;
+}
+
+.follow-link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-color);
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    background: transparent;
+    cursor: pointer;
+}
+
+.follow-link:hover {
+    background-color: rgba(var(--primary-rgb), 0.1);
+    color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-item {
+    padding: 0.75rem;
+    border-radius: 12px;
+    transition: background-color 0.3s ease;
+}
+
+.user-item:hover {
+    background-color: rgba(var(--primary-rgb), 0.05);
+}
+
+.user-item .username {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.user-item .bio {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.modal-content {
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.follow-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.follow-btn:hover {
+    transform: translateY(-2px);
+}
+
+.post-cover-image {
+    margin: 1rem 0;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+}
+
+.post-cover-image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.post-cover-image:hover img {
+    transform: scale(1.05);
+}
+</style>
+
+<script>
+function toggleFollow(userId, button) {
+    const isFollowing = button.classList.contains('btn-primary');
+    const endpoint = isFollowing ? 'unfollow' : 'follow';
+    
+    fetch(`/user/${userId}/${endpoint}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update button appearance
+            button.classList.toggle('btn-primary');
+            button.classList.toggle('btn-outline-primary');
+            
+            // Update icon
+            const icon = button.querySelector('i');
+            icon.classList.toggle('fa-user-plus');
+            icon.classList.toggle('fa-user-minus');
+            
+            // Update text
+            button.innerHTML = `
+                <i class="fas ${isFollowing ? 'fa-user-plus' : 'fa-user-minus'} me-1"></i>
+                ${isFollowing ? '关注' : '取消关注'}
+            `;
+            
+            // Update follower counts in both modals and main view
+            document.querySelectorAll('.follow-count').forEach(function(element) {
+                element.textContent = data.followers_count;
+            });
+            
+            // Show success toast
+            const toast = document.createElement('div');
+            toast.className = 'position-fixed bottom-0 end-0 p-3';
+            toast.style.zIndex = '11';
+            toast.innerHTML = `
+                <div class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            ${isFollowing ? '已取消关注' : '关注成功'}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            const toastEl = new bootstrap.Toast(toast.querySelector('.toast'));
+            toastEl.show();
+            
+            // If in following modal and unfollowing, remove the user item
+            if (isFollowing && button.closest('.following-list')) {
+                const userItem = button.closest('.user-item');
+                if (userItem) {
+                    userItem.remove();
+                    
+                    // Check if there are any remaining users
+                    const followingList = document.querySelector('.following-list');
+                    if (followingList && !followingList.querySelector('.user-item')) {
+                        followingList.innerHTML = `
+                            <div class="text-center text-muted py-4">
+                                <i class="fas fa-user-plus fa-2x mb-3"></i>
+                                <p>还没有关注任何人</p>
+                            </div>
+                        `;
+                    }
+                }
+            }
+            
+            // Update the main profile follow button if it exists
+            const mainProfileButton = document.querySelector(`.follow-toggle[data-user-id="${userId}"]`);
+            if (mainProfileButton && mainProfileButton !== button) {
+                mainProfileButton.classList.toggle('btn-primary');
+                mainProfileButton.classList.toggle('btn-outline-primary');
+                const mainIcon = mainProfileButton.querySelector('i');
+                mainIcon.classList.toggle('fa-user-plus');
+                mainIcon.classList.toggle('fa-user-minus');
+                mainProfileButton.querySelector('.follow-text').textContent = isFollowing ? '关注' : '取消关注';
+            }
+        } else {
+            alert(data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('操作失败，请重试');
+    });
+}
+
+function handleLike(postId) {
+    if (!postId) return;
+    
+    fetch(`/forum/post/${postId}/like`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const likeButton = document.querySelector(`.forum-post-card[data-post-id="${postId}"] .btn-like`);
+            const likeCount = likeButton.querySelector('.like-count');
+            
+            // Toggle liked state
+            likeButton.classList.toggle('liked');
+            
+            // Update like count
+            likeCount.textContent = data.like_count;
+            
+            // Show success toast
+            const toast = document.createElement('div');
+            toast.className = 'position-fixed bottom-0 end-0 p-3';
+            toast.style.zIndex = '11';
+            toast.innerHTML = `
+                <div class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            ${data.action === 'liked' ? '点赞成功' : '已取消点赞'}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            const toastEl = new bootstrap.Toast(toast.querySelector('.toast'));
+            toastEl.show();
+        } else {
+            alert(data.error || '操作失败，请重试');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('操作失败，请重试');
+    });
+}
+
+// Initialize all modals
+document.addEventListener('DOMContentLoaded', function() {
+    var modals = [].slice.call(document.querySelectorAll('.modal'));
+    modals.forEach(function(modal) {
+        new bootstrap.Modal(modal);
+    });
+
+    // Add click handlers for follow links
+    document.querySelectorAll('.follow-link').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var targetModal = document.querySelector(this.getAttribute('data-bs-target'));
+            var modal = bootstrap.Modal.getInstance(targetModal) || new bootstrap.Modal(targetModal);
+            modal.show();
+        });
+    });
+});
+</script>
+{% endblock %} 

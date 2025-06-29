@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient Definitions -->
+  <defs>
+    <linearGradient id="elephantGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d3d3d3"/>
+      <stop offset="100%" stop-color="#b0b0b0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Circular Head -->
+  <circle cx="256" cy="256" r="240" fill="url(#elephantGradient)"/>
+
+  <!-- Ears -->
+  <ellipse cx="126" cy="256" rx="80" ry="120" fill="#b0b0b0"/>
+  <ellipse cx="386" cy="256" rx="80" ry="120" fill="#b0b0b0"/>
+
+  <!-- Eyes -->
+  <circle cx="206" cy="226" r="18" fill="#000000"/>
+  <circle cx="306" cy="226" r="18" fill="#000000"/>
+
+  <!-- Trunk -->
+  <path d="M256,256 C256,290 256,320 246,340
+           Q256,350 266,340
+           C256,320 256,290 256,256 Z"
+        fill="#b0b0b0"/>
+
+  <!-- Smaller trunk detail line -->
+  <line x1="256" y1="300" x2="256" y2="320" stroke="#888" stroke-width="3" stroke-linecap="round"/>
+</svg>

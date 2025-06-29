@@ -1,0 +1,1915 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-584FXGMJ57"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-584FXGMJ57');
+</script>
+<!-- Preload post cover images -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Find all post cover images and preload them
+    const coverImages = document.querySelectorAll('.post-cover-image img');
+    coverImages.forEach(img => {
+      if (img.src) {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'image';
+        link.href = img.src;
+        document.head.appendChild(link);
+      }
+    });
+  });
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="forum-hero text-center text-white py-5">
+    <div class="container hero-content">
+        <h1 class="animate__animated animate__fadeIn fancy-poetry3">Community</h1>
+        <div class="divider">
+            <span class="divider-line"></span>
+            <i class="fas fa-feather-alt"></i>
+            <span class="divider-line"></span>
+        </div>
+        <p class="site-subtitle animate__animated animate__fadeIn"><span class="subtitle-text">Share your dreams, see every dream</span></p>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('create_post') }}" class="btn btn-primary btn-lg animate__animated animate__fadeIn animate__delay-0.4s">
+            <i class="fas fa-wand-magic-sparkles me-2"></i>Share your dream
+        </a>
+        {% else %}
+        <div class="d-flex justify-content-center gap-3 animate__animated animate__fadeIn animate__delay-0.4s">
+            <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-sign-in-alt me-2"></i>Login
+            </a>
+            <a href="{{ url_for('register') }}" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-user-plus me-2"></i>Register
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<div class="container my-5">
+    <!-- Search and sort header -->
+    <div class="d-flex flex-column flex-md-row align-items-stretch align-items-md-center gap-3 gap-md-4 mb-4">
+        <!-- Search bar -->
+        <form action="{{ url_for('forum') }}" method="GET" class="search-form flex-grow-1" style="min-width: auto;">
+            <div class="input-group">
+                <input type="text" 
+                       class="form-control search-input" 
+                       name="q" 
+                       value="{{ request.args.get('q', '') }}"
+                       placeholder="Search by title or keywords"
+                       aria-label="Search">
+                <input type="hidden" name="sort" value="{{ request.args.get('sort', 'time') }}">
+                {% for tag in request.args.getlist('tag') %}
+                <input type="hidden" name="tag" value="{{ tag }}">
+                {% endfor %}
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-search me-1"></i> Search
+                </button>
+            </div>
+        </form>
+
+        <!-- Tag filter -->
+        <form action="{{ url_for('forum') }}" method="GET" class="flex-grow-1" id="tagFilterForm" style="min-width: auto;">
+            <input type="hidden" name="q" value="{{ request.args.get('q', '') }}">
+            <input type="hidden" name="sort" value="{{ request.args.get('sort', 'time') }}">
+            
+            <div class="input-group">
+                <input type="text" class="form-control" id="customTag" 
+                       placeholder="Search any tag" aria-label="Tag name">
+                <button class="btn btn-primary2" type="button" onclick="addCustomTag()">
+                    <i class="fas fa-plus me-1"></i>Add Tag
+                </button>
+            </div>
+        </form>
+
+        <!-- Sort options -->
+        <div class="btn-group flex-grow-1 flex-md-grow-0" role="group" style="min-width: auto;">
+            <button onclick="handleSort('time')" 
+                   class="btn {% if not request.args.get('sort') or request.args.get('sort') == 'time' %}btn-primary{% else %}btn-outline-danger{% endif %}">
+                <i class="fas fa-clock me-1"></i> Latest
+            </button>
+            <button onclick="handleSort('likes')" 
+                   class="btn {% if request.args.get('sort') == 'likes' %}btn-primary{% else %}btn-outline-danger{% endif %}">
+                <i class="fas fa-heart me-1"></i> Most Liked
+            </button>
+        </div>
+    </div>
+
+    {% if request.args.getlist('tag') %}
+        <!-- Tag filter header -->
+        <div class="mb-4">
+            <h4 class="mb-3">标签选择:</h4>
+            <div class="d-flex flex-wrap gap-2">
+                {% for tag_filter in request.args.getlist('tag') %}
+                <div class="d-flex align-items-center">
+                    <span class="badge rounded-pill bg-light text-dark tag-badge">
+                        {% if tag_filter == '小说' %}
+                        <i class="fas fa-book me-1"></i>
+                        {% elif tag_filter == '电影' %}
+                        <i class="fas fa-film me-1"></i>
+                        {% elif tag_filter == '电视剧' %}
+                        <i class="fas fa-tv me-1"></i>
+                        {% elif tag_filter == '动漫' %}
+                        <i class="fas fa-dragon me-1"></i>
+                        {% elif tag_filter == '漫画' %}
+                        <i class="fas fa-image me-1"></i>
+                        {% elif tag_filter == '随想' %}
+                        <i class="fas fa-feather-alt me-1"></i>
+                        {% elif tag_filter == '读后感' %}
+                        <i class="fas fa-comment-dots me-1"></i>
+                        {% elif tag_filter == '新结局' %}
+                        <i class="fas fa-magic me-1"></i>
+                        {% elif tag_filter == '角色畅聊' %}
+                        <i class="fas fa-comments me-1"></i>
+                        {% elif tag_filter == '绘梦' %}
+                        <i class="fas fa-paint-brush me-1"></i>
+                        {% elif tag_filter == '梦语' %}
+                        <i class="fas fa-cloud-moon me-1"></i>
+                        {% elif tag_filter == '游戏' %}
+                        <i class="fas fa-gamepad me-1"></i>
+                        {% elif tag_filter == '虐心' %}
+                        <i class="fas fa-heart-broken me-1"></i>
+                        {% elif tag_filter == '意难平' %}
+                        <i class="fas fa-cloud-rain me-1"></i>
+                        {% elif tag_filter == '意满离' %}
+                        <i class="fas fa-sun me-1"></i>
+                        {% elif tag_filter == '青春校园' %}
+                        <i class="fas fa-school me-1"></i>
+                        {% elif tag_filter == '恋爱' %}
+                        <i class="fas fa-heartbeat me-1"></i>
+                        {% elif tag_filter == '霸道总裁' %}
+                        <i class="fas fa-crown me-1"></i>
+                        {% elif tag_filter == '科幻' %}
+                        <i class="fas fa-rocket me-1"></i>
+                        {% elif tag_filter == '职场' %}
+                        <i class="fas fa-briefcase me-1"></i>
+                        {% elif tag_filter == '晋江' %}
+                        <i class="fas fa-champagne-glasses"></i>
+                        {% elif tag_filter == '树洞' %}
+                        <i class="fas fa-tree me-1"></i>
+                        {% elif tag_filter == '悄悄话' %}
+                        <i class="fas fa-comment-dots me-1"></i>
+                        {% elif tag_filter == '其他' %}
+                        <i class="fas fa-ellipsis me-1"></i>
+                        {% elif tag_filter == 'BE' %}
+                        <i class="fas fa-cloud-showers-heavy me-1"></i>
+                        {% elif tag_filter == 'HE' %}
+                        <i class="fas fa-rainbow me-1"></i>
+                        {% else %}
+                        <i class="fas fa-tag me-1"></i>
+                        {% endif %}
+                        {{ tag_filter }}
+                    </span>
+                    <button type="button" class="btn btn-link text-danger p-0 ms-2" 
+                            onclick="removeTag('{{ tag_filter }}')" aria-label="移除">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                {% endfor %}
+                <a href="{{ url_for('forum', sort=request.args.get('sort', 'time'), q=request.args.get('q', '')) }}" 
+                   class="btn btn-outline-secondary btn-sm ms-3">
+                    <i class="fas fa-times me-1"></i>清除全部
+                </a>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if request.args.get('q') %}
+        <!-- Search results header -->
+        <div class="mb-4">
+            <h4>搜索结果: "{{ request.args.get('q') }}" &nbsp; (共 {{ posts.total }} 个好梦)</h4>
+        </div>
+        
+        {% if posts.items %}
+            <!-- Search results grid -->
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for post in posts.items %}
+                    {% if not post.is_private or (current_user.is_authenticated and current_user.id == post.user_id) %}
+                    <div class="col">
+                        <div class="forum-post-card animate__animated animate__fadeIn" data-post-id="{{ post.id }}">
+                            <div class="post-header">
+                                <div class="user-profile">
+                                    <a href="{{ url_for('user_profile', user_id=post.user.id) }}" class="d-flex align-items-center text-decoration-none text-dark">
+                                        <img src="{{ post.user.avatar_url if post.user.avatar_url else post.user.get_avatar() }}" 
+                                             alt="{{ post.user.username }}" class="profile-image">
+                                        <div class="user-info">
+                                            <h5 class="username mb-1">{{ post.user.username }}
+                                                {% if post.user.username == "书梦官方" %}
+                                                <i class="fas fa-check-circle text-primary" title="官方认证账号" style="font-size: 0.8em; margin-left: 5px; vertical-align: middle; position: relative; top: -1.5px;"></i>
+                                                {% endif %}
+                                            </h5>
+                                            {% if post.user.bio %}
+                                            <p class="user-bio mb-0">{{ post.user.bio }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="post-meta text-muted mb-2">
+                                        <small class="d-flex align-items-center justify-content-between w-100">
+                                            <span class="me-2">
+                                                <i class="fas fa-clock me-1"></i>{{ (post.created_at|add_hours).strftime('%m-%d %H:%M') }}
+                                                <span class="mx-2">·</span>
+                                                <i class="fas fa-eye me-1"></i>{{ post.views or 0 }} views
+                                                {% if post.is_private %}
+                                                <span class="mx-2">·</span>
+                                                <i class="fas fa-lock text-secondary" title="Private post"></i>
+                                                {% endif %}
+                                            </span>
+                                            {% if '智能体设定：' in post.content and '角色背景设定：' in post.content %}
+                                            <button class="btn btn-chat-forum btn-sm ms-auto" onclick="chatWithAgent({{ post.id }})">
+                                                <i class="fas fa-comments me-1"></i>Chat
+                                                <div class="btn-glow"></div>
+                                            </button>
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                <h2 class="post-title">
+                                    <a href="{{ url_for('view_post', post_id=post.id) }}" class="text-truncate">
+                                        {{ post.title[:22] }}{{ '...' if post.title|length > 22 }}
+                                    </a>
+                                </h2>
+                                {% if post.cover_image %}
+                                <div class="post-cover-image">
+                                    <a href="{{ url_for('view_post', post_id=post.id) }}">
+                                        <img src="{{ post.cover_image }}" 
+                                             alt="Cover for {{ post.title }}"
+                                             class="img-fluid rounded">
+                                    </a>
+                                </div>
+                                {% endif %}
+                                <div class="post-tags">
+                                    {% for tag in post.tag_list[:6] %}
+                                    <span class="badge rounded-pill bg-light text-dark tag-badge">
+                                        <a href="{{ url_for('forum', tag=tag, sort=request.args.get('sort', 'time')) }}" class="text-decoration-none text-dark">
+                                        {% if tag == '小说' %}
+                                        <i class="fas fa-book me-1"></i>
+                                        {% elif tag == '电影' %}
+                                        <i class="fas fa-film me-1"></i>
+                                        {% elif tag == '电视剧' %}
+                                        <i class="fas fa-tv me-1"></i>
+                                        {% elif tag == '动漫' %}
+                                        <i class="fas fa-dragon me-1"></i>
+                                        {% elif tag == '漫画' %}
+                                        <i class="fas fa-image me-1"></i>
+                                        {% elif tag == '随想' %}
+                                        <i class="fas fa-feather-alt me-1"></i>
+                                        {% elif tag == '读后感' %}
+                                        <i class="fas fa-comment-dots me-1"></i>
+                                        {% elif tag == '新结局' %}
+                                        <i class="fas fa-magic me-1"></i>
+                                        {% elif tag == '角色畅聊' %}
+                                        <i class="fas fa-comments me-1"></i>
+                                        {% elif tag == '绘梦' %}
+                                        <i class="fas fa-paint-brush me-1"></i>
+                                        {% elif tag == '梦语' %}
+                                        <i class="fas fa-cloud-moon me-1"></i>
+                                        {% elif tag == '游戏' %}
+                                        <i class="fas fa-gamepad me-1"></i>
+                                        {% elif tag == '虐心' %}
+                                        <i class="fas fa-heart-broken me-1"></i>
+                                        {% elif tag == '意难平' %}
+                                        <i class="fas fa-cloud-rain me-1"></i>
+                                        {% elif tag == '意满离' %}
+                                        <i class="fas fa-sun me-1"></i>
+                                        {% elif tag == '青春校园' %}
+                                        <i class="fas fa-school me-1"></i>
+                                        {% elif tag == '恋爱' %}
+                                        <i class="fas fa-heartbeat me-1"></i>
+                                        {% elif tag == '霸道总裁' %}
+                                        <i class="fas fa-crown me-1"></i>
+                                        {% elif tag == '科幻' %}
+                                        <i class="fas fa-rocket me-1"></i>
+                                        {% elif tag == '职场' %}
+                                        <i class="fas fa-briefcase me-1"></i>
+                                        {% elif tag == '晋江' %}
+                                        <i class="fas fa-champagne-glasses"></i>
+                                        {% elif tag == '树洞' %}
+                                        <i class="fas fa-tree me-1"></i>
+                                        {% elif tag == '悄悄话' %}
+                                        <i class="fas fa-comment-dots me-1"></i>
+                                        {% elif tag == '其他' %}
+                                        <i class="fas fa-ellipsis me-1"></i>
+                                        {% elif tag == 'BE' %}
+                                        <i class="fas fa-cloud-showers-heavy me-1"></i>
+                                        {% elif tag == 'HE' %}
+                                        <i class="fas fa-rainbow me-1"></i>
+                                        {% else %}
+                                        <i class="fas fa-tag me-1"></i>
+                                        {% endif %}
+                                        {{ tag }}
+                                        </a>
+                                    </span>
+                                    {% endfor %}
+                                    {% if post.tag_list|length > 6 %}
+                                    <span class="badge rounded-pill bg-light text-dark tag-badge more-tags">
+                                        <i class="fas fa-ellipsis-h me-1"></i>
+                                        更多
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                {{ post.content[:78] + '...' if post.content|length > 78 else post.content }}
+                            </div>
+                            <div class="post-footer">
+                                <div class="interactions">
+                                    <button class="btn btn-like {% if current_user.is_authenticated and current_user.has_liked_post(post.id) %}liked{% endif %}"
+                                            onclick="handleLike('{{ post.id }}')"
+                                            type="button">
+                                        <i class="fas fa-heart"></i>
+                                        <span class="like-count">{{ post.like_count }}</span>
+                                    </button>
+                                    <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-comment">
+                                        <i class="fas fa-comment"></i>
+                                        <span class="comment-count">{{ post.comments|length }}</span>
+                                    </a>
+                                    <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-read-more ms-auto">
+                                        Read More <i class="fas fa-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    {% if posts.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('forum', page=posts.prev_num, sort=request.args.get('sort', 'time'), q=request.args.get('q', ''), tag=request.args.getlist('tag')) }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for page_num in posts.iter_pages(left_edge=2, left_current=2, right_current=3, right_edge=2) %}
+                        {% if page_num %}
+                            <li class="page-item {% if page_num == posts.page %}active{% endif %}">
+                                <a class="page-link" href="{{ url_for('forum', page=page_num, sort=request.args.get('sort', 'time'), q=request.args.get('q', ''), tag=request.args.getlist('tag')) }}">{{ page_num }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if posts.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('forum', page=posts.next_num, sort=request.args.get('sort', 'time'), q=request.args.get('q', ''), tag=request.args.getlist('tag')) }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% else %}
+            <div class="text-center py-5">
+                <div class="empty-search-results">
+                    <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+                    <h3 class="mb-3">No related posts found</h3>
+                    <p class="text-muted">Be the first to share on this topic!</p>
+                    <a href="{{ url_for('create_post') }}" class="btn btn-primary mt-3">
+                        <i class="fas fa-pen-fancy me-2"></i>Share your dream
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="container">
+            <div class="row g-4">
+                {% if not request.args.get('page') or request.args.get('page') == '1' %}
+                {% if not request.args.getlist('tag') %}
+                <!-- Trending Posts Card -->
+                <div class="col-12 col-lg-4">
+                    <div class="trending-posts">
+                        <div class="card-header">
+                            <i class="fas fa-fire me-2"></i>Today's Good Dreams
+                        </div>
+                        {% if trending_posts %}
+                            <div class="trending-list">
+                                {% for post in trending_posts %}
+                                <a href="{{ url_for('view_post', post_id=post.id) }}" class="trending-item">
+                                    <span class="number">{{ loop.index }}</span>
+                                    <span class="title">{{ post.title }}</span>
+                                    <span class="likes"><i class="fas fa-heart"></i> {{ post.like_count }}</span>
+                                </a>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted text-center mb-0">Today's Good Dreams</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Top Tags Card -->
+                <div class="col-12 col-lg-4">
+                    <div class="trending-posts">
+                        <div class="card-header">
+                            <i class="fas fa-tags me-2"></i>Trending Topics
+                        </div>
+                        {% if top_tags %}
+                            <div class="trending-list">
+                                <div class="row">
+                                    <!-- Left Column (Tags 1-5) -->
+                                    <div class="col-6">
+                                        {% for tag, count in top_tags[:5] %}
+                                        <a href="{{ url_for('forum', tag=tag, sort=request.args.get('sort', 'time')) }}" class="trending-item text-decoration-none">
+                                            <span class="number">{{ loop.index }}</span>
+                                            <span class="title">
+                                                {% if tag == '小说' %}
+                                                <i class="fas fa-book me-1"></i>
+                                                {% elif tag == '电影' %}
+                                                <i class="fas fa-film me-1"></i>
+                                                {% elif tag == '电视剧' %}
+                                                <i class="fas fa-tv me-1"></i>
+                                                {% elif tag == '动漫' %}
+                                                <i class="fas fa-dragon me-1"></i>
+                                                {% elif tag == '漫画' %}
+                                                <i class="fas fa-image me-1"></i>
+                                                {% elif tag == '随想' %}
+                                                <i class="fas fa-feather-alt me-1"></i>
+                                                {% elif tag == '读后感' %}
+                                                <i class="fas fa-comment-dots me-1"></i>
+                                                {% elif tag == '新结局' %}
+                                                <i class="fas fa-magic me-1"></i>
+                                                {% elif tag == '角色畅聊' %}
+                                                <i class="fas fa-comments me-1"></i>
+                                                {% elif tag == '绘梦' %}
+                                                <i class="fas fa-paint-brush me-1"></i>
+                                                {% elif tag == '梦语' %}
+                                                <i class="fas fa-cloud-moon me-1"></i>
+                                                {% elif tag == '游戏' %}
+                                                <i class="fas fa-gamepad me-1"></i>
+                                                {% elif tag == '虐心' %}
+                                                <i class="fas fa-heart-broken me-1"></i>
+                                                {% elif tag == '意难平' %}
+                                                <i class="fas fa-cloud-rain me-1"></i>
+                                                {% elif tag == '意满离' %}
+                                                <i class="fas fa-sun me-1"></i>
+                                                {% elif tag == '青春校园' %}
+                                                <i class="fas fa-school me-1"></i>
+                                                {% elif tag == '恋爱' %}
+                                                <i class="fas fa-heartbeat me-1"></i>
+                                                {% elif tag == '霸道总裁' %}
+                                                <i class="fas fa-crown me-1"></i>
+                                                {% elif tag == '科幻' %}
+                                                <i class="fas fa-rocket me-1"></i>
+                                                {% elif tag == '职场' %}
+                                                <i class="fas fa-briefcase me-1"></i>
+                                                {% elif tag == '晋江' %}
+                                                <i class="fas fa-champagne-glasses"></i>
+                                                {% elif tag == '树洞' %}
+                                                <i class="fas fa-tree me-1"></i>
+                                                {% elif tag == '悄悄话' %}
+                                                <i class="fas fa-comment-dots me-1"></i>
+                                                {% elif tag == '其他' %}
+                                                <i class="fas fa-ellipsis me-1"></i>
+                                                {% elif tag == 'BE' %}
+                                                <i class="fas fa-cloud-showers-heavy me-1"></i>
+                                                {% elif tag == 'HE' %}
+                                                <i class="fas fa-rainbow me-1"></i>
+                                                {% else %}
+                                                <i class="fas fa-tag me-1"></i>
+                                                {% endif %}
+                                                {{ tag }}
+                                            </span>
+                                            <span class="likes">{{count}}</span>
+                                        </a>
+                                        {% endfor %}
+                                    </div>
+                                    <!-- Right Column (Tags 6-10) -->
+                                    <div class="col-6">
+                                        {% for tag, count in top_tags[5:10] %}
+                                        <a href="{{ url_for('forum', tag=tag, sort=request.args.get('sort', 'time')) }}" class="trending-item text-decoration-none">
+                                            <span class="number">{{ loop.index + 5 }}</span>
+                                            <span class="title">
+                                                {% if tag == '小说' %}
+                                                <i class="fas fa-book me-1"></i>
+                                                {% elif tag == '电影' %}
+                                                <i class="fas fa-film me-1"></i>
+                                                {% elif tag == '电视剧' %}
+                                                <i class="fas fa-tv me-1"></i>
+                                                {% elif tag == '动漫' %}
+                                                <i class="fas fa-dragon me-1"></i>
+                                                {% elif tag == '漫画' %}
+                                                <i class="fas fa-image me-1"></i>
+                                                {% elif tag == '随想' %}
+                                                <i class="fas fa-feather-alt me-1"></i>
+                                                {% elif tag == '读后感' %}
+                                                <i class="fas fa-comment-dots me-1"></i>
+                                                {% elif tag == '新结局' %}
+                                                <i class="fas fa-magic me-1"></i>
+                                                {% elif tag == '角色畅聊' %}
+                                                <i class="fas fa-comments me-1"></i>
+                                                {% elif tag == '绘梦' %}
+                                                <i class="fas fa-paint-brush me-1"></i>
+                                                {% elif tag == '梦语' %}
+                                                <i class="fas fa-cloud-moon me-1"></i>
+                                                {% elif tag == '游戏' %}
+                                                <i class="fas fa-gamepad me-1"></i>
+                                                {% elif tag == '虐心' %}
+                                                <i class="fas fa-heart-broken me-1"></i>
+                                                {% elif tag == '意难平' %}
+                                                <i class="fas fa-cloud-rain me-1"></i>
+                                                {% elif tag == '意满离' %}
+                                                <i class="fas fa-sun me-1"></i>
+                                                {% elif tag == '青春校园' %}
+                                                <i class="fas fa-school me-1"></i>
+                                                {% elif tag == '恋爱' %}
+                                                <i class="fas fa-heartbeat me-1"></i>
+                                                {% elif tag == '霸道总裁' %}
+                                                <i class="fas fa-crown me-1"></i>
+                                                {% elif tag == '科幻' %}
+                                                <i class="fas fa-rocket me-1"></i>
+                                                {% elif tag == '职场' %}
+                                                <i class="fas fa-briefcase me-1"></i>
+                                                {% elif tag == '晋江' %}
+                                                <i class="fas fa-champagne-glasses"></i>
+                                                {% elif tag == '树洞' %}
+                                                <i class="fas fa-tree me-1"></i>
+                                                {% elif tag == '悄悄话' %}
+                                                <i class="fas fa-comment-dots me-1"></i>
+                                                {% elif tag == '其他' %}
+                                                <i class="fas fa-ellipsis me-1"></i>
+                                                {% elif tag == 'BE' %}
+                                                <i class="fas fa-cloud-showers-heavy me-1"></i>
+                                                {% elif tag == 'HE' %}
+                                                <i class="fas fa-rainbow me-1"></i>
+                                                {% else %}
+                                                <i class="fas fa-tag me-1"></i>
+                                                {% endif %}
+                                                {{ tag }}
+                                            </span>
+                                            <span class="likes">{{count}}</span>
+                                        </a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <p class="text-muted text-center mb-0">No tags yet</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Announcement Card -->
+                <div class="col-12 col-lg-4">
+                    <div class="trending-posts">
+                        <div class="card-header">
+                            <i class="fas fa-bullhorn me-2"></i>Community Announcement
+                        </div>
+                        {% if announcement %}
+                            <div class="trending-list">
+                                <div class="trending-item position-relative" style="min-height: 10px;">
+                                    <div class="announcement-content mb-2">{{ announcement.content }}</div>
+                                    <div class="text-end position-absolute bottom-0 end-0">
+                                        <small class="text-muted">更新于: {{ (announcement.updated_at|add_hours).strftime('%m-%d %H:%M') }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <p class="text-muted text-center mb-0">No announcement yet</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                {% endif %}
+
+                <!-- Post Cards -->
+                {% if posts.items %}
+                    {% for post in posts.items %}
+                        {% if not post.is_private or (current_user.is_authenticated and current_user.id == post.user_id) %}
+                        <div class="col-12 col-lg-4">
+                            <div class="forum-post-card animate__animated animate__fadeIn" data-post-id="{{ post.id }}">
+                                <div class="post-header">
+                                    <div class="user-profile">
+                                        <a href="{{ url_for('user_profile', user_id=post.user.id) }}" class="d-flex align-items-center text-decoration-none text-dark">
+                                            <img src="{{ post.user.avatar_url if post.user.avatar_url else post.user.get_avatar() }}" 
+                                                 alt="{{ post.user.username }}" class="profile-image">
+                                            <div class="user-info">
+                                                <h5 class="username mb-1">{{ post.user.username }}
+                                                    {% if post.user.username == "书梦官方" %}
+                                                    <i class="fas fa-check-circle text-primary" title="官方认证账号" style="font-size: 0.8em; margin-left: 5px; vertical-align: middle; position: relative; top: -1.5px;"></i>
+                                                    {% endif %}
+                                                </h5>
+                                                {% if post.user.bio %}
+                                                <p class="user-bio mb-0">{{ post.user.bio }}</p>
+                                                {% endif %}
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="post-meta text-muted mb-2">
+                                        <small class="d-flex align-items-center justify-content-between w-100">
+                                            <span class="me-2">
+                                                <i class="fas fa-clock me-1"></i>{{ (post.created_at|add_hours).strftime('%m-%d %H:%M') }}
+                                                <span class="mx-2">·</span>
+                                                <i class="fas fa-eye me-1"></i>{{ post.views or 0 }} views
+                                                {% if post.is_private %}
+                                                <span class="mx-2">·</span>
+                                                <i class="fas fa-lock text-secondary" title="Private post"></i>
+                                                {% endif %}
+                                            </span>
+                                            {% if '智能体设定：' in post.content and '角色背景设定：' in post.content %}
+                                            <button class="btn btn-chat-forum btn-sm ms-auto" onclick="chatWithAgent({{ post.id }})">
+                                                <i class="fas fa-comments me-1"></i>Chat
+                                                <div class="btn-glow"></div>
+                                            </button>
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                    <h2 class="post-title">
+                                        <a href="{{ url_for('view_post', post_id=post.id) }}" class="text-truncate">
+                                            {{ post.title[:22] }}{{ '...' if post.title|length > 22 }}
+                                        </a>
+                                    </h2>
+                                    {% if post.cover_image %}
+                                    <div class="post-cover-image">
+                                        <a href="{{ url_for('view_post', post_id=post.id) }}">
+                                            <img src="{{ post.cover_image }}" 
+                                                 alt="Cover for {{ post.title }}"
+                                                 class="img-fluid rounded">
+                                        </a>
+                                    </div>
+                                    {% endif %}
+                                    <div class="post-tags">
+                                        {% for tag in post.tag_list[:6] %}
+                                        <span class="badge rounded-pill bg-light text-dark tag-badge">
+                                            <a href="{{ url_for('forum', tag=tag, sort=request.args.get('sort', 'time')) }}" class="text-decoration-none text-dark">
+                                            {% if tag == '小说' %}
+                                            <i class="fas fa-book me-1"></i>
+                                            {% elif tag == '电影' %}
+                                            <i class="fas fa-film me-1"></i>
+                                            {% elif tag == '电视剧' %}
+                                            <i class="fas fa-tv me-1"></i>
+                                            {% elif tag == '动漫' %}
+                                            <i class="fas fa-dragon me-1"></i>
+                                            {% elif tag == '漫画' %}
+                                            <i class="fas fa-image me-1"></i>
+                                            {% elif tag == '随想' %}
+                                            <i class="fas fa-feather-alt me-1"></i>
+                                            {% elif tag == '读后感' %}
+                                            <i class="fas fa-comment-dots me-1"></i>
+                                            {% elif tag == '新结局' %}
+                                            <i class="fas fa-magic me-1"></i>
+                                            {% elif tag == '角色畅聊' %}
+                                            <i class="fas fa-comments me-1"></i>
+                                            {% elif tag == '绘梦' %}
+                                            <i class="fas fa-paint-brush me-1"></i>
+                                            {% elif tag == '梦语' %}
+                                            <i class="fas fa-cloud-moon me-1"></i>
+                                            {% elif tag == '游戏' %}
+                                            <i class="fas fa-gamepad me-1"></i>
+                                            {% elif tag == '虐心' %}
+                                            <i class="fas fa-heart-broken me-1"></i>
+                                            {% elif tag == '意难平' %}
+                                            <i class="fas fa-cloud-rain me-1"></i>
+                                            {% elif tag == '意满离' %}
+                                            <i class="fas fa-sun me-1"></i>
+                                            {% elif tag == '青春校园' %}
+                                            <i class="fas fa-school me-1"></i>
+                                            {% elif tag == '恋爱' %}
+                                            <i class="fas fa-heartbeat me-1"></i>
+                                            {% elif tag == '霸道总裁' %}
+                                            <i class="fas fa-crown me-1"></i>
+                                            {% elif tag == '科幻' %}
+                                            <i class="fas fa-rocket me-1"></i>
+                                            {% elif tag == '职场' %}
+                                            <i class="fas fa-briefcase me-1"></i>
+                                            {% elif tag == '晋江' %}
+                                            <i class="fas fa-champagne-glasses"></i>
+                                            {% elif tag == '树洞' %}
+                                            <i class="fas fa-tree me-1"></i>
+                                            {% elif tag == '悄悄话' %}
+                                            <i class="fas fa-comment-dots me-1"></i>
+                                            {% elif tag == '其他' %}
+                                            <i class="fas fa-ellipsis me-1"></i>
+                                            {% elif tag == 'BE' %}
+                                            <i class="fas fa-cloud-showers-heavy me-1"></i>
+                                            {% elif tag == 'HE' %}
+                                            <i class="fas fa-rainbow me-1"></i>
+                                            {% else %}
+                                            <i class="fas fa-tag me-1"></i>
+                                            {% endif %}
+                                            {{ tag }}
+                                            </a>
+                                        </span>
+                                        {% endfor %}
+                                        {% if post.tag_list|length > 6 %}
+                                        <span class="badge rounded-pill bg-light text-dark tag-badge more-tags">
+                                            <i class="fas fa-ellipsis-h me-1"></i>
+                                            更多
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="post-content">
+                                    {{ post.content[:78] + '...' if post.content|length > 78 else post.content }}
+                                </div>
+                                <div class="post-footer">
+                                    <div class="interactions">
+                                        <button class="btn btn-like {% if current_user.is_authenticated and current_user.has_liked_post(post.id) %}liked{% endif %}"
+                                                onclick="handleLike('{{ post.id }}')"
+                                                type="button">
+                                            <i class="fas fa-heart"></i>
+                                            <span class="like-count">{{ post.like_count }}</span>
+                                        </button>
+                                        <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-comment">
+                                            <i class="fas fa-comment"></i>
+                                            <span class="comment-count">{{ post.comments|length }}</span>
+                                        </a>
+                                        <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-read-more ms-auto">
+                                            Read More <i class="fas fa-arrow-right ms-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <div class="empty-search-results">
+                            <i class="fas fa-tags fa-3x mb-3 text-muted"></i>
+                            <h3 class="mb-3">No related dreams yet</h3>
+                            <p class="text-muted">Be the first to share this topic on TalkTalkAI!</p>
+                            <a href="{{ url_for('create_post') }}" class="btn btn-primary mt-3">
+                                <i class="fas fa-pen-fancy me-2"></i>Share your dream
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    {% if posts.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('forum', page=posts.prev_num, sort=request.args.get('sort', 'time'), q=request.args.get('q', ''), tag=request.args.getlist('tag')) }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for page_num in posts.iter_pages(left_edge=2, left_current=2, right_current=3, right_edge=2) %}
+                        {% if page_num %}
+                            <li class="page-item {% if page_num == posts.page %}active{% endif %}">
+                                <a class="page-link" href="{{ url_for('forum', page=page_num, sort=request.args.get('sort', 'time'), q=request.args.get('q', ''), tag=request.args.getlist('tag')) }}">{{ page_num }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if posts.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('forum', page=posts.next_num, sort=request.args.get('sort', 'time'), q=request.args.get('q', ''), tag=request.args.getlist('tag')) }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.forum-hero {
+    position: relative;
+    min-height: 60vh;
+    padding: 12rem 0 6rem;
+    margin-bottom: 2rem;
+    background: url('/static/images/forum_cover.png') no-repeat center center;
+    background-size: cover;
+    overflow: hidden;
+}
+
+.forum-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6));
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding-top: 2rem;
+}
+
+.site-title {
+    font-size: 5.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(120deg, #ffffff, #e0e0e0);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.15em;
+    text-shadow: none;
+    position: relative;
+    animation: titleGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+    from {
+        filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4))
+               drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+    }
+    to {
+        filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5))
+               drop-shadow(0 0 6px rgba(255, 255, 255, 0.4))
+               drop-shadow(0 0 9px rgba(255, 255, 255, 0.3));
+    }
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2rem 0;
+}
+
+.divider-line {
+    height: 2px;
+    width: 100px;
+    background: rgba(255, 255, 255, 0.3);
+    margin: 0 1rem;
+}
+
+.divider i {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.site-subtitle {
+    font-size: 2rem;
+    font-weight: 400;
+    margin-bottom: 3rem;
+    background: linear-gradient(120deg, #ffffff, #e0e0e0);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.1em;
+    line-height: 1.6;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    animation: subtitleGlow 2s ease-in-out infinite alternate,
+               subtitleFadeIn 1.5s ease-out;
+    animation-delay: 0.2s, 0s;
+}
+
+@media (min-width: 768px) {
+    .site-subtitletitle {
+        font-family: "KaiTi", "Kaiti SC", "Kaiti TC", "STKaiti", "KaiTi_GB2312", "KaiTi_GB", "楷体", "华文楷体";
+    }
+}
+
+@keyframes subtitleGlow {
+    from {
+        filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.3))
+               drop-shadow(0 0 2px rgba(255, 255, 255, 0.2));
+    }
+    to {
+        filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4))
+               drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+    }
+}
+
+@keyframes subtitleFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.site-subtitle-desc {
+    font-family: "STXingkai", "KaiTi", serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin-bottom: 3rem;
+    color: rgba(237, 245, 14, 0.9);
+    letter-spacing: 0.1em;
+    line-height: 1.6;
+    position: relative;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    padding: 1rem 2rem;
+    border-radius: 30px;
+    background: linear-gradient(120deg, 
+        rgba(236, 72, 167, 0.1),
+        rgba(95, 218, 222, 0.05));
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 36%;
+    margin-left: auto;
+    margin-right: auto;
+    animation: subtitleGlow 2s ease-in-out infinite alternate,
+               subtitleFadeIn 1.5s ease-out;
+    animation-delay: 0.2s, 0s;
+}
+
+.forum-hero .btn {
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.forum-hero .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.forum-hero .btn-outline-light {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+}
+
+.forum-hero .btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+@keyframes float {
+    from { background-position: 0 0; }
+    to { background-position: 20px 20px; }
+}
+
+.forum-post-card {
+    background: linear-gradient(135deg, #fff6e0, #fff9e8);
+    border-radius: 15px;
+    padding: 1.8rem;
+    margin-bottom: 1.8rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.4s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+.forum-post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.post-meta {
+    font-size: 0.85rem;
+    color: #666;
+    display: flex;
+    align-items: center;
+}
+
+.post-meta i {
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.post-meta .mx-2 {
+    color: #ccc;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    margin-right: 1rem;
+    border: 2px solid var(--primary-color);
+}
+
+.meta-info .author {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.meta-info .time {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.post-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    line-height: 1.4;
+    display: block;
+    margin: 0.8rem 0;
+}
+
+.post-title a {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: block;
+}
+
+.post-title-tags {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #666;
+}
+
+.title-tag {
+    display: inline-block;
+    margin-right: 1rem;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.title-tag i {
+    color: var(--primary-color);
+    opacity: 0.8;
+}
+
+.title-tag:hover {
+    color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+.title-tag:hover i {
+    opacity: 1;
+}
+
+.post-title a:hover {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.post-title a:hover .title-tag {
+    color: var(--primary-color);
+    opacity: 0.8;
+}
+
+.story-info {
+    margin-bottom: 1rem;
+}
+
+.post-content {
+    color: #000000;
+    line-height: 1.8;
+    margin: 1.2rem 0;
+    font-size: 1.05rem;
+}
+
+.post-footer {
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+}
+
+.interactions {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+.btn-like, .btn-comment {
+    background: none;
+    border: none;
+    color: #666;
+    padding: 0.6rem 1.2rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.btn-like:hover, .btn-comment:hover {
+    color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.btn-like.liked {
+    color: var(--primary-color);
+}
+
+.btn-like.liked i {
+    animation: heartBeat 0.6s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.btn-read-more {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 0.6rem 1.2rem;
+    border-radius: 20px;
+    background: rgba(var(--primary-rgb), 0.1);
+}
+
+.btn-read-more:hover {
+    background: rgba(var(--primary-rgb), 0.15);
+    transform: translateX(5px);
+}
+
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    14% { transform: scale(1.3); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.3); }
+    70% { transform: scale(1); }
+}
+
+.trending-posts {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 100px;
+}
+
+.trending-posts .card-header {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 1rem 1.5rem;
+}
+
+.trending-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #eee;
+}
+
+.trending-item:hover {
+    background: #f8f9fa;
+    color: var(--primary-color);
+}
+
+.trending-item .number {
+    font-weight: bold;
+    margin-right: 1rem;
+    color: var(--primary-color);
+    min-width: 24px;
+}
+
+.trending-item .title {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.trending-item .likes {
+    margin-left: 1rem;
+    color: #666;
+}
+
+.pagination .page-link {
+    color: var(--text-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: white;
+}
+
+.pagination .page-link:hover {
+    background: #f8f9fa;
+    color: var(--primary-color);
+}
+
+.fancy-poetry3 {
+    font-size: 6rem;
+    background: linear-gradient(120deg, #FFF8DC, #FFD700, #FFA500, #FFF8DC);
+    background-size: 300% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: 300;
+    font-smooth: always;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    animation: shine 8s linear infinite, breathing 3s ease-in-out infinite;
+    letter-spacing: 15px;
+    position: relative;
+    z-index: 2;
+    transform: perspective(1000px) rotateX(15deg);
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+    margin-top: 1rem;
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+}
+
+@media (min-width: 768px) {
+    .fancy-poetry3 {
+        font-family: "KaiTi", "Kaiti SC", "Kaiti TC", "STKaiti", "KaiTi_GB2312", "KaiTi_GB", "楷体", "华文楷体";
+    }
+}
+
+.fancy-poetry3::before {
+    content: "书梦社";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, #FFD700, #FFA500);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0.6;
+    filter: blur(12px);
+    animation: pulse 3s ease-in-out infinite;
+    z-index: -1;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+    50% {
+        transform: scale(1.08);
+        opacity: 0.8;
+    }
+}
+
+@keyframes shine {
+    0% {
+        background-position: 0% 50%;
+        filter: hue-rotate(0deg);
+    }
+    100% {
+        background-position: 300% 50%;
+        filter: hue-rotate(360deg);
+    }
+}
+
+@keyframes breathing {
+    0%, 100% {
+        transform: perspective(1000px) rotateX(15deg) scale(1);
+    }
+    50% {
+        transform: perspective(1000px) rotateX(15deg) scale(1.03);
+    }
+}
+
+.post-tags {
+    margin-top: 0.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag-badge {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+    background: linear-gradient(45deg, #f8f9fa, #ffffff) !important;
+    border: 1px solid #e9ecef;
+    color: #666 !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.tag-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.tag-badge i {
+    color: var(--primary-color);
+}
+
+.tag-badge.more-tags {
+    background: linear-gradient(45deg, rgba(var(--primary-rgb), 0.1), rgba(var(--secondary-rgb), 0.1)) !important;
+    border: 1px dashed rgba(var(--primary-rgb), 0.3);
+    font-style: italic;
+    opacity: 0.8;
+}
+
+.tag-badge.more-tags:hover {
+    opacity: 1;
+    border-style: solid;
+}
+
+.story-info .badge {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)) !important;
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.story-info .badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.trending-posts.position-static {
+    position: static;
+    margin-bottom: 2rem;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+}
+
+.profile-image {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-info {
+    flex: 1;
+}
+
+.username {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.user-bio {
+    margin: 0.25rem 0 0;
+    font-size: 0.85rem;
+    color: #666;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.sort-options {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 1rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(var(--primary-rgb), 0.1);
+}
+
+.sort-options .btn-group {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.sort-options .btn {
+    padding: 0.5rem 1.2rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.sort-options .btn:hover {
+    transform: translateY(-1px);
+}
+
+.sort-options .btn-primary {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    border: none;
+}
+
+.btn-primary2 {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 0 8px 8px 0;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    transition: all 0.3s ease;
+    background: linear-gradient(45deg, #58ebe1, #32eb7f);
+    border: none;
+}
+
+.btn-primary2:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sort-options .btn-outline-primary {
+    border-color: var(--danger-color);
+    color: var(--danger-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sort-options .btn-outline-primary:hover {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    border-color: transparent;
+    color: white;
+}
+
+.sort-options .btn-outline-primary i {
+    color: var(--danger-color);
+}
+
+.sort-options .btn-outline-primary:hover i {
+    color: white;
+}
+
+.search-bar {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(var(--primary-rgb), 0.1);
+}
+
+.search-input, #customTag {
+    border: 1px solid rgba(var(--primary-rgb), 0.2);
+    padding: 0.75rem 1.2rem;
+    font-size: 1rem;
+    border-radius: 8px 0 0 8px !important;
+    background: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+    height: 45px;
+    line-height: normal;
+    padding-top: 0;
+    padding-bottom: 0;
+    display: flex;
+    align-items: center;
+}
+
+.input-group > .btn-primary,
+.input-group > .btn-primary2 {
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+    line-height: normal;
+}
+
+@media (min-width: 768px) {
+    .search-input, #customTag {
+        height: 45px;
+    }
+    
+    .input-group > .btn-primary,
+    .input-group > .btn-primary2 {
+        height: 45px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .search-form, #tagFilterForm, .btn-group {
+        width: 100% !important;
+    }
+    
+    .input-group {
+        width: 100%;
+    }
+    
+    .btn-group {
+        display: flex !important;
+    }
+    
+    .btn-group .btn {
+        flex: 1;
+        white-space: nowrap;
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .search-input, #customTag {
+        height: 45px;
+    }
+    
+    .btn-primary, .btn-primary2 {
+        height: 45px;
+    }
+}
+
+.gap-3 {
+    gap: 1rem !important;
+}
+
+.gap-md-4 {
+    gap: 1.5rem !important;
+}
+
+.btn-group .btn {
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (min-width: 768px) {
+    .fancy-poetry3 {
+        font-family: "KaiTi", "Kaiti SC", "Kaiti TC", "STKaiti", "KaiTi_GB2312", "KaiTi_GB", "楷体", "华文楷体";
+    }
+}
+
+@media (max-width: 768px) {
+    .site-subtitle {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .site-subtitle::before {
+        content: "分享你的梦";
+        display: block;
+    }
+    
+    .site-subtitle::after {
+        content: "看见每一个梦";
+        display: block;
+    }
+    
+    .subtitle-text {
+        display: none !important;
+    }
+}
+
+.post-cover-image {
+    margin: 1rem 0;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    max-height: 300px;
+}
+
+.post-cover-image img {
+    width: 100%;
+    height: 220px;
+    max-height: 300px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.post-cover-image:hover img {
+    transform: scale(1.05);
+}
+
+.btn-chat-forum {
+    background: linear-gradient(45deg, #FFB6C1, #FFD700);
+    color: #333;
+    border: none;
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(255, 182, 193, 0.4);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.btn-chat-forum:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 182, 193, 0.6);
+    color: #333;
+    background: linear-gradient(45deg, #FFD700, #FFB6C1);
+}
+
+.btn-chat-forum:active {
+    transform: translateY(1px);
+}
+
+.btn-chat-forum .btn-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+    opacity: 0;
+    animation: glowEffect 3s infinite;
+    pointer-events: none;
+}
+
+@keyframes glowEffect {
+    0% { transform: rotate(0deg); opacity: 0; }
+    25% { opacity: 0.5; }
+    50% { opacity: 0; }
+    100% { transform: rotate(360deg); opacity: 0; }
+}
+</style>
+
+<script>
+// Add at the beginning of the script section
+// Store scroll position before page unload
+window.addEventListener('beforeunload', function(e) {
+    // Only save scroll position if the current URL has search, tag, or sort parameters
+    const url = new URL(window.location.href);
+    const hasSearch = url.searchParams.has('q');
+    const hasTag = url.searchParams.has('tag');
+    const hasSort = url.searchParams.has('sort');
+    const hasPage = url.searchParams.has('page');
+    
+    // Save scroll position only for search, tag filter, and sort operations
+    if ((hasSearch || hasTag || hasSort) && !hasPage) {
+        sessionStorage.setItem('scrollPosition', window.scrollY);
+        sessionStorage.setItem('prevUrl', window.location.href);
+    } else {
+        // Clear saved position for other navigation
+        sessionStorage.removeItem('scrollPosition');
+        sessionStorage.removeItem('prevUrl');
+    }
+});
+
+window.addEventListener('load', function() {
+    // Clear scroll position if accessing the main forum URL directly
+    if (window.location.pathname === '/forum' && !window.location.search) {
+        sessionStorage.removeItem('scrollPosition');
+        sessionStorage.removeItem('prevUrl');
+        window.scrollTo(0, 0);
+        return;
+    }
+
+    // Only restore scroll position if coming from a search, tag, or sort operation
+    const prevUrl = sessionStorage.getItem('prevUrl');
+    if (prevUrl) {
+        const prevUrlObj = new URL(prevUrl);
+        const currentUrl = new URL(window.location.href);
+        
+        // Check if the previous URL had search, tag, or sort parameters
+        const hadSearch = prevUrlObj.searchParams.has('q');
+        const hadTag = prevUrlObj.searchParams.has('tag');
+        const hadSort = prevUrlObj.searchParams.has('sort');
+        const hadPage = prevUrlObj.searchParams.has('page');
+        
+        // Check if current URL has page parameter
+        const hasPage = currentUrl.searchParams.has('page');
+        
+        // Only restore if previous URL had search/tag/sort (not page) and current URL doesn't have page
+        if ((hadSearch || hadTag || hadSort) && !hadPage && !hasPage) {
+            const scrollPosition = sessionStorage.getItem('scrollPosition');
+            if (scrollPosition) {
+                window.scrollTo(0, parseInt(scrollPosition));
+            }
+        }
+    }
+    
+    // Clear the stored position after restoring
+    sessionStorage.removeItem('scrollPosition');
+    sessionStorage.removeItem('prevUrl');
+});
+
+function handleLike(postId) {
+    if (!{{ current_user.is_authenticated|tojson }}) {
+        // Show a beautiful toast notification
+        const toast = document.createElement('div');
+        toast.className = 'position-fixed bottom-0 end-0 p-3';
+        toast.style.zIndex = '11';
+        toast.innerHTML = `
+            <div class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        Please login to like posts <a href="{{ url_for('login') }}" class="text-white text-decoration-underline">Login now</a>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(toast);
+        const toastEl = new bootstrap.Toast(toast.querySelector('.toast'));
+        toastEl.show();
+        return;
+    }
+    
+    fetch(`/forum/post/${postId}/like`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const likeBtn = document.querySelector(`[data-post-id="${postId}"] .btn-like`);
+            const likeCount = likeBtn.querySelector('.like-count');
+            
+            if (data.action === 'liked') {
+                likeBtn.classList.add('liked');
+            } else {
+                likeBtn.classList.remove('liked');
+            }
+            
+            likeCount.textContent = data.like_count;
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function addCustomTag() {
+    const customTagInput = document.getElementById('customTag');
+    const tagValue = customTagInput.value.trim();
+    
+    if (tagValue) {
+        // Get the current URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        // Add the new tag to existing tags
+        urlParams.append('tag', tagValue);
+        
+        // Preserve other parameters
+        const sort = urlParams.get('sort') || 'time';
+        const q = urlParams.get('q') || '';
+        
+        // Construct the new URL
+        let newUrl = `${window.location.pathname}?`;
+        if (q) newUrl += `q=${q}&`;
+        if (sort) newUrl += `sort=${sort}&`;
+        newUrl += urlParams.toString();
+        
+        // Navigate to the new URL
+        window.location.href = newUrl;
+    }
+}
+
+// Allow adding custom tag with Enter key
+document.getElementById('customTag').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        addCustomTag();
+    }
+});
+
+function removeTag(tagValue) {
+    // Get current URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Remove the specific tag
+    const tags = urlParams.getAll('tag').filter(tag => tag !== tagValue);
+    urlParams.delete('tag');
+    tags.forEach(tag => urlParams.append('tag', tag));
+    
+    // Navigate to the new URL
+    window.location.href = `${window.location.pathname}?${urlParams.toString()}`;
+}
+
+function handleSort(sort) {
+    // Get current URL and parameters
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    
+    // Update sort parameter
+    params.set('sort', sort);
+    
+    // Remove page parameter to always start from first page
+    params.delete('page');
+    
+    // Keep search query and tags if they exist
+    const searchQuery = params.get('q');
+    const tags = params.getAll('tag');
+    
+    // Build new URL with updated parameters
+    let newUrl = `${url.pathname}?sort=${sort}`;
+    if (searchQuery) {
+        newUrl += `&q=${searchQuery}`;
+    }
+    tags.forEach(tag => {
+        newUrl += `&tag=${tag}`;
+    });
+    
+    // Navigate to new URL
+    window.location.href = newUrl;
+}
+
+// Function to check post content and show/hide chat button
+function checkPostContent(postId, content) {
+    if (content.includes('智能体设定：') && content.includes('角色背景设定：')) {
+        document.querySelector(`[data-post-id="${postId}"] .btn-chat-forum`).style.display = 'inline-block';
+    }
+}
+
+function chatWithAgent(postId) {
+    if (!{{ current_user.is_authenticated|tojson }}) {
+        const toast = document.createElement('div');
+        toast.className = 'position-fixed bottom-0 end-0 p-3';
+        toast.style.zIndex = '11';
+        toast.innerHTML = `
+            <div class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        Please login to use chat feature <a href="{{ url_for('login') }}" class="text-white text-decoration-underline">Login now</a>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(toast);
+        const toastEl = new bootstrap.Toast(toast.querySelector('.toast'));
+        toastEl.show();
+        return;
+    }
+
+    // Fetch the complete post content from the server
+    fetch(`/api/post/${postId}`)
+        .then(response => response.json())
+        .then(async data => {
+            if (data.success && data.content) {
+                const agentSettingsMatch = data.content.match(/智能体设定：([\s\S]*?)角色背景设定：([\s\S]*)/);
+                
+                if (agentSettingsMatch) {
+                    // Clear chat history before storing new settings
+                    try {
+                        const clearResponse = await fetch('/clear-chat', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        
+                        if (!clearResponse.ok) {
+                            throw new Error('Failed to clear chat history');
+                        }
+                        
+                        const agentSettings = agentSettingsMatch[1].trim();
+                        const storySettings = agentSettingsMatch[2].trim();
+                        
+                        // Store the settings and flags in sessionStorage
+                        sessionStorage.setItem('agentSettings', agentSettings);
+                        sessionStorage.setItem('storySettings', storySettings);
+                        sessionStorage.setItem('shouldExpandSections', 'true');
+                        sessionStorage.setItem('shouldInitChatMode', 'true');
+                        sessionStorage.setItem('hideSearchBar', 'true');
+                        
+                        // Redirect to index page
+                        window.location.href = '/';
+                    } catch (error) {
+                        console.error('Error clearing chat history:', error);
+                        showToast('Failed to clear chat history, please try again');
+                    }
+                } else {
+                    showToast('No agent settings or character background settings found');
+                }
+            } else {
+                showToast('Failed to get post content, please try again');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching post content:', error);
+            showToast('Failed to get post content, please try again');
+        });
+}
+
+// Helper function to show toast notifications
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'position-fixed bottom-0 end-0 p-3';
+    toast.style.zIndex = '11';
+    toast.innerHTML = `
+        <div class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(toast);
+    const toastEl = new bootstrap.Toast(toast.querySelector('.toast'));
+    toastEl.show();
+}
+
+// Initialize chat buttons when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    const postCards = document.querySelectorAll('.forum-post-card');
+    postCards.forEach(card => {
+        const postId = card.dataset.postId;
+        const content = card.querySelector('.post-content')?.textContent || '';
+        checkPostContent(postId, content);
+    });
+});
+</script>
+{% endblock %} 

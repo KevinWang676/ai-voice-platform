@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient Definitions -->
+  <defs>
+    <linearGradient id="bunnyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f9f9f9"/>
+      <stop offset="100%" stop-color="#e0e0e0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Circular Face -->
+  <circle cx="256" cy="256" r="240" fill="url(#bunnyGradient)"/>
+
+  <!-- Ears -->
+  <ellipse cx="186" cy="86" rx="40" ry="90" fill="#f9f9f9" transform="rotate(-15 186,86)"/>
+  <ellipse cx="326" cy="86" rx="40" ry="90" fill="#f9f9f9" transform="rotate(15 326,86)"/>
+
+  <!-- Inner Ears -->
+  <ellipse cx="186" cy="86" rx="20" ry="60" fill="#ffc0cb" transform="rotate(-15 186,86)"/>
+  <ellipse cx="326" cy="86" rx="20" ry="60" fill="#ffc0cb" transform="rotate(15 326,86)"/>
+
+  <!-- Eyes -->
+  <circle cx="206" cy="226" r="18" fill="#000"/>
+  <circle cx="306" cy="226" r="18" fill="#000"/>
+
+  <!-- Nose -->
+  <circle cx="256" cy="276" r="10" fill="#ff9da8"/>
+
+  <!-- Mouth -->
+  <path d="M246,296 Q256,306 266,296" fill="none" stroke="#333" stroke-width="3"/>
+  <line x1="256" y1="286" x2="256" y2="310" stroke="#333" stroke-width="3"/>
+</svg>

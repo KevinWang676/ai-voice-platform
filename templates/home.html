@@ -1,0 +1,2352 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    /* Home page specific variables - won't affect base.html */
+    .home-content {
+        --primary: #6a11cb;
+        --secondary: #2575fc;
+        --accent: #00ffaa;
+        --gradient-primary: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        --gradient-accent: linear-gradient(45deg, #00ffaa, #2575fc);
+        --text-dark: #333;
+        --text-light: #fff;
+        --text-muted: #6c757d;
+        --bg-light: #f8f9fa;
+        --bg-white: #ffffff;
+        --bg-dark: #0c1023;
+        --shadow-sm: 0 5px 15px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 15px 35px rgba(0, 0, 0, 0.15);
+        --border-radius-sm: 8px;
+        --border-radius-md: 12px;
+        --border-radius-lg: 20px;
+        --spacing-xs: 0.5rem;
+        --spacing-sm: 1rem;
+        --spacing-md: 1.5rem;
+        --spacing-lg: 2rem;
+        --spacing-xl: 3rem;
+        --transition-fast: all 0.2s ease;
+        --transition-normal: all 0.3s ease;
+    }
+
+    /* Scope global styles to home content */
+    .home-content {
+        font-family: 'Noto Serif SC', "PingFang SC", "Microsoft YaHei", serif;
+        color: var(--text-dark);
+        line-height: 1.8;
+    }
+    
+    /* Scope heading styles */
+    .home-content h1, 
+    .home-content h2, 
+    .home-content h3, 
+    .home-content h4, 
+    .home-content h5, 
+    .home-content h6 {
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .home-content .container {
+        max-width: 1200px;
+        padding: 0 var(--spacing-md);
+    }
+
+    .home-content .gradient-text {
+        background: linear-gradient(45deg, #d7553e 0%, rgb(216, 189, 68) 50%, #40b70d 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+        text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        letter-spacing: 0.5px;
+        animation: shimmerText 3s infinite alternate;
+    }
+
+    @keyframes shimmerText {
+        0% {
+            background-position: 0% 50%;
+        }
+        100% {
+            background-position: 100% 50%;
+        }
+    }
+
+    .home-content .section-header {
+        margin-bottom: var(--spacing-xl);
+    }
+    
+    .home-content .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: var(--spacing-sm);
+        color: var(--primary);
+    }
+    
+    .home-content .section-subtitle {
+        font-size: 1.2rem;
+        color: var(--text-muted);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    /* Button Styles */
+    .home-content .btn {
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        transition: var(--transition-normal);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
+
+    .home-content .btn-primary {
+        background: rgba(21, 101, 192, 0.2);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(21, 101, 192, 0.4);
+        color: #1565c0;
+        font-weight: 700;
+        box-shadow: 0 4px 15px rgba(21, 101, 192, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .home-content .btn-primary:hover {
+        background: rgba(21, 101, 192, 0.3);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(21, 101, 192, 0.3);
+    }
+
+    .home-content .btn-outline {
+        background: transparent;
+        color: #1565c0;
+        border: 1px solid rgba(21, 101, 192, 0.4);
+        margin-left: var(--spacing-sm);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        font-weight: 700;
+    }
+
+    .home-content .btn-outline:hover {
+        background: rgba(21, 101, 192, 0.15);
+        border-color: rgba(21, 101, 192, 0.6);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .home-content .btn-service {
+        background: var(--gradient-primary);
+        color: var(--text-light);
+        font-size: 0.9rem;
+        padding: 0.6rem 1.2rem;
+    }
+
+    .home-content .btn-cta {
+        background: var(--gradient-primary);
+        color: var(--text-light);
+        font-size: 1.1rem;
+        padding: 0.85rem 2rem;
+        box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
+    }
+
+    .home-content .btn-cta:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(106, 17, 203, 0.4);
+    }
+
+    /* Hero Section with improved styling */
+    .home-content .hero-section {
+        background: #e8f0ff; /* Changed to a light blue-ish background */
+        padding: 8rem 0 6rem;
+        position: relative;
+        overflow: hidden;
+        color: var(--text-dark); /* Changed to dark text for better contrast */
+    }
+
+    .home-content .min-vh-80 {
+        min-height: 80vh;
+    }
+
+    /* Add dreamy animation to background */
+    @keyframes subtleDreamyPulse {
+        0% { transform: scale(1); opacity: 0.7; }
+        50% { transform: scale(1.03); opacity: 0.9; }
+        100% { transform: scale(1); opacity: 0.7; }
+    }
+
+    .home-content .hero-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #e0f7ff 0%, #f8f2ff 50%, #eefaff 100%) !important;
+        background-image: 
+            radial-gradient(circle at 15% 40%, rgba(147, 206, 255, 0.5) 0%, transparent 35%),
+            radial-gradient(circle at 85% 30%, rgba(210, 180, 255, 0.4) 0%, transparent 40%),
+            radial-gradient(circle at 75% 80%, rgba(255, 224, 189, 0.4) 0%, transparent 30%),
+            radial-gradient(circle at 25% 70%, rgba(179, 236, 255, 0.4) 0%, transparent 35%),
+            radial-gradient(ellipse at 50% 50%, rgba(255, 236, 224, 0.25) 0%, transparent 70%) !important;
+        z-index: 0;
+        box-shadow: inset 0 0 50px rgba(255, 255, 255, 0.8);
+        animation: 
+            dreamBackgroundShift 15s ease-in-out infinite alternate,
+            subtleDreamyPulse 8s ease-in-out infinite;
+    }
+
+    @keyframes dreamBackgroundShift {
+        0% {
+            background-position: 0% 0%;
+            filter: brightness(1) contrast(0.95);
+        }
+        50% {
+            filter: brightness(1.05) contrast(1);
+        }
+        100% {
+            background-position: 100% 100%;
+            filter: brightness(1.1) contrast(0.95);
+        }
+    }
+
+    /* Add starry night effect to hero background */
+    .home-content .hero-bg::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            radial-gradient(1px 1px at 10% 10%, rgba(255, 255, 255, 0.9) 0%, transparent 100%),
+            radial-gradient(1px 1px at 20% 50%, rgba(210, 230, 255, 0.8) 0%, transparent 100%),
+            radial-gradient(1px 1px at 30% 70%, rgba(230, 210, 255, 0.8) 0%, transparent 100%),
+            radial-gradient(1px 1px at 40% 30%, rgba(255, 240, 220, 0.8) 0%, transparent 100%),
+            radial-gradient(1px 1px at 60% 40%, rgba(200, 230, 255, 0.8) 0%, transparent 100%),
+            radial-gradient(1px 1px at 70% 20%, rgba(230, 255, 250, 0.8) 0%, transparent 100%),
+            radial-gradient(1px 1px at 80% 60%, rgba(255, 230, 245, 0.9) 0%, transparent 100%),
+            radial-gradient(1px 1px at 90% 90%, rgba(220, 240, 255, 0.8) 0%, transparent 100%);
+        opacity: 0.6;
+        z-index: 1;
+        animation: twinkleStars 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes twinkleStars {
+        0% { opacity: 0.4; }
+        50% { opacity: 0.7; }
+        100% { opacity: 0.5; }
+    }
+
+    .home-content .hero-content {
+        position: relative;
+        z-index: 1;
+        padding-top: 0; /* Reduced from 1rem */
+        margin-top: -5rem; /* Added negative margin to move content up */
+        filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+    }
+
+    /* Hero badge with improved styling */
+    .home-content .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(37, 117, 252, 0.2);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 50px;
+        padding: 0.5rem 1rem;
+        margin-bottom: var(--spacing-md);
+        border: 1px solid rgba(37, 117, 252, 0.4);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transform: translateY(0);
+        transition: all 0.3s ease;
+    }
+    
+    .home-content .hero-badge:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        background: rgba(37, 117, 252, 0.25);
+    }
+    
+    .home-content .hero-badge i {
+        color: #1565c0;
+        margin-right: 0.5rem;
+    }
+    
+    .home-content .hero-badge span {
+        color: #1565c0;
+        font-weight: 600;
+    }
+
+    .home-content .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: var(--spacing-sm);
+        color: #333;
+    }
+
+    .home-content .hero-subtitle {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: var(--spacing-sm);
+        color: #333;
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+        display: inline-block;
+        position: relative;
+        padding: 0.2rem 0;
+        z-index: 1;
+        letter-spacing: -0.5px; /* Added negative letter-spacing to bring characters closer together */
+    }
+    
+    .home-content .hero-subtitle span {
+        display: inline-block;
+        position: relative;
+    }
+    
+    .home-content .hero-subtitle .char {
+        display: inline-block;
+        opacity: 0;
+        color: #1565c0; /* Deeper blue */
+        text-shadow: 0 0 1px rgba(21, 101, 192, 0.4), 0 0 15px rgba(21, 101, 192, 0.2);
+        transform: translateY(20px) scale(0.8);
+        animation: charAppear 0.5s forwards;
+        animation-delay: calc(var(--char-index) * 0.08s);
+        margin-right: -3px; /* Added negative margin to reduce space between characters */
+    }
+    
+    @keyframes charAppear {
+        0% {
+            opacity: 0;
+            transform: translateY(20px) scale(0.8);
+        }
+        60% {
+            opacity: 1;
+            transform: translateY(-5px) scale(1.1);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            color: #1565c0;
+        }
+    }
+    
+    .home-content .hero-subtitle .char:nth-child(odd) {
+        animation-name: charAppearOdd;
+    }
+    
+    @keyframes charAppearOdd {
+        0% {
+            opacity: 0;
+            transform: translateY(20px) scale(0.8);
+        }
+        60% {
+            opacity: 1;
+            transform: translateY(-8px) scale(1.15);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            color: #1565c0;
+        }
+    }
+    
+    /* Remove the underline and its animation */
+    .home-content .hero-subtitle .char::after {
+        display: none;
+    }
+    
+    .home-content .hero-subtitle .book-char {
+        color: #e65100; /* Deeper orange for contrast */
+        text-shadow: 0 0 15px rgba(230, 81, 0, 0.8), 0 0 30px rgba(230, 81, 0, 0.4);
+    }
+    
+    /* Remove the book-char underline animation */
+    .home-content .hero-subtitle .book-char::after {
+        display: none;
+    }
+
+    .home-content .hero-description {
+        font-size: 1.2rem;
+        margin-bottom: var(--spacing-md);
+        opacity: 0;
+        animation: fadeInUp 0.8s forwards ease-out 0.4s;
+        position: relative;
+        padding-right: 0.8rem;
+        display: inline-flex;
+        flex-wrap: wrap;
+        align-items: center;
+        max-width: 500px;
+        color: #333;
+        font-weight: 500;
+    }
+    
+    @keyframes fadeInUp {
+        from { 
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to { 
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .home-content .hero-description::after {
+        content: '♥';
+        display: inline-block;
+        margin-left: 3px;
+        color: rgba(248, 45, 45, 0.8);
+        font-weight: bold;
+        animation: blinkCursor 1.2s infinite;
+        position: absolute;
+        right: 0;
+    }
+    
+    @keyframes blinkCursor {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+    }
+    
+    /* Word highlight effect */
+    .home-content .hero-description .highlight {
+        color: #e65100;
+        font-weight: 700;
+        position: relative;
+        display: inline-block;
+        margin: 0 5px;
+    }
+    
+    .home-content .hero-description .highlight::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, rgba(230, 81, 0, 0.5), transparent);
+        animation: shimmerLine 2.5s infinite;
+    }
+    
+    @keyframes shimmerLine {
+        0% { background-position: -100% 0; }
+        100% { background-position: 200% 0; }
+    }
+
+    .home-content .hero-cta {
+        display: flex;
+        margin-top: var(--spacing-lg);
+    }
+
+    .home-content .hero-wave {
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        line-height: 0;
+        z-index: 1;
+        filter: drop-shadow(0 -2px 5px rgba(147, 206, 255, 0.3));
+        opacity: 0.9;
+    }
+
+    .home-content .hero-wave svg {
+        width: 100%;
+        height: auto;
+        display: block; /* Prevent any inline spacing issues */
+    }
+
+    .home-content .hero-wave path {
+        fill: #ffffff;
+    }
+
+    /* Service Preview Cards in Hero */
+    .home-content .service-preview-cards {
+        position: relative;
+        height: 450px;
+        z-index: 1;
+        perspective: 1000px;
+        max-width: 450px;
+        margin-left: auto;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .home-content .preview-card {
+        width: 200px;
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: var(--border-radius-md);
+        padding: var(--spacing-md);
+        color: #444;
+        transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); /* Smoother spring effect */
+        box-shadow: 0 10px 30px rgba(79, 179, 255, 0.15), 0 0 15px rgba(147, 206, 255, 0.3);
+        position: relative;
+        transform: translateY(0); /* Remove initial rotation */
+    }
+
+    .home-content .preview-card:hover {
+        transform: translateY(-10px) !important;
+        box-shadow: 0 15px 35px rgba(79, 179, 255, 0.2), 0 0 20px rgba(255, 177, 122, 0.3);
+        border-color: rgba(179, 236, 255, 0.7);
+        background: rgba(255, 255, 255, 0.7);
+        z-index: 10;
+    }
+
+    .home-content .preview-card-1 {
+        grid-area: 1 / 1 / 2 / 2;
+        animation-delay: 0s, 0s;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(183, 218, 255, 0.4));
+    }
+
+    .home-content .preview-card-2 {
+        grid-area: 1 / 2 / 2 / 3;
+        animation-delay: 1.5s, 2s;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(210, 180, 255, 0.4));
+    }
+
+    .home-content .preview-card-3 {
+        grid-area: 2 / 1 / 3 / 2;
+        animation-delay: 1s, 3s;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(255, 224, 189, 0.4));
+    }
+    
+    .home-content .preview-card-4 {
+        grid-area: 2 / 2 / 3 / 3;
+        animation-delay: 2s, 4s;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(200, 255, 225, 0.4));
+        border: 1px solid rgba(210, 180, 255, 0.5);
+    }
+    
+    .home-content .coming-soon-icon {
+        background: linear-gradient(135deg, #00bcd4, #e65100);
+    }
+    
+    /* Update animation to be more stable */
+    @keyframes floatCard {
+        0% { 
+            transform: translateY(0); 
+        }
+        50% { 
+            transform: translateY(-8px); 
+        }
+        100% { 
+            transform: translateY(0); 
+        }
+    }
+    
+    .home-content .preview-card:nth-child(2n) {
+        animation-name: floatCardAlt;
+    }
+    
+    @keyframes floatCardAlt {
+        0% { 
+            transform: translateY(0); 
+        }
+        50% { 
+            transform: translateY(-6px); 
+        }
+        100% {
+            transform: translateY(0); 
+        }
+    }
+
+    /* Add animation after the page has loaded */
+    .home-content .preview-card {
+        animation: none;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .home-content .preview-card.animated {
+        opacity: 1;
+        transform: translateY(0);
+        animation: floatCard 6s ease-in-out infinite, subtleGlow 8s infinite alternate;
+    }
+
+    .home-content .preview-card:nth-child(2n).animated {
+        animation-name: floatCardAlt, subtleGlow;
+    }
+
+    /* Individual card animations */
+    .home-content .preview-card-1.animated {
+        animation-delay: 0s, 0s;
+    }
+
+    .home-content .preview-card-2.animated {
+        animation-delay: 1.5s, 2s;
+    }
+
+    .home-content .preview-card-3.animated {
+        animation-delay: 1s, 3s;
+    }
+
+    .home-content .preview-card-4.animated {
+        animation-delay: 2s, 4s;
+    }
+
+    @keyframes subtleGlow {
+        0% {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+        100% {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), 0 0 25px rgba(255, 255, 255, 0.2);
+        }
+    }
+
+    /* Enhancing card icons for better contrast */
+    .home-content .card-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #1565c0, #00bcd4);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: var(--spacing-sm);
+        box-shadow: 0 0 15px rgba(21, 101, 192, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .home-content .preview-card:hover .card-icon {
+        transform: scale(1.1);
+        box-shadow: 0 0 20px rgba(21, 101, 192, 0.5);
+    }
+
+    .home-content .card-icon i {
+        font-size: 1.3rem;
+        color: var(--text-light);
+    }
+
+    .home-content .preview-card h3 {
+        font-size: 1.3rem;
+        margin-bottom: var(--spacing-xs);
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .home-content .preview-card p {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin-bottom: 0;
+    }
+
+    /* Main Services Section */
+    .home-content .services-section {
+        padding: var(--spacing-xl) 0;
+        background: var(--bg-white);
+        padding-top: 8rem; /* Increased top padding to move the title down */
+    }
+
+    .home-content .service-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--spacing-lg);
+    }
+
+    .home-content .service-card {
+        background: var(--bg-white);
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow-md);
+        padding: var(--spacing-lg);
+        transition: var(--transition-normal);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .home-content .service-card:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .home-content .service-card-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .home-content .service-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, rgba(106, 17, 203, 0.1), rgba(37, 117, 252, 0.1));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: var(--spacing-sm);
+    }
+    
+    .home-content .service-icon i {
+        font-size: 1.8rem;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .home-content .service-card-header h3 {
+        font-size: 1.5rem;
+        margin: 0;
+    }
+
+    .home-content .service-illustration {
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: var(--spacing-md);
+    }
+
+    .home-content .service-description {
+        flex-grow: 1;
+    }
+
+    .home-content .service-description p {
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .home-content .feature-list {
+        list-style: none;
+        padding: 0;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .home-content .feature-list li {
+        display: flex;
+        align-items: center;
+        margin-bottom: var(--spacing-xs);
+    }
+
+    .home-content .feature-list li i {
+        color: var(--primary);
+        margin-right: var(--spacing-xs);
+    }
+
+    .home-content .service-action {
+        text-align: center;
+    }
+
+    /* Text to Speech Illustration */
+    .home-content .tts-illustration {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        position: relative;
+        height: 100px;
+        background: linear-gradient(to right, transparent 10%, rgba(106, 17, 203, 0.05) 50%, transparent 90%);
+        border-radius: 8px;
+    }
+    
+    /* Add speech bubble effect */
+    .home-content .text-element {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--primary);
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(106, 17, 203, 0.2);
+        border-radius: 12px;
+        padding: 6px 12px;
+        position: relative;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+        animation: pulseText 3s infinite ease-in-out;
+        z-index: 2;
+    }
+    
+    /* Speech bubble pointer */
+    .home-content .text-element::after {
+        content: '';
+        position: absolute;
+        right: -8px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-left: 8px solid rgba(106, 17, 203, 0.2);
+        border-top: 8px solid transparent;
+        border-bottom: 8px solid transparent;
+    }
+    
+    .home-content .text-element::before {
+        content: '';
+        position: absolute;
+        right: -7px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-left: 8px solid rgba(255, 255, 255, 0.8);
+        border-top: 8px solid transparent;
+        border-bottom: 8px solid transparent;
+        z-index: 2;
+    }
+
+    @keyframes pulseText {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    .home-content .transform-arrow {
+        margin: 0 var(--spacing-sm);
+        color: var(--secondary);
+        font-size: 1.3rem;
+        position: relative;
+        animation: arrowPulse 2s infinite;
+    }
+    
+    .home-content .transform-arrow::after {
+        content: '';
+        position: absolute;
+        height: 1px;
+        width: 100%;
+        background: linear-gradient(to right, transparent, rgba(37, 117, 252, 0.2), transparent);
+        bottom: -5px;
+        left: 0;
+    }
+    
+    @keyframes arrowPulse {
+        0%, 100% { opacity: 0.7; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.15); }
+    }
+
+    .home-content .audio-wave {
+        display: flex;
+        align-items: flex-end;
+        height: 40px;
+        gap: 4px;
+        background: rgba(255, 255, 255, 0.6);
+        padding: 8px 12px;
+        border-radius: 12px;
+        position: relative;
+        border: 1px solid rgba(106, 17, 203, 0.1);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+    }
+    
+    .home-content .audio-wave::before {
+        content: '\f130';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        position: absolute;
+        font-size: 0.9rem;
+        top: -10px;
+        left: -10px;
+        color: var(--text-light);
+        opacity: 1;
+        background: var(--gradient-primary);
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .home-content .wave-bar {
+        width: 4px;
+        background: linear-gradient(to top, var(--primary), var(--secondary));
+        border-radius: 2px;
+        animation: waveAnimation 1.5s infinite ease-in-out;
+    }
+
+    .home-content .wave-bar:nth-child(1) { height: 15px; animation-delay: 0s; }
+    .home-content .wave-bar:nth-child(2) { height: 25px; animation-delay: 0.2s; }
+    .home-content .wave-bar:nth-child(3) { height: 35px; animation-delay: 0.4s; }
+    .home-content .wave-bar:nth-child(4) { height: 20px; animation-delay: 0.6s; }
+    .home-content .wave-bar:nth-child(5) { height: 30px; animation-delay: 0.8s; }
+
+    @keyframes waveAnimation {
+        0%, 100% { transform: scaleY(1); }
+        50% { transform: scaleY(1.2); }
+    }
+
+    /* Voice Conversion Illustration */
+    .home-content .vc-illustration {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        position: relative;
+        height: 100px;
+        background: linear-gradient(to right, transparent 10%, rgba(106, 17, 203, 0.05) 50%, transparent 90%);
+        border-radius: 8px;
+    }
+    
+    /* Add waveform background effect */
+    .home-content .vc-illustration::before {
+        content: '';
+        position: absolute;
+        left: 5%;
+        right: 5%;
+        height: 1px;
+        top: 50%;
+        background: rgba(106, 17, 203, 0.1);
+        box-shadow: 0 -10px 0 rgba(106, 17, 203, 0.05),
+                    0 10px 0 rgba(106, 17, 203, 0.05),
+                    0 -20px 0 rgba(106, 17, 203, 0.03),
+                    0 20px 0 rgba(106, 17, 203, 0.03);
+    }
+
+    .home-content .voice-profile {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--gradient-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-light);
+        font-size: 1.5rem;
+        position: relative;
+        box-shadow: 0 5px 15px rgba(106, 17, 203, 0.2);
+        z-index: 2;
+    }
+    
+    /* Add ripple effect */
+    .home-content .voice-profile::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 2px solid rgba(106, 17, 203, 0.3);
+        animation: ripple 2s infinite ease-out;
+        z-index: -1;
+    }
+    
+    @keyframes ripple {
+        0% {
+            transform: scale(1);
+            opacity: 0.8;
+        }
+        100% {
+            transform: scale(1.5);
+            opacity: 0;
+        }
+    }
+
+    .home-content .profile-1::before {
+        content: 'A';
+        position: absolute;
+        bottom: -20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: var(--primary);
+    }
+
+    .home-content .profile-2 {
+        background: linear-gradient(45deg, #00ffaa, #2575fc);
+        box-shadow: 0 5px 15px rgba(0, 255, 170, 0.2);
+    }
+    
+    .home-content .profile-2::before {
+        content: 'B';
+        position: absolute;
+        bottom: -20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: #2575fc;
+    }
+    
+    .home-content .profile-2::after {
+        border-color: rgba(0, 255, 170, 0.3);
+    }
+
+    .home-content .conversion-arrows {
+        margin: 0 var(--spacing-md);
+        color: var(--primary);
+        font-size: 1.5rem;
+        animation: pulseArrow 2s infinite;
+        position: relative;
+        z-index: 2;
+    }
+    
+    /* Add directional particles */
+    .home-content .conversion-arrows::before,
+    .home-content .conversion-arrows::after {
+        content: '•';
+        font-size: 0.8rem;
+        color: var(--secondary);
+        position: absolute;
+        opacity: 0;
+    }
+    
+    .home-content .conversion-arrows::before {
+        left: -10px;
+        top: -5px;
+        animation: particleMove1 2s infinite;
+    }
+    
+    .home-content .conversion-arrows::after {
+        right: -10px;
+        bottom: -5px;
+        animation: particleMove2 2s infinite;
+    }
+    
+    @keyframes particleMove1 {
+        0% { opacity: 0; transform: translate(-5px, 5px); }
+        50% { opacity: 1; transform: translate(10px, -10px); }
+        100% { opacity: 0; transform: translate(25px, -25px); }
+    }
+    
+    @keyframes particleMove2 {
+        0% { opacity: 0; transform: translate(5px, -5px); }
+        50% { opacity: 1; transform: translate(-10px, 10px); }
+        100% { opacity: 0; transform: translate(-25px, 25px); }
+    }
+
+    @keyframes pulseArrow {
+        0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.7; }
+        50% { transform: scale(1.2) rotate(0deg); opacity: 1; }
+    }
+
+    /* Music Illustration */
+    .home-content .music-illustration {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        position: relative;
+        height: 100px;
+        background: linear-gradient(to right, transparent 10%, rgba(106, 17, 203, 0.05) 50%, transparent 90%);
+        border-radius: 8px;
+    }
+    
+    /* Add musical staff lines */
+    .home-content .music-illustration::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 10%;
+        width: 80%;
+        height: 1px;
+        background: rgba(106, 17, 203, 0.2);
+        box-shadow: 0 -12px 0 rgba(106, 17, 203, 0.1), 
+                    0 -24px 0 rgba(106, 17, 203, 0.1), 
+                    0 12px 0 rgba(106, 17, 203, 0.1), 
+                    0 24px 0 rgba(106, 17, 203, 0.1);
+    }
+
+    .home-content .music-note {
+        font-size: 2rem;
+        color: var(--primary);
+        margin: 0 var(--spacing-xs);
+        position: relative;
+        animation: floatNote 3s infinite ease-in-out;
+        z-index: 2;
+    }
+    
+    .home-content .music-note::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        height: 20px;
+        width: 1px;
+        background: var(--primary);
+        opacity: 0.7;
+        transform: rotate(10deg);
+    }
+
+    .home-content .music-note:nth-child(1) { 
+        animation-delay: 0s; 
+        font-size: 1.8rem;
+    }
+    .home-content .music-note:nth-child(2) { 
+        animation-delay: 0.5s; 
+        font-size: 2.2rem;
+    }
+    .home-content .music-note:nth-child(5) { 
+        animation-delay: 1s; 
+        font-size: 1.7rem;
+    }
+
+    @keyframes floatNote {
+        0%, 100% { 
+            transform: translateY(0) rotate(0deg); 
+        }
+        25% {
+            transform: translateY(-6px) rotate(3deg);
+        }
+        75% {
+            transform: translateY(-3px) rotate(-3deg);
+        }
+    }
+
+    .home-content .equalizer {
+        display: flex;
+        align-items: flex-end;
+        height: 40px;
+        gap: 4px;
+        margin: 0 var(--spacing-sm);
+        position: relative;
+        transform: rotate(-5deg);
+        z-index: 2;
+    }
+
+    .home-content .equalizer::after {
+        content: '';
+        position: absolute;
+        bottom: -12px;
+        left: -5px;
+        right: -5px;
+        height: 10px;
+        background: linear-gradient(to right, rgba(37, 117, 252, 0.1), rgba(106, 17, 203, 0.1));
+        border-radius: 5px;
+        z-index: -1;
+    }
+
+    .home-content .eq-bar {
+        width: 6px;
+        background: linear-gradient(to top, var(--primary), var(--secondary));
+        border-radius: 3px;
+        animation: equalizerAnimation 1.5s infinite ease-in-out;
+    }
+
+    .home-content .eq-bar:nth-child(1) { height: 15px; animation-delay: 0s; }
+    .home-content .eq-bar:nth-child(2) { height: 30px; animation-delay: 0.2s; }
+    .home-content .eq-bar:nth-child(3) { height: 20px; animation-delay: 0.4s; }
+    .home-content .eq-bar:nth-child(4) { height: 25px; animation-delay: 0.6s; }
+
+    @keyframes equalizerAnimation {
+        0%, 100% { transform: scaleY(1); }
+        50% { transform: scaleY(1.3); }
+    }
+
+    /* How It Works Section */
+    .home-content .how-it-works-section {
+        background-color: var(--bg-light);
+        padding: var(--spacing-xl) 0;
+    }
+
+    .home-content .steps-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: var(--spacing-lg);
+        margin-top: var(--spacing-xl);
+    }
+
+    .home-content .step-card {
+        background: var(--bg-white);
+        border-radius: var(--border-radius-md);
+        padding: var(--spacing-lg);
+        box-shadow: var(--shadow-sm);
+        text-align: center;
+        position: relative;
+        transition: var(--transition-normal);
+    }
+
+    .home-content .step-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .home-content .step-number {
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 40px;
+        background: var(--gradient-primary);
+        color: var(--text-light);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+
+    .home-content .step-icon {
+        margin: var(--spacing-sm) 0;
+        font-size: 2rem;
+        color: var(--primary);
+    }
+
+    .home-content .step-title {
+        font-size: 1.3rem;
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .home-content .step-description {
+        color: var(--text-muted);
+    }
+
+    /* Use Cases Section */
+    .home-content .use-cases-section {
+        padding: var(--spacing-xl) 0;
+        background: var(--bg-white);
+    }
+
+    .home-content .use-cases-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--spacing-lg);
+        margin-top: var(--spacing-xl);
+    }
+
+    .home-content .use-case-card {
+        background: var(--bg-light);
+        border-radius: var(--border-radius-md);
+        padding: var(--spacing-lg);
+        transition: var(--transition-normal);
+        text-align: center;
+    }
+    
+    .home-content .use-case-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .home-content .use-case-icon {
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .home-content .use-case-title {
+        font-size: 1.3rem;
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .home-content .use-case-description {
+        color: var(--text-muted);
+    }
+
+    /* Testimonials Section */
+    .home-content .testimonials-section {
+        background: linear-gradient(135deg, rgba(106, 17, 203, 0.05), rgba(37, 117, 252, 0.05));
+        padding: var(--spacing-xl) 0;
+    }
+
+    .home-content .testimonials-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--spacing-lg);
+        margin-top: var(--spacing-xl);
+    }
+
+    .home-content .testimonial-card {
+        background: var(--bg-white);
+        border-radius: var(--border-radius-md);
+        padding: var(--spacing-lg);
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition-normal);
+    }
+    
+    .home-content .testimonial-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .home-content .testimonial-content {
+        position: relative;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .home-content .quote-icon {
+        color: var(--primary);
+        opacity: 0.2;
+        font-size: 2.5rem;
+        position: absolute;
+        top: -20px;
+        left: -10px;
+    }
+
+    .home-content .testimonial-content p {
+        font-style: italic;
+        color: var(--text-dark);
+        position: relative;
+        z-index: 1;
+    }
+    
+    .home-content .testimonial-author {
+        display: flex;
+        align-items: center;
+    }
+    
+    .home-content .author-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: var(--spacing-sm);
+        object-fit: cover;
+    }
+    
+    .home-content .author-info h4 {
+        margin: 0;
+        font-size: 1rem;
+    }
+    
+    .home-content .author-info p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+    
+    /* CTA Section */
+    .home-content .cta-section {
+        padding: var(--spacing-xl) 0;
+        background: var(--bg-white);
+    }
+    
+    .home-content .cta-card {
+        background: var(--gradient-primary);
+        color: var(--text-light);
+        border-radius: var(--border-radius-lg);
+        padding: var(--spacing-xl);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .home-content .cta-title {
+        font-size: 2rem;
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .home-content .cta-description {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 0;
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 992px) {
+        .home-content .hero-title {
+            font-size: 3rem;
+        }
+        
+        .home-content .hero-subtitle {
+            font-size: 1.5rem;
+        }
+        
+        .home-content .service-preview-cards {
+            display: none;
+        }
+        
+        .home-content .cta-card {
+            padding: var(--spacing-lg);
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .home-content .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .home-content .section-title {
+            font-size: 2rem;
+        }
+
+        .home-content .hero-cta {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+        }
+
+        .home-content .btn-outline {
+            margin-left: 0;
+        }
+
+        .home-content .steps-container,
+        .home-content .use-cases-container,
+        .home-content .testimonials-container {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .home-content .hero-title {
+            font-size: 2rem;
+        }
+
+        .home-content .service-cards {
+            grid-template-columns: 1fr;
+        }
+
+        .home-content .cta-card {
+            padding: var(--spacing-md);
+            text-align: center;
+        }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1200px) {
+        .home-content .service-preview-cards {
+            max-width: 400px;
+        }
+        
+        .home-content .preview-card {
+            width: 180px;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .home-content .service-preview-cards {
+            grid-template-columns: repeat(2, 1fr);
+            margin: 0 auto;
+            height: auto;
+            margin-top: 3rem;
+        }
+        
+        .home-content .preview-card {
+            position: static;
+            width: 100%;
+            transform: none !important;
+            animation: none;
+        }
+        
+        .home-content .preview-card:hover {
+            transform: translateY(-5px) !important;
+        }
+    }
+
+    /* Enhance particles with more dreamy colors */
+    .home-content .hero-section .particle {
+        position: absolute;
+        border-radius: 50%;
+        background: linear-gradient(45deg, rgba(183, 218, 255, 0.8), rgba(210, 180, 255, 0.8));
+        box-shadow: 0 0 15px rgba(200, 220, 255, 0.6);
+        z-index: 2;
+        pointer-events: none;
+        animation-duration: 4s;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+    }
+    
+    .home-content .hero-section .particle:nth-child(2) {
+        top: 20%;
+        left: 15%;
+        width: 7px;
+        height: 7px;
+        opacity: 0.8;
+        animation-name: particleFloat1;
+    }
+    
+    .home-content .hero-section .particle:nth-child(3) {
+        top: 35%;
+        right: 15%;
+        width: 12px;
+        height: 12px;
+        opacity: 0.6;
+        animation-name: particleFloat2;
+        animation-duration: 5s;
+    }
+    
+    .home-content .hero-section .particle:nth-child(4) {
+        bottom: 20%;
+        left: 20%;
+        width: 9px;
+        height: 9px;
+        opacity: 0.7;
+        animation-name: particleFloat3;
+        animation-duration: 3.5s;
+    }
+    
+    /* Add more floating particles */
+    .home-content .hero-section::before {
+        content: '';
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        top: 15%;
+        right: 20%;
+        background: radial-gradient(circle, rgba(183, 218, 255, 0.8) 0%, rgba(210, 180, 255, 0.4) 50%, transparent 100%);
+        box-shadow: 0 0 20px rgba(200, 220, 255, 0.7);
+        opacity: 0.8;
+        z-index: 2;
+        animation: particleFloat4 6s ease-in-out infinite alternate;
+    }
+    
+    @keyframes particleFloat1 {
+        0% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+        50% { transform: translateY(-15px) rotate(3deg); opacity: 0.9; }
+        100% { transform: translateY(-25px) rotate(5deg); opacity: 0.5; }
+    }
+    
+    @keyframes particleFloat2 {
+        0% { transform: translateY(-20px) rotate(-5deg); opacity: 0.3; }
+        50% { transform: translateY(-10px) rotate(-2deg); opacity: 0.5; }
+        100% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+    }
+    
+    @keyframes particleFloat3 {
+        0% { transform: translateY(0) rotate(0deg); opacity: 0.5; }
+        50% { transform: translateY(-8px) rotate(2deg); opacity: 0.7; }
+        100% { transform: translateY(-15px) rotate(3deg); opacity: 0.3; }
+    }
+    
+    @keyframes particleFloat4 {
+        0% { transform: scale(1) translateX(0); opacity: 0.7; }
+        50% { transform: scale(1.2) translateX(-15px); opacity: 0.9; }
+        100% { transform: scale(1) translateX(-30px); opacity: 0.4; }
+    }
+
+    /* Hero background additional gradients */
+    .home-content .hero-bg::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            radial-gradient(circle at 20% 20%, rgba(183, 218, 255, 0.2) 0, rgba(183, 218, 255, 0) 100px),
+            radial-gradient(circle at 75% 35%, rgba(210, 180, 255, 0.2) 0, rgba(210, 180, 255, 0) 150px),
+            radial-gradient(circle at 40% 80%, rgba(255, 224, 189, 0.2) 0, rgba(255, 224, 189, 0) 120px);
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .home-content .testimonial-author p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+    
+    /* Mission Section Styles */
+    .home-content .mission-section {
+        padding: var(--spacing-xl) 0;
+        background: linear-gradient(135deg, rgba(106, 17, 203, 0.03), rgba(37, 117, 252, 0.03));
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .home-content .mission-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+    }
+    
+    .home-content .mission-section::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+    }
+    
+    .home-content .mission-content {
+        max-width: 800px;
+        margin: -50px auto 0;
+        padding: var(--spacing-sm) 0 var(--spacing-lg);
+    }
+    
+    .home-content .mission-icon {
+        font-size: 2.5rem;
+        color: #ffd700;
+        margin-bottom: var(--spacing-md);
+        display: inline-block;
+        position: relative;
+    }
+    
+    .home-content .mission-icon i {
+        animation: missionIconGlow 3s infinite alternate;
+    }
+    
+    @keyframes missionIconGlow {
+        0% {
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+            transform: scale(1);
+        }
+        100% {
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.4);
+            transform: scale(1.1);
+        }
+    }
+    
+    .home-content .mission-text {
+        font-size: 1.6rem;
+        font-weight: 600;
+        line-height: 1.5;
+        margin-bottom: var(--spacing-lg);
+        color: var(--text-dark);
+        position: relative;
+        padding: 0 var(--spacing-md);
+    }
+    
+    .home-content .mission-text .highlight-mission {
+        display: inline-block;
+        background: linear-gradient(45deg, #ee816e 0%, #ddd453 50%, #74f03f 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 1.8rem;
+        font-weight: 700;
+        position: relative;
+        margin-top: 15px;
+        letter-spacing: 1px;
+        animation: shimmerMission 3s infinite alternate;
+        text-shadow: 0 2px 10px rgba(212, 175, 55, 0.2);
+    }
+    
+    @keyframes shimmerMission {
+        0% {
+            background-position: 0% 50%;
+            transform: scale(1);
+        }
+        100% {
+            background-position: 100% 50%;
+            transform: scale(1.05);
+        }
+    }
+    
+    .home-content .mission-decoration {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: var(--spacing-lg);
+    }
+    
+    .home-content .mission-line {
+        height: 1px;
+        width: 100px;
+        background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
+        display: inline-block;
+    }
+    
+    .home-content .mission-feather {
+        color: rgba(212, 175, 55, 0.7);
+        font-size: 1.2rem;
+        margin: 0 var(--spacing-sm);
+        animation: missionFeatherFloat 3s ease-in-out infinite;
+    }
+    
+    @keyframes missionFeatherFloat {
+        0%, 100% {
+            transform: translateY(0) rotate(0deg);
+        }
+        50% {
+            transform: translateY(-5px) rotate(5deg);
+        }
+    }
+    
+    /* CTA Section */
+    .home-content .cta-section {
+        padding: var(--spacing-xl) 0;
+        background: var(--bg-white);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="home-content">
+    <!-- Clear, Focused Hero Section -->
+    <section class="hero-section">
+        <div class="hero-bg"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="container">
+            <div class="row align-items-center min-vh-80">
+                <div class="col-lg-6">
+                    <div class="hero-content">
+                        <div class="hero-badge">
+                            <i class="fas fa-feather-alt"></i>
+                            <span>TalkTalkAI</span>
+                        </div>
+                        <h1 class="hero-title">
+                            <span class="gradient-text">Create Easily What You Love with AI</span>
+                        </h1>
+                        <p class="hero-subtitle">
+                            <span>
+                                <span class="char" style="--char-index: 0;">M</span>
+                                <span class="char" style="--char-index: 1;">a</span>
+                                <span class="char" style="--char-index: 2;">s</span>
+                                <span class="char" style="--char-index: 3;">t</span>
+                                <span class="char" style="--char-index: 4;">e</span>
+                                <span class="char" style="--char-index: 5;">r</span>
+                                <span class="char" style="--char-index: 6;"> </span>
+                                <span class="char" style="--char-index: 7;">A</span>
+                                <span class="char" style="--char-index: 8;">I</span>
+                                <span class="char" style="--char-index: 9;"> </span>
+                                <span class="char" style="--char-index: 10;">w</span>
+                                <span class="char" style="--char-index: 11;">i</span>
+                                <span class="char" style="--char-index: 12;">t</span>
+                                <span class="char" style="--char-index: 13;">h</span>
+                                <span class="char" style="--char-index: 14;"> </span>
+                                <span class="char book-char" style="--char-index: 15;">T</span>
+                                <span class="char book-char" style="--char-index: 16;">a</span>
+                                <span class="char book-char" style="--char-index: 17;">l</span>
+                                <span class="char book-char" style="--char-index: 18;">k</span>
+                                <span class="char book-char" style="--char-index: 19;">T</span>
+                                <span class="char book-char" style="--char-index: 20;">a</span>
+                                <span class="char book-char" style="--char-index: 21;">l</span>
+                                <span class="char book-char" style="--char-index: 22;">k</span>
+                                <span class="char book-char" style="--char-index: 23;">A</span>
+                                <span class="char book-char" style="--char-index: 24;">I</span>
+                            </span>
+                        </p>
+                        <p class="hero-description">
+                            <span class="highlight">All-in-one</span> AI service platform: Get <span class="highlight"> everything </span> you <span class="highlight">love</span> in one place
+                        </p>
+                        <div class="hero-cta">
+                            <a href="{% if current_user.is_authenticated %}/tts{% else %}/register{% endif %}" class="btn btn-primary">
+                                <i class="fas fa-rocket me-2"></i>Start Free
+                            </a>
+                            <a href="#services" class="btn btn-outline">Explore Services</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 d-none d-lg-block">
+                    <div class="service-preview-cards">
+                        <!-- Service Preview Cards that immediately show the main services in a scattered layout -->
+                        <div class="preview-card preview-card-1">
+                            <div class="card-icon">
+                                <i class="fas fa-volume-up"></i>
+                            </div>
+                            <h3>Voice Cloning</h3>
+                            <p>DreamSpeech - Turn any text into speech with your favorite voice</p>
+                        </div>
+                        <div class="preview-card preview-card-2">
+                            <div class="card-icon">
+                                <i class="fas fa-microphone-alt"></i>
+                            </div>
+                            <h3>Voice Conversion</h3>
+                            <p>NewVoice - Transform any voice into your preferred tone</p>
+                        </div>
+                        <div class="preview-card preview-card-3">
+                            <div class="card-icon">
+                                <i class="fas fa-music"></i>
+                            </div>
+                            <h3>AI Music</h3>
+                            <p>Melody - Generate unique songs without any musical background</p>
+                        </div>
+                        <div class="preview-card preview-card-4">
+                            <div class="card-icon coming-soon-icon">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <h3>More Coming</h3>
+                            <p>More AI services coming soon, stay tuned!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-wave">
+            <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+                <path fill="#ffffff" d="M0,32L60,37.3C120,43,240,53,360,53.3C480,53,600,43,720,48C840,53,960,75,1080,74.7C1200,75,1320,53,1380,42.7L1440,32L1440,100L1380,100C1320,100,1200,100,1080,100C960,100,840,100,720,100C600,100,480,100,360,100C240,100,120,100,60,100L0,100Z"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Main Services Section with Direct, Clear Presentation -->
+    <section id="services" class="services-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">All-in-One AI Services</h2>
+                <p class="section-subtitle">Best AI services, all in one place! TalkTalkAI has everything you love!</p>
+            </div>
+            
+            <div class="service-cards">
+                    <!-- Text to Speech Service -->
+                <div class="service-card">
+                    <div class="service-card-header">
+                                    <div class="service-icon">
+                                        <i class="fas fa-volume-up"></i>
+                                    </div>
+                                    <h3>Voice Cloning</h3>
+                                    </div>
+                    <div class="service-illustration">
+                        <div class="tts-illustration">
+                            <span class="text-element">Text</span>
+                            <i class="fas fa-arrow-right transform-arrow"></i>
+                            <div class="audio-wave">
+                                <span class="wave-bar"></span>
+                                <span class="wave-bar"></span>
+                                <span class="wave-bar"></span>
+                                <span class="wave-bar"></span>
+                                <span class="wave-bar"></span>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="service-description">
+                                    <p>Convert text to natural, fluent speech with multiple voice styles and emotional expressions</p>
+                        <ul class="feature-list">
+                                        <li><i class="fas fa-check"></i> Premium Voices</li>
+                                        <li><i class="fas fa-check"></i> Emotional Tone Control</li>
+                                        <li><i class="fas fa-check"></i> Multi-language Support</li>
+                                    </ul>
+                                </div>
+                    <div class="service-action">
+                        <a href="/tts" class="btn btn-service">Start Using</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Voice Conversion Service -->
+                <div class="service-card">
+                    <div class="service-card-header">
+                                    <div class="service-icon">
+                                        <i class="fas fa-microphone-alt"></i>
+                                    </div>
+                                    <h3>Voice Conversion</h3>
+                                    </div>
+                    <div class="service-illustration">
+                        <div class="vc-illustration">
+                            <div class="voice-profile profile-1">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="conversion-arrows">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <div class="voice-profile profile-2">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="service-description">
+                                    <p>Convert your voice to any voice you like, create your personalized sound</p>
+                        <ul class="feature-list">
+                                        <li><i class="fas fa-check"></i> Precise Voice Conversion</li>
+                                        <li><i class="fas fa-check"></i> Fast & Efficient</li>
+                                        <li><i class="fas fa-check"></i> High-fidelity Output</li>
+                                    </ul>
+                                </div>
+                    <div class="service-action">
+                        <a href="/vc" class="btn btn-service">Start Using</a>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Music Generation -->
+                <div class="service-card">
+                    <div class="service-card-header">
+                                    <div class="service-icon">
+                                        <i class="fas fa-music"></i>
+                                    </div>
+                                    <h3>AI Music</h3>
+                                    </div>
+                    <div class="service-illustration">
+                        <div class="music-illustration">
+                            <div class="music-note">♪</div>
+                            <div class="music-note">♫</div>
+                            <div class="equalizer">
+                                <span class="eq-bar"></span>
+                                <span class="eq-bar"></span>
+                                <span class="eq-bar"></span>
+                                <span class="eq-bar"></span>
+                                </div>
+                            <div class="music-note">♩</div>
+                        </div>
+                    </div>
+                    <div class="service-description">
+                                    <p>Generate complete songs with custom lyrics, no musical background needed</p>
+                        <ul class="feature-list">
+                                        <li><i class="fas fa-check"></i> Custom Music Style</li>
+                                        <li><i class="fas fa-check"></i> Custom Lyrics</li>
+                                        <li><i class="fas fa-check"></i> Sentence-level Timing Control</li>
+                                    </ul>
+                                </div>
+                    <div class="service-action">
+                        <a href="/music" class="btn btn-service">Start Using</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section - Simple Steps -->
+    <section class="how-it-works-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">Three Simple Steps to Create</h2>
+                <p class="section-subtitle">Using our AI services is incredibly simple</p>
+            </div>
+            
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">
+                            <i class="fas fa-edit"></i>
+                                    </div>
+                    <h3 class="step-title">Choose AI Service</h3>
+                    <p class="step-description">Select the AI service you want to use, enter text or upload audio</p>
+                            </div>
+                
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">
+                                    <i class="fas fa-feather-alt"></i>
+                                </div>
+                    <h3 class="step-title">Let AI Handle It</h3>
+                    <p class="step-description">Our AI algorithms quickly process and generate high-quality content</p>
+                        </div>
+                    
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">
+                        <i class="fas fa-download"></i>
+                                    </div>
+                    <h3 class="step-title">Share Your Creation</h3>
+                    <p class="step-description">Download your results and share your creations directly on the platform</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Cases Section - Making it Concrete -->
+    <section class="use-cases-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">Real-World Applications</h2>
+                <p class="section-subtitle">See how "Dreamers" use our services</p>
+            </div>
+            
+            <div class="use-cases-container">
+                <div class="use-case-card">
+                    <div class="use-case-icon">
+                        <i class="fas fa-podcast"></i>
+                            </div>
+                    <h3 class="use-case-title">Content Creators</h3>
+                    <p class="use-case-description">
+                        Convert blog posts to podcasts, add voiceovers to videos, generate professional background music
+                    </p>
+                    </div>
+                    
+                <div class="use-case-card">
+                    <div class="use-case-icon">
+                        <i class="fas fa-book"></i>
+                            </div>
+                    <h3 class="use-case-title">Educators</h3>
+                    <p class="use-case-description">
+                        Create audio textbooks, multilingual course content, interactive learning materials
+                    </p>
+                    </div>
+                    
+                <div class="use-case-card">
+                    <div class="use-case-icon">
+                        <i class="fas fa-film"></i>
+                            </div>
+                    <h3 class="use-case-title">Media Production</h3>
+                    <p class="use-case-description">
+                        Short video soundtracks, character voiceovers, creative sound design
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section - Social Proof -->
+    <section class="testimonials-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">User Testimonials</h2>
+                <p class="section-subtitle">Hear what our "Dreamers" have to say</p>
+            </div>
+            
+            <div class="testimonials-container">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <i class="fas fa-quote-left quote-icon"></i>
+                        <p>"TalkTalkAI's AI music feature is amazing! I easily generated background music for my short videos, and my friends thought it was professionally produced."</p>
+                            </div>
+                    <div class="testimonial-author">
+                        <img src="static/images/profile_1.jpg" alt="Nana" class="author-avatar">
+                                <div class="author-info">
+                            <h4>Nana</h4>
+                                    <p>TikTok Influencer</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <i class="fas fa-quote-left quote-icon"></i>
+                        <p>"The text-to-speech feature has saved me so much time! Now I can convert my articles into audio content, and my audience loves it. It's like having a personal assistant 24/7."</p>
+                        </div>
+                    <div class="testimonial-author">
+                        <img src="static/images/profile_3.avif" alt="Tao" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Tao</h4>
+                            <p>Podcast Host</p>
+                    </div>
+                        </div>
+                    </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <i class="fas fa-quote-left quote-icon"></i>
+                        <p>"The voice conversion technology is incredible! Now I can voice my animation characters with different voices, greatly improving my creative efficiency."</p>
+                        </div>
+                    <div class="testimonial-author">
+                        <img src="static/images/profile_2.avif" alt="Dreamer" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Alice</h4>
+                            <p>Animation Creator</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Mission Section -->
+    <section class="mission-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">Our Mission</h2>
+                <p class="section-subtitle">Create passion, create happiness</p>
+            </div>
+            
+            <div class="mission-content text-center">
+                <div class="mission-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <p class="mission-text">We are dedicated to providing the best all-in-one AI services for all "Dreamers"<br><span class="highlight-mission">Enable everyone to create easily with AI</span></p>
+                <div class="mission-decoration">
+                    <span class="mission-line"></span>
+                    <i class="fas fa-feather-alt mission-feather"></i>
+                    <span class="mission-line"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Clear Call to Action -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-card">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h2 class="cta-title">Ready to start your AI creative journey?</h2>
+                        <p class="cta-description">Sign up now, experience our AI creative tools for free, and unleash your creativity</p>
+                        </div>
+                    <div class="col-lg-4 text-lg-end text-center mt-4 mt-lg-0">
+                        <a href="{% if current_user.is_authenticated %}/tts{% else %}/register{% endif %}" class="btn btn-cta">
+                            <i class="fas fa-rocket me-2"></i>Start Free
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize preview cards with smooth animations
+        const previewCards = document.querySelectorAll('.preview-card');
+        setTimeout(() => {
+            previewCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('animated');
+                }, 100 * index); // Stagger the animations
+            });
+        }, 300); // Wait for page to settle
+        
+        // Check membership status and update UI
+        if (typeof window.globalCheckMembershipStatus === 'function') {
+            window.globalCheckMembershipStatus();
+        }
+        
+        // Update points display with infinity symbol for members
+        if (typeof updatePointsDisplay === 'function') {
+            updatePointsDisplay();
+        }
+        
+        // Reset points if it's a new day
+        resetPointsIfNewDay();
+        
+        // Set up interval to check membership status every minute
+        setInterval(function() {
+            if (typeof window.globalCheckMembershipStatus === 'function') {
+                window.globalCheckMembershipStatus();
+            }
+            if (typeof updatePointsDisplay === 'function') {
+                updatePointsDisplay();
+            }
+            // Also check points reset on interval
+            resetPointsIfNewDay();
+        }, 60000);
+        
+        // Function to reset the user's points if it's a new day
+        function resetPointsIfNewDay() {
+            fetch('/get_remaining_points', {
+                method: 'GET',
+                headers: {
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache',
+                    'Expires': '0'
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log("Points reset check completed. Current points:", data.points);
+                    
+                    // If there's a points display in the navbar, update it
+                    if (typeof updatePointsDisplay === 'function') {
+                        updatePointsDisplay();
+                    }
+                } else {
+                    console.error("Error checking/resetting points:", data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Error in resetPointsIfNewDay:", error);
+            });
+        }
+        
+        // Check membership status for displaying remaining days
+        function checkMembershipStatus() {
+            fetch('/get_membership_status')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update membership indicator in navbar if it exists
+                        const membershipIndicator = document.getElementById('membershipIndicator');
+                        if (membershipIndicator) {
+                            if (data.has_membership) {
+                                membershipIndicator.innerHTML = `<i class="fas fa-crown text-warning me-1"></i> Membership: ${data.days_remaining} days`;
+                                membershipIndicator.classList.remove('d-none');
+                                
+                                // Hide the "Membership Center" text when showing membership status
+                                const activateMembership = document.getElementById('activateMembership');
+                                if (activateMembership) {
+                                    activateMembership.classList.add('d-none');
+                                }
+                                
+                                // Add active class to membership button
+                                const btnMembership = document.querySelector('.btn-membership');
+                                if (btnMembership) {
+                                    btnMembership.classList.add('active');
+                                }
+                            } else {
+                                membershipIndicator.classList.add('d-none');
+                                
+                                // Show the "Membership Center" text when not a member
+                                const activateMembership = document.getElementById('activateMembership');
+                                if (activateMembership) {
+                                    activateMembership.classList.remove('d-none');
+                                }
+                                
+                                // Remove active class from membership button
+                                const btnMembership = document.querySelector('.btn-membership');
+                                if (btnMembership) {
+                                    btnMembership.classList.remove('active');
+                                }
+                            }
+                        }
+                    }
+                })
+                .catch(error => console.error('Error checking membership status:', error));
+        }
+        
+        // Call immediately and set interval
+        checkMembershipStatus();
+        setInterval(checkMembershipStatus, 60000);
+        
+        // Add event listener for membership modal
+        const membershipModal = document.getElementById('membershipModal');
+        if (membershipModal) {
+            membershipModal.addEventListener('show.bs.modal', function() {
+                // Force refresh the membership status display when the modal is shown
+                const membershipStatusDisplay = document.getElementById('membershipStatusDisplay');
+                if (membershipStatusDisplay) {
+                    // Show loading state
+                    membershipStatusDisplay.innerHTML = `
+                        <div class="text-center mb-4">
+                            <div class="display-1 text-muted mb-2">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </div>
+                            <h4 class="mb-2">Checking membership status...</h4>
+                            <p class="text-muted">Please wait a moment</p>
+                        </div>
+                    `;
+                    
+                    // Fetch fresh membership data and update display directly
+                    fetch('/get_membership_status')
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Use the updateMembershipDisplay function from base.html
+                                // but also directly update the modal content
+                                if (data.has_membership) {
+                                    membershipStatusDisplay.innerHTML = `
+                                        <div class="text-center mb-4">
+                                            <div class="display-1 text-warning mb-2">
+                                                <i class="fas fa-crown"></i>
+                                            </div>
+                                            <h4 class="mb-2">Membership Activated</h4>
+                                            <div class="bg-light rounded py-2 px-3 d-inline-block">
+                                                <i class="fas fa-calendar-alt me-2 text-primary"></i>
+                                                Days Remaining: <span class="fw-bold text-primary">${data.days_remaining}</span> days
+                                            </div>
+                                        </div>
+                                    `;
+                                } else {
+                                    membershipStatusDisplay.innerHTML = `
+                                        <div class="text-center mb-4">
+                                            <h4 class="mb-3">Membership Special Offer: $5.9/month</h4>
+                                            <p class="text-muted">Activate membership to enjoy unlimited use of all services without point restrictions</p>
+                                        </div>
+                                    `;
+                                }
+                                
+                                // Still call globalCheckMembershipStatus to update other UI elements
+                                if (typeof window.globalCheckMembershipStatus === 'function') {
+                                    window.globalCheckMembershipStatus();
+                                }
+                            } else {
+                                // Handle error
+                                membershipStatusDisplay.innerHTML = `
+                                    <div class="text-center mb-4 text-danger">
+                                        <i class="fas fa-exclamation-circle fa-3x mb-3"></i>
+                                        <p>Failed to get membership status, please refresh the page and try again</p>
+                                    </div>
+                                `;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching membership status:', error);
+                            membershipStatusDisplay.innerHTML = `
+                                <div class="text-center mb-4 text-danger">
+                                    <i class="fas fa-exclamation-circle fa-3x mb-3"></i>
+                                    <p>Failed to get membership status, please refresh the page and try again</p>
+                                </div>
+                            `;
+                        });
+                }
+            });
+        }
+        
+        // Reveal animations on scroll
+        const revealElements = document.querySelectorAll('.service-card, .step-card, .use-case-card, .testimonial-card');
+        
+        function revealOnScroll() {
+            for (let i = 0; i < revealElements.length; i++) {
+                const windowHeight = window.innerHeight;
+                const elementTop = revealElements[i].getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    revealElements[i].classList.add('animate__animated', 'animate__fadeInUp');
+                }
+            }
+        }
+        
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Initial check on load
+        
+        // Smooth scroll for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    });
+
+    // Override the membership activation form submission to prevent page redirects
+    document.addEventListener('DOMContentLoaded', function() {
+        const activateKeyForm = document.getElementById('activateKeyForm');
+        if (activateKeyForm) {
+            // Remove the existing form action to prevent direct submissions
+            activateKeyForm.removeAttribute('action');
+            activateKeyForm.removeAttribute('method');
+            
+            // Set iframe as target to prevent page reload
+            activateKeyForm.target = "hiddenFrame";
+            
+            // Override the form's submit event
+            activateKeyForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const activationKey = document.getElementById('activationKey').value.trim();
+                const activateBtn = document.getElementById('activateKeyBtn');
+                
+                if (!activationKey) {
+                    alert('Please enter activation code');
+                    return;
+                }
+                
+                // Disable button and show loading
+                activateBtn.disabled = true;
+                activateBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Activating...';
+                
+                // Log activation attempt
+                console.log('Attempting to activate key:', activationKey);
+                
+                // Create form data
+                const formData = new FormData();
+                formData.append('activation_key', activationKey);
+                
+                // Get CSRF token if available
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                
+                // Submit using fetch API
+                fetch('/activate_membership', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Server responded with status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Handle successful activation
+                    console.log('Activation response:', data);
+                    
+                    // Reset button state
+                    activateBtn.disabled = false;
+                    activateBtn.innerHTML = '<i class="fas fa-check-circle me-1"></i>Activate';
+                    
+                    if (data.success) {
+                        // Show success modal
+                        document.getElementById('successMessage').textContent = data.message || 'Your membership has been successfully activated!';
+                        document.getElementById('membershipDetails').textContent = `Membership remaining days: ${data.days_remaining} days`;
+                        
+                        // Hide membership modal and show success modal
+                        const membershipModal = bootstrap.Modal.getInstance(document.getElementById('membershipModal'));
+                        membershipModal.hide();
+                        
+                        // Show success modal
+                        const successModal = new bootstrap.Modal(document.getElementById('activationSuccessModal'));
+                        successModal.show();
+                        
+                        // Update membership display if function exists
+                        if (typeof updateMembershipDisplay === 'function') {
+                            updateMembershipDisplay(true, data.days_remaining);
+                        }
+                        
+                        // Clear the input
+                        document.getElementById('activationKey').value = '';
+                    } else {
+                        // Show error message
+                        alert(data.message || 'Activation failed, please check if the activation code is correct');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error activating membership:', error);
+                    
+                    // Reset button state
+                    activateBtn.disabled = false;
+                    activateBtn.innerHTML = '<i class="fas fa-check-circle me-1"></i>Activate';
+                    
+                    // Show error message
+                    alert('An error occurred during activation, please try again later');
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}

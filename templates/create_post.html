@@ -1,0 +1,1227 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-584FXGMJ57"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-584FXGMJ57');
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="create-post-container">
+                <div class="user-profile">
+                    <img src="{{ current_user.avatar_url if current_user.avatar_url else current_user.get_avatar() }}" 
+                         alt="{{ current_user.username }}" class="profile-image">
+                    <div class="user-info">
+                        <h5 class="username">{{ current_user.username }}</h5>
+                        {% if current_user.bio %}
+                        <p class="user-bio">{{ current_user.bio }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ url_for('forum') }}">书梦社</a></li>
+                        <li class="breadcrumb-item active">分享你的梦</li>
+                    </ol>
+                </nav>
+                
+                <h1 class="mb-4">分享你的梦</h1>
+                
+                <form id="create-post-form">
+                    <input type="hidden" id="cover_image_url" name="cover_image_url">
+                    <div class="mb-4">
+                        <label for="post-title" class="form-label" style="font-weight: bold;">标题 &nbsp;&nbsp;&nbsp;<span class="word-count" id="title-word-count">0/30</span></label>
+                        <input type="text" class="form-control" id="post-title" 
+                               placeholder="为你的好梦起一个标题吧～" required maxlength="30">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="cover-image" class="form-label" style="font-weight: bold;">封面图片（选填） + &nbsp;<span class="fancy-poetry">绘梦社</span></label>
+                        <input type="hidden" id="cover_image_url" name="cover_image_url">
+                        <div class="cover-image-upload">
+                            <input type="file" class="form-control" id="cover-image" name="cover_image" 
+                                   accept="image/*" style="display: none;">
+                            <div class="upload-preview" id="image-preview">
+                                <div class="upload-placeholder">
+                                    <i class="fas fa-image fa-2x mb-2"></i>
+                                    <div>1. 点击上传封面图片</div>
+                                    <small class="text-muted">支持 JPG、PNG、GIF 格式，图片大小不超过 8MB</small>
+                                </div>
+                                <img src="" alt="Preview" style="display: none;">
+                            </div>
+                            
+                            <div class="ai-image-section mt-3">
+                                <div class="form-check creative-checkbox">
+                                    <label class="form-check-label" for="useAiImage">
+                                        <input class="form-check-input" type="checkbox" id="useAiImage">
+                                        <span class="checkbox-text">
+                                            <i class="fas fa-wand-magic-sparkles me-2"></i>2. 或点击此处 <span class="fancy-poetry" style="font-size: 1.2rem;">绘梦社</span> 绘制你的好梦
+                                            <span id="remainingGenerations" class="text-muted ms-2" style="font-size: 0.9rem;">(今日剩余次数: 加载中...)</span>
+                                        </span>
+                                    </label>
+                                </div>
+                                
+                                <div id="aiImagePrompt" class="mt-2" style="display: none;">
+                                    <div class="form-group">
+                                        <div class="style-options mb-2">
+                                            <span class="text-muted small me-2">推荐风格：</span>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary style-btn me-2" data-style="国风漫画">
+                                                <i class="fas fa-paint-brush me-1"></i>国风漫画
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary style-btn me-2" data-style="水墨画">
+                                                <i class="fas fa-palette me-1"></i>水墨画
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary style-btn me-2" data-style="动漫">
+                                                <i class="fas fa-dragon me-1"></i>动漫
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary style-btn me-2" data-style="风景">
+                                                <i class="fas fa-mountain me-1"></i>风景
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary style-btn me-2" data-style="人像摄影">
+                                                <i class="fas fa-camera me-1"></i>人像摄影
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary style-btn me-2" data-style="宫崎骏">
+                                                <i class="fas fa-wind me-1"></i>宫崎骏
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary style-btn me-2" data-style="3D">
+                                                <i class="fas fa-cube me-1"></i>3D
+                                            </button>
+                                        </div>
+                                        <textarea class="form-control" id="imagePrompt" rows="3" 
+                                                placeholder="请描述你想要绘制的好梦，可自定义风格和内容，例如：图片风格为国风漫画，新中式，国风，复古优雅，日光，光影，一对青年男女，头靠着头"></textarea>
+                                    </div>
+                                    <button type="button" class="btn btn-primary mt-2" id="generateImageBtn">
+                                        <i class="fas fa-magic me-2"></i>绘制好梦
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="post-content" class="form-label" style="font-weight: bold;">好梦内容 &nbsp;&nbsp;&nbsp;<span class="word-count" id="content-word-count">0/8000</span></label>
+                        <div class="form-text" style="margin-bottom: 10px;">
+                            你可以分享小说或电影的新结局，你和角色的对话，你的随想，或者任何你想分享的梦...
+                        </div>
+                        <textarea class="form-control" id="post-content" rows="20"
+                                placeholder="开始分享你的梦吧，支持emoji表情😊哦～" required maxlength="8000"></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label" style="font-weight: bold;">选择标签 <span class="text-muted" style="font-size: 0.85rem;">(最多选择10个标签)</span> <span id="tag-count" class="text-muted" style="font-size: 0.85rem;">已选择: 0</span></label>
+                        <div class="tags-container">
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-小说" value="小说">
+                                <label class="form-check-label" for="tag-小说"><i class="fas fa-book me-1"></i>小说</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-电影" value="电影">
+                                <label class="form-check-label" for="tag-电影"><i class="fas fa-film me-1"></i>电影</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-绘梦" value="绘梦">
+                                <label class="form-check-label" for="tag-绘梦"><i class="fas fa-paint-brush me-1"></i>绘梦</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-电视剧" value="电视剧">
+                                <label class="form-check-label" for="tag-电视剧"><i class="fas fa-tv me-1"></i>电视剧</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-动漫" value="动漫">
+                                <label class="form-check-label" for="tag-动漫"><i class="fas fa-dragon me-1"></i>动漫</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-漫画" value="漫画">
+                                <label class="form-check-label" for="tag-漫画"><i class="fas fa-image me-1"></i>漫画</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-随想" value="随想">
+                                <label class="form-check-label" for="tag-随想"><i class="fas fa-feather-alt me-1"></i>随想</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-读后感" value="读后感">
+                                <label class="form-check-label" for="tag-读后感"><i class="fas fa-comment-dots me-1"></i>读后感</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-新结局" value="新结局">
+                                <label class="form-check-label" for="tag-新结局"><i class="fas fa-magic me-1"></i>新结局</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-角色畅聊" value="角色畅聊">
+                                <label class="form-check-label" for="tag-角色畅聊"><i class="fas fa-comments me-1"></i>角色畅聊</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-梦语" value="梦语">
+                                <label class="form-check-label" for="tag-梦语"><i class="fas fa-cloud-moon me-1"></i>梦语</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-游戏" value="游戏">
+                                <label class="form-check-label" for="tag-游戏"><i class="fas fa-gamepad me-1"></i>游戏</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-虐心" value="虐心">
+                                <label class="form-check-label" for="tag-虐心"><i class="fas fa-heart-broken me-1"></i>虐心</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-意难平" value="意难平">
+                                <label class="form-check-label" for="tag-意难平"><i class="fas fa-cloud-rain me-1"></i>意难平</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-意满离" value="意满离">
+                                <label class="form-check-label" for="tag-意满离"><i class="fas fa-sun me-1"></i>意满离</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-青春校园" value="青春校园">
+                                <label class="form-check-label" for="tag-青春校园"><i class="fas fa-school me-1"></i>青春校园</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-恋爱" value="恋爱">
+                                <label class="form-check-label" for="tag-恋爱"><i class="fas fa-heartbeat me-1"></i>恋爱</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-霸道总裁" value="霸道总裁">
+                                <label class="form-check-label" for="tag-霸道总裁"><i class="fas fa-crown me-1"></i>霸道总裁</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-科幻" value="科幻">
+                                <label class="form-check-label" for="tag-科幻"><i class="fas fa-rocket me-1"></i>科幻</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-职场" value="职场">
+                                <label class="form-check-label" for="tag-职场"><i class="fas fa-briefcase me-1"></i>职场</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-晋江" value="晋江">
+                                <label class="form-check-label" for="tag-晋江"><i class="fas fa-champagne-glasses"></i>晋江</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-树洞" value="树洞">
+                                <label class="form-check-label" for="tag-树洞"><i class="fas fa-tree me-1"></i>树洞</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-悄悄话" value="悄悄话">
+                                <label class="form-check-label" for="tag-悄悄话"><i class="fas fa-comment-dots me-1"></i>悄悄话</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-其他" value="其他">
+                                <label class="form-check-label" for="tag-其他"><i class="fas fa-ellipsis me-1"></i>其他</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-BE" value="BE">
+                                <label class="form-check-label" for="tag-BE"><i class="fas fa-cloud-showers-heavy me-1"></i>BE</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option">
+                                <input class="form-check-input" type="checkbox" id="tag-HE" value="HE">
+                                <label class="form-check-label" for="tag-HE"><i class="fas fa-rainbow me-1"></i>HE</label>
+                            </div>
+                            <div class="form-check form-check-inline tag-option custom-tag">
+                                <input type="text" class="form-control custom-tag-input" id="custom-tag" 
+                                       placeholder="自定义标签" maxlength="6">
+                                <button type="button" class="btn btn-sm btn-outline-primary add-custom-tag">
+                                    <i class="fas fa-plus me-1"></i>添加
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-text">
+                            请选择一个或多个标签来描述你的梦吧，拖动已选标签改变标签顺序
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="privacy-toggle" style="transform: scale(0.8);">
+                            <label class="form-check-label small" for="privacy-toggle">
+                                <i class="fas fa-lock me-1" style="font-size: 0.85rem;"></i>仅我可见
+                            </label>
+                            <span class="form-text small" style="font-size: 0.85rem;">
+                                开启后你的梦将会仅自己可见，默认公开
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button type="button" class="btn btn-outline-secondary" onclick="history.back()">
+                            <i class="fas fa-arrow-left me-2"></i>返回
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i>分享好梦
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.create-post-container {
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.fancy-poetry {
+    background: linear-gradient(120deg, #4568dc, #b06ab3);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.2rem;
+    letter-spacing: 1.2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1s ease-in-out;
+}
+
+@media (min-width: 992px) {
+        .fancy-poetry{
+            font-family: "STKaiti", "KaiTi", serif;
+        }
+}
+
+@media (min-width: 992px) {
+        .fancy-poetry{
+            font-size: 1.5rem;
+        }
+}
+
+@media (max-width: 768px) {
+        .fancy-poetry{
+            font-size: 1.2rem;
+        }
+}
+
+.breadcrumb-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--secondary-color);
+}
+
+.form-control {
+    border-radius: 12px;
+    padding: 0.8rem 1.2rem;
+    border: 1px solid rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(var(--primary-rgb), 0.15);
+}
+
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.tag-option {
+    margin: 0 !important;
+    background: linear-gradient(45deg, #f8f9fa, #ffffff);
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    cursor: move;
+}
+
+.tag-option.dragging {
+    opacity: 0.5;
+    background: #f0f0f0;
+}
+
+.tag-option.drag-over {
+    transform: scale(1.05);
+}
+
+.tag-option:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.tag-option .form-check-input {
+    margin-right: 0.5rem;
+}
+
+.tag-option .form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.tag-option .form-check-input:checked + .form-check-label {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.tag-option .form-check-label {
+    cursor: pointer;
+    user-select: none;
+}
+
+.tag-option i {
+    color: var(--primary-color);
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.tag-option:hover i {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.btn {
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.3);
+    border-radius: 25px;
+    padding: 8px 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(var(--primary-rgb), 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(var(--primary-rgb), 0.2);
+}
+
+.btn-outline-secondary {
+    border: 1px solid rgba(0,0,0,0.1);
+    background: linear-gradient(45deg, #f8f9fa, #ffffff);
+}
+
+.btn-outline-secondary:hover {
+    transform: translateY(-2px);
+    background: #f8f9fa;
+    border-color: rgba(0,0,0,0.15);
+}
+
+.form-text {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+h1 {
+    color: var(--text-color);
+    font-weight: 600;
+    margin-bottom: 2rem;
+    position: relative;
+    display: inline-block;
+}
+
+h1:after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 60%;
+    height: 3px;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    border-radius: 2px;
+}
+
+.preview-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--text-color);
+    line-height: 1.4;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.preview-tags {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #666;
+}
+
+.preview-tag {
+    display: inline-block;
+    margin-right: 1rem;
+    color: #666;
+}
+
+.preview-tag i {
+    color: var(--primary-color);
+    opacity: 0.8;
+}
+
+.word-count {
+    float: right;
+    color: #6c757d;
+    font-size: 0.9rem;
+    font-weight: normal;
+}
+
+.word-count.near-limit {
+    color: #ffc107;
+}
+
+.word-count.at-limit {
+    color: #dc3545;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 15px;
+    margin-bottom: 1.5rem;
+}
+
+.profile-image {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.user-info {
+    flex: 1;
+}
+
+.username {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.user-bio {
+    margin: 0.25rem 0 0;
+    font-size: 0.9rem;
+    color: #666;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.cover-image-upload {
+    border: 2px dashed rgba(0,0,0,0.1);
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(255,255,255,0.5);
+}
+
+.cover-image-upload:hover {
+    border-color: var(--primary-color);
+    background: rgba(var(--primary-rgb), 0.05);
+}
+
+.upload-preview {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.upload-placeholder {
+    color: #666;
+}
+
+.upload-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.custom-tag {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.custom-tag-input {
+    width: 108px;
+    height: 32px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.9rem;
+}
+
+.add-custom-tag {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.9rem;
+    height: 32px;
+    display: flex;
+    align-items: center;
+}
+
+.form-switch .form-check-input {
+    width: 3em;
+    height: 1.5em;
+    margin-top: 0.25em;
+    cursor: pointer;
+}
+
+.form-switch .form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.form-switch .form-check-label {
+    cursor: pointer;
+    padding-left: 0.5em;
+}
+
+.form-switch .form-text {
+    margin-left: 3.5em;
+    color: #666;
+}
+
+.style-options .style-btn {
+    transition: all 0.2s ease;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    padding: 0.2rem 0.6rem;
+    background-color: #ffffff;
+    position: relative;
+    overflow: hidden;
+}
+
+.style-options .style-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.style-options .style-btn.clicked {
+    background: linear-gradient(145deg, #bff1ab, #69daf0);
+    color: #1a1a1a;
+    border-color: #3fe4c8;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.style-options .style-btn.clicked:hover {
+    background: linear-gradient(145deg, #bff1ab, #69daf0);
+    color: #1a1a1a;
+    transform: translateY(-1px);
+}
+
+.style-options .style-btn.clicked i {
+    color: #1a1a1a;
+    animation: pop 0.3s ease;
+}
+
+.style-options .style-btn.clicked:hover i {
+    color: #1a1a1a;
+}
+
+@keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.creative-checkbox {
+    margin: 10px 0;
+}
+
+.creative-checkbox .form-check-input {
+    display: none;
+}
+
+.creative-checkbox .form-check-label {
+    cursor: pointer;
+    padding: 10px 15px;
+    border-radius: 10px;
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    box-shadow: 3px 3px 6px #d9d9d9, -3px -3px 6px #ffffff;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.creative-checkbox .form-check-label:hover {
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 8px #d9d9d9, -4px -4px 8px #ffffff;
+}
+
+.creative-checkbox .form-check-input:checked + .checkbox-text {
+    color: #0d6efd;
+    font-weight: 500;
+}
+
+.creative-checkbox .form-check-input:checked + .checkbox-text i {
+    animation: sparkle 0.5s ease;
+}
+
+@keyframes sparkle {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Check for shared content
+    const sharedContent = sessionStorage.getItem('sharedContent');
+    if (sharedContent) {
+        document.getElementById('post-content').value = sharedContent;
+        // Clear the shared content from session storage
+        sessionStorage.removeItem('sharedContent');
+        // Update word count
+        const contentWordCount = document.getElementById('content-word-count');
+        contentWordCount.textContent = `${sharedContent.length}/8000`;
+    }
+
+    // Image upload preview
+    const coverImageInput = document.getElementById('cover-image');
+    const imagePreview = document.getElementById('image-preview');
+    const previewImage = imagePreview.querySelector('img');
+    const placeholder = imagePreview.querySelector('.upload-placeholder');
+
+    imagePreview.addEventListener('click', () => coverImageInput.click());
+
+    coverImageInput.addEventListener('change', function(e) {
+        if (this.files && this.files[0]) {
+            const file = this.files[0];
+            
+            // Check file size (10MB)
+            const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+            if (file.size > maxSize) {
+                alert('图片大小不能超过 10MB');
+                this.value = ''; // Clear the input
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+                placeholder.style.display = 'none';
+                
+                // Clear any existing AI-generated image URL
+                document.getElementById('cover_image_url').value = '';
+            };
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+
+    // Add drag and drop functionality for tags
+    let draggedTag = null;
+
+    function handleDragStart(e) {
+        if (!e.target.classList.contains('tag-option')) return;
+        draggedTag = e.target;
+        e.target.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', e.target.innerHTML);
+    }
+
+    function handleDragOver(e) {
+        if (e.preventDefault) {
+            e.preventDefault();
+        }
+        e.dataTransfer.dropEffect = 'move';
+        
+        const targetTag = e.target.closest('.tag-option');
+        if (targetTag && targetTag !== draggedTag) {
+            targetTag.classList.add('drag-over');
+        }
+        
+        return false;
+    }
+
+    function handleDragEnter(e) {
+        const targetTag = e.target.closest('.tag-option');
+        if (targetTag && targetTag !== draggedTag) {
+            targetTag.classList.add('drag-over');
+        }
+    }
+
+    function handleDragLeave(e) {
+        const targetTag = e.target.closest('.tag-option');
+        if (targetTag) {
+            targetTag.classList.remove('drag-over');
+        }
+    }
+
+    function handleDrop(e) {
+        if (e.stopPropagation) {
+            e.stopPropagation();
+        }
+
+        const targetTag = e.target.closest('.tag-option');
+        if (targetTag && draggedTag !== targetTag) {
+            const allTags = Array.from(document.querySelectorAll('.tag-option:not(.custom-tag)'));
+            const draggedIndex = allTags.indexOf(draggedTag);
+            const droppedIndex = allTags.indexOf(targetTag);
+
+            if (draggedIndex > droppedIndex) {
+                targetTag.parentNode.insertBefore(draggedTag, targetTag);
+            } else {
+                targetTag.parentNode.insertBefore(draggedTag, targetTag.nextSibling);
+            }
+            
+            updateTitlePreview();
+        }
+
+        return false;
+    }
+
+    function handleDragEnd(e) {
+        const targetTag = e.target.closest('.tag-option');
+        if (targetTag) {
+            targetTag.classList.remove('dragging');
+        }
+        document.querySelectorAll('.tag-option').forEach(tag => {
+            tag.classList.remove('drag-over');
+        });
+    }
+
+    // Add drag and drop event listeners to the tags container
+    const tagsContainer = document.querySelector('.tags-container');
+    tagsContainer.addEventListener('dragstart', handleDragStart, false);
+    tagsContainer.addEventListener('dragenter', handleDragEnter, false);
+    tagsContainer.addEventListener('dragover', handleDragOver, false);
+    tagsContainer.addEventListener('dragleave', handleDragLeave, false);
+    tagsContainer.addEventListener('drop', handleDrop, false);
+    tagsContainer.addEventListener('dragend', handleDragEnd, false);
+
+    // Make all tag options draggable
+    function makeTagsDraggable() {
+        document.querySelectorAll('.tag-option:not(.custom-tag)').forEach(tag => {
+            tag.setAttribute('draggable', 'true');
+        });
+    }
+
+    // Initial setup of draggable tags
+    makeTagsDraggable();
+
+    // Add custom tag handling
+    const customTagInput = document.getElementById('custom-tag');
+    const addCustomTagBtn = document.querySelector('.add-custom-tag');
+
+    // Add tag limit functionality
+    const MAX_TAGS = 10;
+    const tagCountDisplay = document.getElementById('tag-count');
+    
+    function updateTagCount() {
+        // Count both regular and custom tags that are checked
+        const selectedTags = document.querySelectorAll('.tag-option input[type="checkbox"]:checked').length;
+        tagCountDisplay.textContent = `已选择: ${selectedTags}`;
+        
+        // Add warning color if near limit
+        if (selectedTags >= MAX_TAGS) {
+            tagCountDisplay.style.color = '#dc3545';
+        } else if (selectedTags >= MAX_TAGS - 2) {
+            tagCountDisplay.style.color = '#ffc107';
+        } else {
+            tagCountDisplay.style.color = '#6c757d';
+        }
+    }
+    
+    // Add event listener to all tag checkboxes
+    document.querySelectorAll('.tag-option input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function(e) {
+            const selectedTags = document.querySelectorAll('.tag-option input[type="checkbox"]:checked').length;
+            
+            if (selectedTags > MAX_TAGS) {
+                e.preventDefault();
+                this.checked = false;
+                alert(`最多只能选择${MAX_TAGS}个标签`);
+            }
+            
+            updateTagCount();
+        });
+    });
+
+    function handleAddCustomTag() {
+        const selectedTags = document.querySelectorAll('.tag-option input[type="checkbox"]:checked').length;
+        if (selectedTags >= MAX_TAGS) {
+            alert(`最多只能选择${MAX_TAGS}个标签（包括自定义标签）`);
+            return;
+        }
+        
+        const customTagValue = customTagInput.value.trim();
+        if (!customTagValue) return;
+        
+        // Check tag length
+        if (customTagValue.length > 6) {
+            alert('自定义标签不能超过6个字符');
+            return;
+        }
+
+        // Check if tag already exists
+        const existingTag = document.querySelector(`input[value="${customTagValue}"]`);
+        if (existingTag) {
+            alert('该标签已存在');
+            return;
+        }
+
+        // Create new tag element
+        const newTag = document.createElement('div');
+        newTag.className = 'form-check form-check-inline tag-option';
+        newTag.innerHTML = `
+            <input class="form-check-input" type="checkbox" id="tag-${customTagValue}" value="${customTagValue}" checked>
+            <label class="form-check-label" for="tag-${customTagValue}">
+                <i class="fas fa-tag me-1"></i>${customTagValue}
+                <button type="button" class="btn btn-sm btn-link text-danger remove-tag p-0 ms-1">
+                    <i class="fas fa-times"></i>
+                </button>
+            </label>
+        `;
+
+        // Insert before the custom tag input
+        const customTagDiv = document.querySelector('.custom-tag');
+        tagsContainer.insertBefore(newTag, customTagDiv);
+
+        // Clear input
+        customTagInput.value = '';
+
+        // Add remove handler
+        const removeBtn = newTag.querySelector('.remove-tag');
+        removeBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            newTag.remove();
+            updateTagCount();
+            updateTitlePreview();
+        });
+
+        // Add change handler for the new checkbox
+        const newCheckbox = newTag.querySelector('input[type="checkbox"]');
+        newCheckbox.addEventListener('change', function(e) {
+            const totalSelected = document.querySelectorAll('.tag-option input[type="checkbox"]:checked').length;
+            if (totalSelected > MAX_TAGS) {
+                e.preventDefault();
+                this.checked = false;
+                alert(`最多只能选择${MAX_TAGS}个标签（包括自定义标签）`);
+            }
+            updateTagCount();
+        });
+
+        // Make the new tag draggable
+        makeTagsDraggable();
+
+        // Update preview and tag count immediately after adding the new tag
+        updateTitlePreview();
+        // Force an immediate tag count update since the new tag is automatically checked
+        setTimeout(updateTagCount, 0);
+    }
+
+    // Add click handler for custom tag button
+    addCustomTagBtn.addEventListener('click', handleAddCustomTag);
+
+    // Allow Enter key to add tag
+    customTagInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleAddCustomTag();
+        }
+    });
+
+    // Add event listeners for title and tag changes
+    document.getElementById('post-title').addEventListener('input', updateTitlePreview);
+    document.querySelectorAll('.form-check-input').forEach(checkbox => {
+        checkbox.addEventListener('change', updateTitlePreview);
+    });
+
+    // Form submission
+    document.getElementById('create-post-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const title = document.getElementById('post-title').value.trim();
+        const content = document.getElementById('post-content').value.trim();
+        const coverImage = document.getElementById('cover-image').files[0];
+        const coverImageUrl = document.getElementById('cover_image_url').value;
+        const isPrivate = document.getElementById('privacy-toggle').checked;
+        
+        if (!title || !content) {
+            alert('请填写完整的帖子信息');
+            return;
+        }
+        
+        // Get selected tags in their current order
+        const selectedTags = Array.from(document.querySelectorAll('.tag-option:not(.custom-tag) input[type="checkbox"]:checked'))
+            .map(checkbox => checkbox.value);
+        
+        if (selectedTags.length === 0) {
+            alert('请至少选择一个标签');
+            return;
+        }
+        
+        // Check cover image size if one is selected
+        if (coverImage && coverImage.size > 10 * 1024 * 1024) {
+            alert('图片大小不能超过 10MB');
+            return;
+        }
+        
+        const submitButton = this.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>发布中...';
+        
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('content', content);
+        formData.append('tags', JSON.stringify(selectedTags));
+        formData.append('is_private', isPrivate);
+        
+        // Handle cover image (either uploaded or AI-generated)
+        if (coverImage) {
+            formData.append('cover_image', coverImage);
+        } else if (coverImageUrl) {
+            formData.append('cover_image_url', coverImageUrl);
+        }
+        
+        try {
+            const response = await fetch('/forum/create', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                window.location.href = `/forum/post/${data.post_id}`;
+            } else {
+                throw new Error(data.error || '发布失败，请重试');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert(error.message || '发布失败，请重试');
+        } finally {
+            submitButton.disabled = false;
+            submitButton.innerHTML = '<i class="fas fa-paper-plane me-2"></i>分享好梦';
+        }
+    });
+
+    // Update the updateTitlePreview function to maintain tag order
+    function updateTitlePreview() {
+        const title = document.getElementById('post-title').value.trim();
+        const titlePreview = document.getElementById('title-preview');
+        const previewText = titlePreview.querySelector('.preview-text');
+        const previewTags = titlePreview.querySelector('.preview-tags');
+        
+        if (title) {
+            titlePreview.classList.remove('d-none');
+            previewText.textContent = title;
+            
+            // Update tags preview maintaining order
+            const selectedTags = Array.from(document.querySelectorAll('.tag-option:not(.custom-tag) .form-check-input:checked'))
+                .map(checkbox => checkbox.value);
+                
+            if (selectedTags.length > 0) {
+                previewTags.innerHTML = selectedTags
+                    .map(tag => `<span class="preview-tag"><i class="fas fa-tag me-1"></i>${tag}</span>`)
+                    .join('');
+            } else {
+                previewTags.innerHTML = '';
+            }
+        } else {
+            titlePreview.classList.add('d-none');
+        }
+    }
+
+    // Add word count tracking for title
+    document.getElementById('post-title').addEventListener('input', function() {
+        const maxLength = 30;
+        const currentLength = this.value.length;
+        const wordCountElement = document.getElementById('title-word-count');
+        
+        wordCountElement.textContent = `${currentLength}/${maxLength}`;
+        
+        // Update styling based on length
+        if (currentLength >= maxLength) {
+            wordCountElement.classList.add('at-limit');
+            wordCountElement.classList.remove('near-limit');
+        } else if (currentLength >= maxLength * 0.8) {
+            wordCountElement.classList.add('near-limit');
+            wordCountElement.classList.remove('at-limit');
+        } else {
+            wordCountElement.classList.remove('near-limit', 'at-limit');
+        }
+    });
+
+    // Add word count tracking for content
+    document.getElementById('post-content').addEventListener('input', function() {
+        const maxLength = 8000;
+        const currentLength = this.value.length;
+        const wordCountElement = document.getElementById('content-word-count');
+        
+        wordCountElement.textContent = `${currentLength}/${maxLength}`;
+        
+        // Update styling based on length
+        if (currentLength >= maxLength) {
+            wordCountElement.classList.add('at-limit');
+            wordCountElement.classList.remove('near-limit');
+        } else if (currentLength >= maxLength * 0.9) {
+            wordCountElement.classList.add('near-limit');
+            wordCountElement.classList.remove('at-limit');
+        } else {
+            wordCountElement.classList.remove('near-limit', 'at-limit');
+        }
+    });
+
+    // Add this to your existing JavaScript
+    document.getElementById('useAiImage').addEventListener('change', function(e) {
+        const aiPromptSection = document.getElementById('aiImagePrompt');
+        aiPromptSection.style.display = this.checked ? 'block' : 'none';
+    });
+
+    // Function to update remaining generations display
+    function updateRemainingGenerations() {
+        fetch('/get_remaining_generations')
+            .then(response => response.json())
+            .then(data => {
+                const remaining = data.remaining;
+                document.getElementById('remainingGenerations').textContent = 
+                    `(今日剩余次数: ${remaining}次)`;
+                
+                // Disable generation if no remaining uses
+                const generateBtn = document.getElementById('generateImageBtn');
+                if (remaining <= 0) {
+                    generateBtn.disabled = true;
+                    generateBtn.title = '已达到每日生成次数上限';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Update remaining generations on page load
+    updateRemainingGenerations();
+
+    // Update the existing generateImageBtn click handler
+    document.getElementById('generateImageBtn').addEventListener('click', async function() {
+        const prompt = document.getElementById('imagePrompt').value.trim();
+        if (!prompt) {
+            alert('请输入图片描述');
+            return;
+        }
+
+        const button = this;
+        const originalText = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>绘制中...';
+
+        try {
+            const response = await fetch('/generate-cover-image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ prompt: prompt })
+            });
+
+            const data = await response.json();
+            if (data.success && data.image_url) {
+                // Update the preview image
+                const previewImg = document.querySelector('#image-preview img');
+                const placeholder = document.querySelector('.upload-placeholder');
+                
+                previewImg.src = data.image_url;
+                previewImg.style.display = 'block';
+                placeholder.style.display = 'none';
+                
+                // Store the AI-generated image URL
+                document.getElementById('cover_image_url').value = data.image_url;
+                
+                // Clear the file input if it has a value
+                const fileInput = document.getElementById('cover-image');
+                if (fileInput) {
+                    fileInput.value = '';
+                }
+
+                // Update remaining generations count
+                if (data.remaining_generations !== undefined) {
+                    document.getElementById('remainingGenerations').textContent = 
+                        `(今日剩余次数: ${data.remaining_generations}次)`;
+                    
+                    if (data.remaining_generations <= 0) {
+                        button.disabled = true;
+                        button.title = '已达到每日生成次数上限';
+                    }
+                }
+            } else {
+                throw new Error(data.error || '生成图片失败');
+            }
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            button.disabled = false;
+            button.innerHTML = originalText;
+        }
+    });
+
+    // Style button click handlers
+    document.querySelectorAll('.style-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove clicked class from all buttons first
+            document.querySelectorAll('.style-btn').forEach(btn => {
+                btn.classList.remove('clicked');
+            });
+            
+            const style = this.dataset.style;
+            const promptArea = document.getElementById('imagePrompt');
+            let styleText = '';
+            
+            // Mark only this button as clicked
+            this.classList.add('clicked');
+            
+            // Set style text based on selection
+            if (style === '国风漫画') {
+                styleText = '图片风格为国风漫画，新中式，国风，复古优雅，日光，光影，{请继续你的描述}';
+            } else if (style === '水墨画') {
+                styleText = '图片风格为点彩水墨画，中式审美，留白，极简主义，超高清，柔和的笔触，{请继续你的描述}';
+            } else if (style === '动漫') {
+                styleText = '图片风格为动漫，剪影，伦勃朗灯光，高对比，高细节，高分辨率，特写，{请继续你的描述}';
+            } else if (style === '风景') {
+                styleText = '图片风格为风景，剪影摄影，大师作品，{请继续你的描述}';
+            } else if (style === '人像摄影') {
+                styleText = '图片风格为人像摄影，丁达尔效应，人文摄影，徕卡M11，特写摄影，{请继续你的描述}';
+            } else if (style === '宫崎骏') {
+                styleText = '图片风格为动漫，宫崎骏的动漫风格，{请继续你的描述}';
+            } else if (style === '3D') {
+                styleText = '图片风格为3D渲染，卡通人物设计，Blender渲染，柔和的灯光，{请继续你的描述}';
+            }
+            
+            // Clear textarea and set new style text
+            promptArea.value = styleText;
+        });
+    });
+});
+</script>
+{% endblock %} 

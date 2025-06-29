@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="koalaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#808080;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A9A9A9;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="256" cy="256" r="240" fill="url(#koalaGradient)"/>
+  <circle cx="176" cy="196" r="48" fill="white"/>
+  <circle cx="336" cy="196" r="48" fill="white"/>
+  <circle cx="186" cy="206" r="24" fill="black"/>
+  <circle cx="346" cy="206" r="24" fill="black"/>
+  <ellipse cx="256" cy="296" rx="60" ry="40" fill="black"/>
+  <circle cx="256" cy="276" r="16" fill="#FFC0CB"/>
+</svg> 

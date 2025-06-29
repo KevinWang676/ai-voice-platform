@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero-section text-center text-white">
+    <div class="container">
+        <h1 class="display-4 animate__animated animate__fadeIn mb-4">管理员登录</h1>
+        <p class="lead animate__animated animate__fadeIn animate__delay-1s">欢迎回来，管理员</p>
+    </div>
+</section>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg" style="margin-top: -1rem;">
+                <div class="card-body p-5">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert {% if category == 'error' %}alert-danger{% else %}alert-success{% endif %} animate__animated animate__fadeIn">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    
+                    <form action="{{ url_for('admin_login') }}" method="POST" class="animate__animated animate__fadeIn animate__delay-1s">
+                        <div class="mb-4">
+                            <label for="username" class="form-label">
+                                <i class="fas fa-user me-2"></i>管理员用户名
+                            </label>
+                            <input type="text" class="form-control form-control-lg" id="username" 
+                                   name="username" required autocomplete="username">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="password" class="form-label">
+                                <i class="fas fa-lock me-2"></i>管理员密码
+                            </label>
+                            <input type="password" class="form-control form-control-lg" id="password" 
+                                   name="password" required autocomplete="current-password">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-lg w-100 mb-4">
+                            <i class="fas fa-sign-in-alt me-2"></i>登录管理后台
+                        </button>
+                        
+                        <p class="text-center mb-0">
+                            <a href="{{ url_for('index') }}" class="text-decoration-none">
+                                <i class="fas fa-arrow-left me-2"></i>返回首页
+                            </a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

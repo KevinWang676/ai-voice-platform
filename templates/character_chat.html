@@ -1,0 +1,2474 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color-rgb: 0, 123, 255; /* RGB values for primary color */
+    }
+    
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+        position: relative;
+        overflow-x: hidden;
+    }
+    
+    /* Fantasy background elements */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            radial-gradient(circle at 20% 30%, rgba(176, 106, 179, 0.08) 0%, transparent 25%),
+            radial-gradient(circle at 80% 10%, rgba(69, 104, 220, 0.07) 0%, transparent 20%),
+            radial-gradient(circle at 40% 70%, rgba(176, 106, 179, 0.08) 0%, transparent 30%),
+            radial-gradient(circle at 90% 90%, rgba(69, 104, 220, 0.07) 0%, transparent 25%);
+        z-index: -2;
+    }
+    
+    /* Animated floating particles */
+    .fantasy-particles {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+        overflow: hidden;
+    }
+    
+    .particle {
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        box-shadow: 0 0 10px 2px rgba(69, 104, 220, 0.3);
+        animation: float 15s infinite ease-in-out;
+    }
+    
+    .particle:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
+    .particle:nth-child(2) { top: 40%; left: 90%; animation-delay: 2s; }
+    .particle:nth-child(3) { top: 80%; left: 30%; animation-delay: 4s; }
+    .particle:nth-child(4) { top: 15%; left: 70%; animation-delay: 6s; }
+    .particle:nth-child(5) { top: 60%; left: 10%; animation-delay: 8s; }
+    .particle:nth-child(6) { top: 30%; left: 50%; animation-delay: 10s; }
+    .particle:nth-child(7) { top: 70%; left: 80%; animation-delay: 12s; }
+    .particle:nth-child(8) { top: 90%; left: 40%; animation-delay: 14s; }
+    .particle:nth-child(9) { top: 50%; left: 60%; animation-delay: 16s; }
+    .particle:nth-child(10) { top: 20%; left: 30%; animation-delay: 18s; }
+    .particle:nth-child(11) { top: 85%; left: 15%; animation-delay: 20s; }
+    .particle:nth-child(12) { top: 5%; left: 75%; animation-delay: 22s; }
+    
+    /* Twinkling stars */
+    .star-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+    }
+    
+    .star {
+        position: absolute;
+        background: transparent;
+        border-radius: 50%;
+        animation: twinkle 5s infinite ease-in-out;
+    }
+    
+    .star::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 50%;
+        transform: scale(1, 1);
+        animation: pulse 5s infinite ease-in-out;
+    }
+    
+    .star::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.6),
+                    0 0 20px 5px rgba(176, 106, 179, 0.4);
+        border-radius: 50%;
+        z-index: -1;
+    }
+    
+    .star.small {
+        width: 2px;
+        height: 2px;
+    }
+    
+    .star.medium {
+        width: 3px;
+        height: 3px;
+    }
+    
+    .star.large {
+        width: 4px;
+        height: 4px;
+    }
+    
+    .star:nth-child(1) { top: 5%; left: 10%; animation-delay: 0.5s; }
+    .star:nth-child(2) { top: 15%; left: 20%; animation-delay: 1.5s; }
+    .star:nth-child(3) { top: 25%; left: 25%; animation-delay: 2.5s; }
+    .star:nth-child(4) { top: 8%; left: 45%; animation-delay: 3.5s; }
+    .star:nth-child(5) { top: 20%; left: 65%; animation-delay: 4.5s; }
+    .star:nth-child(6) { top: 10%; left: 80%; animation-delay: 0.2s; }
+    .star:nth-child(7) { top: 30%; left: 70%; animation-delay: 1.2s; }
+    .star:nth-child(8) { top: 45%; left: 15%; animation-delay: 2.2s; }
+    .star:nth-child(9) { top: 50%; left: 30%; animation-delay: 3.2s; }
+    .star:nth-child(10) { top: 55%; left: 65%; animation-delay: 4.2s; }
+    .star:nth-child(11) { top: 65%; left: 85%; animation-delay: 0.7s; }
+    .star:nth-child(12) { top: 75%; left: 25%; animation-delay: 1.7s; }
+    .star:nth-child(13) { top: 82%; left: 45%; animation-delay: 2.7s; }
+    .star:nth-child(14) { top: 85%; left: 75%; animation-delay: 3.7s; }
+    .star:nth-child(15) { top: 20%; left: 40%; animation-delay: 4.7s; }
+    
+    @keyframes twinkle {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 1; }
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1, 1); }
+        50% { transform: scale(1.5, 1.5); }
+    }
+    
+    /* Floating bubbles */
+    .bubble-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+        overflow: hidden;
+    }
+    
+    .bubble {
+        position: absolute;
+        border-radius: 50%;
+        background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.4) 0%, 
+            rgba(255, 255, 255, 0.1) 50%, 
+            rgba(255, 255, 255, 0.05) 100%);
+        box-shadow: 
+            inset 0 0 15px rgba(255, 255, 255, 0.5),
+            inset 0 0 25px rgba(69, 104, 220, 0.2),
+            0 0 10px rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(1px);
+        animation: rise 15s infinite ease-in-out;
+        opacity: 0;
+    }
+    
+    .bubble::after {
+        content: '';
+        position: absolute;
+        top: 15%;
+        left: 20%;
+        width: 25%;
+        height: 25%;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 50%;
+        filter: blur(1px);
+    }
+    
+    .bubble.small {
+        width: 15px;
+        height: 15px;
+    }
+    
+    .bubble.medium {
+        width: 25px;
+        height: 25px;
+    }
+    
+    .bubble.large {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .bubble:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .bubble:nth-child(2) { left: 25%; animation-delay: 5s; }
+    .bubble:nth-child(3) { left: 40%; animation-delay: 10s; }
+    .bubble:nth-child(4) { left: 55%; animation-delay: 2.5s; }
+    .bubble:nth-child(5) { left: 70%; animation-delay: 7.5s; }
+    .bubble:nth-child(6) { left: 85%; animation-delay: 12.5s; }
+    .bubble:nth-child(7) { left: 18%; animation-delay: 15s; }
+    .bubble:nth-child(8) { left: 33%; animation-delay: 17.5s; }
+    .bubble:nth-child(9) { left: 63%; animation-delay: 20s; }
+    .bubble:nth-child(10) { left: 78%; animation-delay: 22.5s; }
+    
+    @keyframes rise {
+        0% {
+            bottom: -100px;
+            opacity: 0;
+            transform: translateX(0) scale(0.8);
+        }
+        20% {
+            opacity: 0.6;
+        }
+        50% {
+            transform: translateX(-20px) scale(1);
+        }
+        80% {
+            opacity: 0.6;
+        }
+        100% {
+            bottom: 120%;
+            opacity: 0;
+            transform: translateX(20px) scale(0.8);
+        }
+    }
+    
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0) translateX(0) scale(1);
+            opacity: 0.2;
+        }
+        25% {
+            transform: translateY(-15px) translateX(10px) scale(1.2);
+            opacity: 0.7;
+        }
+        50% {
+            transform: translateY(-30px) translateX(-10px) scale(1);
+            opacity: 0.2;
+        }
+        75% {
+            transform: translateY(-15px) translateX(15px) scale(1.3);
+            opacity: 0.7;
+        }
+    }
+    
+    /* Dream effect overlay */
+    .dream-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, 
+            rgba(123, 54, 177, 0.03) 0%, 
+            rgba(69, 104, 220, 0.03) 50%, 
+            rgba(176, 106, 179, 0.03) 100%);
+        animation: dreamPulse 20s infinite alternate;
+        pointer-events: none;
+        z-index: -1;
+    }
+    
+    @keyframes dreamPulse {
+        0% {
+            opacity: 0.3;
+            background-position: 0% 50%;
+        }
+        50% {
+            opacity: 0.7;
+            background-position: 100% 50%;
+        }
+        100% {
+            opacity: 0.3;
+            background-position: 0% 50%;
+        }
+    }
+    
+    .main-container {
+        max-width: 1200px;
+        margin: 120px auto 50px auto;
+        min-height: calc(100vh - 200px);
+        position: relative;
+        z-index: 1;
+    }
+    
+    .card {
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        border: none;
+        background-color: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+        box-shadow: 0 15px 35px rgba(123, 54, 177, 0.15);
+        transform: translateY(-5px);
+    }
+    
+    .character-search-area {
+        position: relative;
+        margin-bottom: 20px;
+    }
+    
+    .search-input {
+        border-radius: 30px;
+        padding: 12px 20px;
+        font-size: 1rem;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        background-color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .search-input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 5px 20px rgba(0, 123, 255, 0.2);
+    }
+    
+    .search-btn {
+        position: absolute;
+        right: 10px;
+        top: 8px;
+        border-radius: 30px;
+        padding: 8px 20px;
+        background: linear-gradient(145deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .search-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+    }
+    
+    .saved-characters {
+        margin-top: 15px;
+    }
+    
+    .character-tag {
+        display: inline-block;
+        padding: 5px 15px;
+        margin: 5px;
+        border-radius: 20px;
+        background-color: rgba(248, 249, 250, 0.8);
+        color: #495057;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .character-tag:hover {
+        background-color: var(--primary-color);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 3px 10px rgba(0, 123, 255, 0.2);
+    }
+    
+    .chat-container {
+        display: flex;
+        flex-direction: column;
+        height: 600px;
+        border-radius: 15px;
+        overflow: hidden;
+        border: 1px solid rgba(233, 236, 239, 0.5);
+        background-color: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(5px);
+        position: relative;
+    }
+    
+    .chat-messages {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 20px;
+        background-color: rgba(248, 249, 250, 0.7);
+    }
+    
+    .message {
+        max-width: 80%;
+        margin-bottom: 15px;
+        padding: 12px 15px;
+        border-radius: 18px;
+        position: relative;
+        clear: both;
+        word-wrap: break-word;
+    }
+    
+    .message-user {
+        float: right;
+        background-color: var(--primary-color);
+        color: white;
+        border-bottom-right-radius: 5px;
+        margin-left: 20%;
+        box-shadow: 0 5px 15px rgba(69, 104, 220, 0.2);
+    }
+    
+    .message-ai {
+        float: left;
+        background-color: white;
+        color: #212529;
+        border-bottom-left-radius: 5px;
+        margin-right: 20%;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
+    }
+    
+    .message-content {
+        position: relative;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .message-text {
+        margin-bottom: 5px;
+    }
+    
+    .message-actions {
+        display: flex;
+        gap: 5px;
+        justify-content: flex-end;
+        padding: 5px 0;
+        margin-top: auto;
+    }
+    
+    .copy-btn, .share-btn {
+        background: none;
+        border: none;
+        color: #6c757d;
+        padding: 5px;
+        cursor: pointer;
+        opacity: 0.6;
+        transition: all 0.2s ease;
+        font-size: 0.9rem;
+    }
+    
+    .copy-btn:hover, .share-btn:hover {
+        opacity: 1;
+        color: #4568dc;
+        transform: scale(1.1);
+    }
+    
+    .chat-input-container {
+        padding: 15px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-top: 1px solid rgba(233, 236, 239, 0.5);
+        display: flex;
+        align-items: center;
+    }
+    
+    .chat-input {
+        flex-grow: 1;
+        border: 1px solid #e9ecef;
+        border-radius: 25px;
+        padding: 10px 15px;
+        margin-right: 10px;
+        font-size: 1rem;
+        resize: none;
+        height: 50px;
+        max-height: 120px;
+        overflow-y: auto;
+        background-color: rgba(255, 255, 255, 0.95);
+    }
+    
+    .chat-input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+    }
+    
+    .send-btn {
+        background: linear-gradient(145deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        color: white;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .send-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.2);
+    }
+    
+    .send-btn:disabled {
+        background: #e9ecef;
+        cursor: not-allowed;
+    }
+    
+    .clear-chat-btn {
+        background-color: rgba(248, 249, 250, 0.8);
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 6px 12px;
+        color: #6c757d;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.85rem;
+        z-index: 10;
+    }
+    
+    .clear-chat-btn:hover {
+        background-color: #e9ecef;
+        color: #212529;
+    }
+    
+    .loading-message {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: max-content;
+        font-size: 1rem;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    .loading-dots {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .loading-dots span {
+        width: 8px;
+        height: 8px;
+        background-color: var(--primary-color);
+        border-radius: 50%;
+        display: inline-block;
+        animation: loadingDots 1.4s infinite ease-in-out both;
+    }
+    
+    .loading-dots span:nth-child(1) {
+        animation-delay: -0.32s;
+    }
+    
+    .loading-dots span:nth-child(2) {
+        animation-delay: -0.16s;
+    }
+    
+    @keyframes loadingDots {
+        0%, 80%, 100% {
+            transform: scale(0);
+        }
+        40% {
+            transform: scale(1);
+        }
+    }
+    
+    .character-info {
+        padding: 20px;
+        margin-bottom: 20px;
+        background-color: rgba(248, 249, 250, 0.8);
+        backdrop-filter: blur(5px);
+        border-radius: 15px;
+        display: none;
+        box-shadow: 0 5px 20px rgba(123, 54, 177, 0.1);
+        border: 1px solid rgba(233, 236, 239, 0.8);
+    }
+    
+    .character-info-header {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #7A36B1;
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(123, 54, 177, 0.2);
+    }
+    
+    .character-info h3 {
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+        color: var(--primary-color);
+        font-size: 1.3rem;
+    }
+    
+    .character-info.active {
+        display: block;
+        animation: fadeIn 0.5s ease;
+    }
+    
+    .character-info #character-description {
+        max-height: 200px;
+        overflow-y: auto;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: #4a4a4a;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Voice selection styles */
+    .voice-selection-container {
+        background-color: rgba(248, 249, 250, 0.7);
+        border-radius: 0 0 15px 15px;
+    }
+    
+    .voice-selector .input-group-text {
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+    }
+    
+    .voice-selector .form-select {
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+        border-color: var(--primary-color);
+        transition: all 0.2s ease;
+    }
+    
+    .voice-selector .form-select:focus {
+        box-shadow: 0 0 0 0.25rem rgba(var(--primary-color-rgb), 0.25);
+    }
+    
+    .upload-button label {
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .upload-button label:hover {
+        background-color: var(--primary-color);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .voice-upload-filename {
+        color: var(--primary-color);
+        font-size: 0.85rem;
+    }
+    
+    #clear-upload {
+        border: none;
+        background: none;
+        cursor: pointer;
+    }
+    
+    @media (max-width: 768px) {
+        .voice-selector,
+        .upload-button,
+        .emotion-selector,
+        .rate-selector {
+            width: 100%;
+            margin-bottom: 8px;
+        }
+        
+        .voice-selection-container .d-flex {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
+    
+    .audio-container {
+        background-color: rgba(255, 255, 255, 0.7);
+        border-radius: 8px;
+        padding: 8px;
+        border: 1px solid #e9ecef;
+    }
+    
+    .audio-container audio {
+        height: 36px;
+    }
+    
+    .waveform-container {
+        width: 100%;
+        height: 70px;
+        margin-bottom: 10px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 5px;
+    }
+    
+    .audio-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 5px;
+    }
+    
+    .play-pause-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(145deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .play-pause-btn:hover {
+        transform: scale(1.1);
+    }
+    
+    .points-info {
+        text-align: right;
+        font-size: 0.75rem;
+    }
+    
+    /* Speech button styles */
+    .speech-btn {
+        background: none;
+        border: none;
+        color: #6c757d;
+        padding: 5px;
+        cursor: pointer;
+        opacity: 0.6;
+        transition: all 0.2s ease;
+        font-size: 0.9rem;
+    }
+    
+    .speech-btn:hover {
+        opacity: 1;
+        color: #17a2b8;
+        transform: scale(1.1);
+    }
+    
+    .speech-btn.speaking {
+        color: #17a2b8;
+        animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+    
+    .emotion-selector {
+        max-width: 140px;
+    }
+    
+    .emotion-selector .form-select {
+        border-radius: 20px;
+        border-color: #d1e7ff;
+        background-color: #f0f7ff;
+        font-size: 0.85rem;
+        padding-right: 2rem;
+    }
+    
+    .emotion-selector .form-select:focus {
+        box-shadow: 0 0 0 0.25rem rgba(var(--primary-color-rgb), 0.25);
+    }
+    
+    /* Rate selector styles */
+    .rate-selector {
+        max-width: 140px;
+    }
+    
+    .rate-selector .form-range {
+        height: 8px;
+        border-radius: 20px;
+        background-color: #f0f7ff;
+    }
+
+    .rate-selector .form-range::-webkit-slider-thumb {
+        background: linear-gradient(145deg, var(--primary-color), var(--secondary-color));
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .rate-selector .form-range::-moz-range-thumb {
+        background: linear-gradient(145deg, var(--primary-color), var(--secondary-color));
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .rate-selector .form-label {
+        font-size: 0.85rem;
+        margin-bottom: 0.25rem;
+    }
+
+    #speedValue {
+        font-weight: bold;
+        color: var(--primary-color);
+    }
+    
+    /* Add these styles for the fancy title and subtitle */
+    .chat-title {
+        font-size: 4.8rem;
+        font-weight: 300;
+        background: linear-gradient(120deg, 
+            #4568DC,
+            #7A36B1,
+            #4568DC,
+            #6A8BD6,
+            #B06AB3
+        );
+        background-size: 300% 300%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-top: -20px;
+        margin-bottom: 0.5rem;
+        text-align: center;
+        position: relative;
+        letter-spacing: 0em;
+        transform: translateZ(0);
+        will-change: transform;
+        animation: gradientFlow 15s ease infinite, gentleBreathing 4s ease-in-out infinite;
+        transform-origin: center center;
+    }
+    
+    .chat-subtitle {
+        text-align: center;
+        font-size: 1.3rem;
+        margin: 1.5rem 0 2.5rem;
+        font-weight: bold;
+        color: #6c757d;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .chat-subtitle span {
+        background: linear-gradient(120deg, #7A36B1, #4a90e2);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: bold;
+        position: relative;
+    }
+    
+    .chat-subtitle span::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 30%;
+        background: rgba(160, 63, 217, 0.1);
+        left: 0;
+        bottom: 0;
+        z-index: -1;
+        border-radius: 3px;
+    }
+    
+    @keyframes gradientFlow {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+    
+    @keyframes gentleBreathing {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.03);
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .chat-title {
+            font-family: "STKaiti", "KaiTi", "Kaiti SC", "Kaiti TC", "KaiTi_GB2312", "KaiTi_GB", "楷体", "华文楷体";
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .chat-title {
+            font-size: 3.2rem;
+            margin-top: -15px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        
+        .chat-subtitle {
+            font-size: 1.1rem;
+            padding: 0 1rem;
+            margin: 1rem 0 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<!-- WaveSurfer.js for audio visualization -->
+<script src="https://unpkg.com/wavesurfer.js@6.6.4"></script>
+{% endblock %}
+
+{% block content %}
+<!-- Fantasy particles background -->
+<div class="fantasy-particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+</div>
+
+<!-- Twinkling stars -->
+<div class="star-container">
+    <div class="star small"></div>
+    <div class="star medium"></div>
+    <div class="star large"></div>
+    <div class="star small"></div>
+    <div class="star medium"></div>
+    <div class="star small"></div>
+    <div class="star medium"></div>
+    <div class="star small"></div>
+    <div class="star medium"></div>
+    <div class="star large"></div>
+    <div class="star small"></div>
+    <div class="star medium"></div>
+    <div class="star small"></div>
+    <div class="star small"></div>
+    <div class="star medium"></div>
+</div>
+
+<!-- Fantasy bubbles -->
+<div class="bubble-container">
+    <div class="bubble small"></div>
+    <div class="bubble medium"></div>
+    <div class="bubble large"></div>
+    <div class="bubble medium"></div>
+    <div class="bubble small"></div>
+    <div class="bubble large"></div>
+    <div class="bubble small"></div>
+    <div class="bubble medium"></div>
+    <div class="bubble large"></div>
+    <div class="bubble medium"></div>
+</div>
+
+<!-- Dream effect overlay -->
+<div class="dream-overlay"></div>
+
+<div class="container main-container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="chat-title">VoiceChat</h1>
+            <p class="chat-subtitle" style="letter-spacing: 0.15em;">Chat with <span>your favorite characters</span> through voice! All conversations are <span>saved</span> for you</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="character-search-area">
+                        <input type="text" id="character-search-input" class="form-control search-input" placeholder="Search for a character name, adding the work name makes results more accurate (e.g.: Paimon from Genshin Impact)" />
+                        <button id="search-btn" class="btn search-btn">
+                            <i class="fas fa-search me-2"></i>Search
+                        </button>
+                    </div>
+                    
+                    {% if existing_characters %}
+                    <div class="saved-characters">
+                        <p class="mb-2">Saved Characters:</p>
+                        {% for character in existing_characters %}
+                        <span class="character-tag" data-character="{{ character }}">{{ character }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="chat-container">
+                <div id="chat-messages" class="chat-messages">
+                    <!-- Messages will be added here dynamically -->
+                </div>
+                
+                <div class="chat-input-container">
+                    <textarea id="chat-input" class="chat-input" placeholder="Type your message to the character..." disabled></textarea>
+                    <button id="send-btn" class="send-btn" disabled>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                
+                <!-- Clear chat button positioned at top right -->
+                <button id="clear-chat-btn" class="clear-chat-btn position-absolute top-0 end-0 m-3" disabled>
+                    <i class="fas fa-trash-alt me-2"></i>Clear Chat
+                </button>
+            </div>
+            
+            <!-- Voice selection and upload section -->
+            <div class="voice-selection-container p-3 mt-4 rounded-3 border">
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <div class="voice-selector flex-grow-1">
+                        <div class="input-group">
+                            <span class="input-group-text bg-primary text-white">
+                                <i class="fas fa-microphone"></i>
+                            </span>
+                            <select id="saved-voices" class="form-select">
+                                <option value="">Select a saved voice</option>
+                                <!-- Saved voices will be loaded here -->
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="upload-button">
+                        <input type="file" id="voice-upload" class="d-none" accept=".wav,.mp3,.m4a" />
+                        <label for="voice-upload" class="btn btn-outline-primary mb-0">
+                            <i class="fas fa-upload me-1"></i> Upload New Voice
+                        </label>
+                    </div>
+                    
+                    <div class="emotion-selector">
+                        <select id="emotion-select" class="form-select form-select-sm">
+                            <option value="default" selected>Default</option>
+                            <option value="affectionate">Affectionate</option>
+                            <option value="cheerful">Cheerful</option>
+                            <option value="empathetic">Empathetic</option>
+                            <option value="excited">Excited</option>
+                            <option value="sorry">Apologetic</option>
+                        </select>
+                    </div>
+                    
+                    <div class="rate-selector">
+                        <label for="rate-select" class="form-label d-flex justify-content-between mb-2">
+                            <span>Speech Rate</span>
+                            <span id="speedValue">1.00</span>
+                        </label>
+                        <input type="range" class="form-range custom-range" id="rate-select" 
+                              min="0.5" max="2.0" step="0.01" value="1.0">
+                    </div>
+                </div>
+                
+                <div class="voice-upload-filename mt-2 d-none">
+                    <small class="text-muted">Selected: <span id="upload-filename"></span></small>
+                    <button id="clear-upload" class="btn btn-sm text-danger py-0 px-1">
+                        <i class="fas fa-times-circle"></i>
+                    </button>
+                </div>
+                
+                <!-- Audio preview section -->
+                <div id="audio-preview-container" class="mt-3 d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <small class="text-muted">Voice Preview</small>
+                        <button id="preview-play-pause" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                    <div id="preview-waveform" class="rounded" style="height: 60px; background: #f5f5f5;"></div>
+                    <div class="d-flex justify-content-between mt-1">
+                        <small id="preview-current-time" class="text-muted">0:00</small>
+                        <small id="preview-duration" class="text-muted">0:00</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Character information displayed at the very bottom -->
+            <div id="character-info" class="character-info mt-4">
+                <div class="character-info-header">
+                    <i class="fas fa-book me-2"></i>Character Profile
+                </div>
+                <h3 id="character-name"></h3>
+                <div id="character-description"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentCharacter = '';
+    let characterDescription = '';
+    let selectedVoiceId = null;
+    let uploadedVoiceFile = null;
+    let isSpeechGenerating = false; // Track if speech generation is in progress
+    let hasMembership = false; // Global membership status
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if WaveSurfer is loaded
+        if (typeof WaveSurfer === 'undefined') {
+            console.error('WaveSurfer library is not loaded!');
+            // Load it dynamically as a fallback
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/wavesurfer.js@6.6.4';
+            script.onload = function() {
+                console.log('WaveSurfer library loaded dynamically');
+            };
+            document.head.appendChild(script);
+        } else {
+            console.log('WaveSurfer library is loaded correctly');
+        }
+        
+        const searchInput = document.getElementById('character-search-input');
+        const searchBtn = document.getElementById('search-btn');
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+        const chatMessages = document.getElementById('chat-messages');
+        const clearChatBtn = document.getElementById('clear-chat-btn');
+        const characterInfo = document.getElementById('character-info');
+        const characterNameHeader = document.getElementById('character-name');
+        const characterDescriptionDiv = document.getElementById('character-description');
+        const savedVoicesSelect = document.getElementById('saved-voices');
+        const voiceUpload = document.getElementById('voice-upload');
+        const emotionSelect = document.getElementById('emotion-select');
+        const rateSelect = document.getElementById('rate-select');
+        const speedValueDisplay = document.getElementById('speedValue');
+        
+        // Check membership status on page load
+        checkMembershipStatus();
+        
+        // Set up regular checking of membership status to keep it up to date
+        setInterval(checkMembershipStatus, 60000); // Check every minute
+        
+        // Initialize speed value display
+        if (rateSelect && speedValueDisplay) {
+            // Update speed value display when slider changes
+            rateSelect.addEventListener('input', function() {
+                speedValueDisplay.textContent = parseFloat(this.value).toFixed(2);
+            });
+        }
+        
+        // Initialize WaveSurfer for audio preview
+        let previewWavesurfer = null;
+        
+        // Add a global click handler for the play/pause button that will be established immediately
+        document.addEventListener('DOMContentLoaded', function() {
+            setupPlayPauseButton();
+        });
+        
+        function setupPlayPauseButton() {
+            const playBtn = document.getElementById('preview-play-pause');
+            if (!playBtn) return;
+            
+            // First, remove any existing click handlers
+            playBtn.replaceWith(playBtn.cloneNode(true));
+            
+            // Get the new reference after cloning
+            const newPlayBtn = document.getElementById('preview-play-pause');
+            
+            // Add our click handler with high priority
+            newPlayBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('Play/pause button clicked (high priority handler)');
+                
+                if (previewWavesurfer && previewWavesurfer.isReady) {
+                    try {
+                        if (previewWavesurfer.isPlaying()) {
+                            previewWavesurfer.pause();
+                            this.innerHTML = '<i class="fas fa-play"></i>';
+                        } else {
+                            previewWavesurfer.play();
+                            this.innerHTML = '<i class="fas fa-pause"></i>';
+                        }
+                    } catch (err) {
+                        console.error('Error toggling play state:', err);
+                    }
+                } else {
+                    console.log('WaveSurfer not ready or initialized');
+                }
+                
+                return false;
+            }, true); // Capture phase ensures this runs first
+        }
+        
+        function initPreviewWavesurfer() {
+            // Destroy existing instance if any
+            if (previewWavesurfer) {
+                if (previewWavesurfer._loadTimeoutId) {
+                    clearTimeout(previewWavesurfer._loadTimeoutId);
+                }
+                previewWavesurfer.destroy();
+            }
+            
+            // Make sure the container is visible and has dimensions
+            const container = document.getElementById('preview-waveform');
+            if (!container) {
+                console.error('WaveSurfer container not found');
+                return;
+            }
+            
+            // Force container to be visible during initialization
+            const previewContainer = document.getElementById('audio-preview-container');
+            const wasHidden = previewContainer.classList.contains('d-none');
+            if (wasHidden) {
+                // Temporarily show container for initialization
+                previewContainer.classList.remove('d-none');
+            }
+            
+            // Force layout calculation
+            container.getBoundingClientRect();
+            
+            // Create new WaveSurfer instance
+            previewWavesurfer = WaveSurfer.create({
+                container: '#preview-waveform',
+                waveColor: '#4ECDC4',
+                progressColor: '#FF6B6B',
+                cursorColor: '#2C3E50',
+                barWidth: 2,
+                barRadius: 3,
+                cursorWidth: 1,
+                height: 60,
+                barGap: 3,
+                normalize: true,
+                backend: 'WebAudio',
+                responsive: true
+            });
+            
+            // If container was hidden, we might hide it again until ready
+            if (wasHidden) {
+                // Only hide if we're going to show it on ready event
+                // previewContainer.classList.add('d-none');
+            }
+            
+            // Additional initialization code to ensure reliable operation
+            previewWavesurfer.isReady = false;
+            
+            // Add resize handler to redraw waveform if window size changes
+            const resizeHandler = function() {
+                if (previewWavesurfer && previewWavesurfer.isReady) {
+                    previewWavesurfer.empty();
+                    previewWavesurfer.drawBuffer();
+                }
+            };
+            
+            window.addEventListener('resize', resizeHandler);
+            
+            // Log all WaveSurfer events for debugging
+            ['ready', 'loading', 'play', 'pause', 'finish', 'error', 'seek', 'interaction'].forEach(event => {
+                previewWavesurfer.on(event, () => console.log(`WaveSurfer event: ${event}`));
+            });
+            
+            // Add loading event tracking
+            let loadStarted = false;
+            previewWavesurfer.on('loading', function(percent) {
+                loadStarted = true;
+                console.log(`WaveSurfer loading: ${percent}%`);
+            });
+            
+            // Update time displays
+            previewWavesurfer.on('ready', function() {
+                // Clear load timeout
+                if (previewWavesurfer._loadTimeoutId) {
+                    clearTimeout(previewWavesurfer._loadTimeoutId);
+                    previewWavesurfer._loadTimeoutId = null;
+                }
+                
+                const duration = previewWavesurfer.getDuration();
+                document.getElementById('preview-duration').textContent = formatTime(duration);
+                document.getElementById('preview-current-time').textContent = "0:00";
+                
+                // Show the audio preview container
+                document.getElementById('audio-preview-container').classList.remove('d-none');
+                
+                // Set the ready flag
+                previewWavesurfer.isReady = true;
+                
+                console.log('WaveSurfer is ready, audio can be played');
+                
+                // Make sure the play button is set up properly after audio loads
+                setupPlayPauseButton();
+                
+                // Set up direct reference to the button for this instance
+                previewWavesurfer.playPauseBtn = document.getElementById('preview-play-pause');
+                
+                // Check if the waveform was rendered correctly - if container has content
+                const container = document.getElementById('preview-waveform');
+                if (container && (!container.firstChild || container.clientHeight < 5)) {
+                    console.log('Waveform may not have rendered correctly, forcing redraw');
+                    setTimeout(() => {
+                        previewWavesurfer.drawBuffer();
+                    }, 100);
+                }
+            });
+            
+            // Add a timeout to detect and handle stalled loading
+            const loadTimeout = setTimeout(() => {
+                if (!previewWavesurfer.isReady && loadStarted) {
+                    console.log('WaveSurfer loading seems stalled, forcing retry');
+                    
+                    // Get current audio URL
+                    const audioEl = previewWavesurfer.getMediaElement();
+                    const currentSrc = audioEl ? audioEl.src : null;
+                    
+                    if (currentSrc) {
+                        // Force destroy and recreate
+                        previewWavesurfer.destroy();
+                        initPreviewWavesurfer();
+                        previewWavesurfer.load(currentSrc);
+                    }
+                }
+            }, 3000);
+            
+            // Store timeout ID for cleanup
+            previewWavesurfer._loadTimeoutId = loadTimeout;
+            
+            // Update current time during playback
+            previewWavesurfer.on('audioprocess', function() {
+                const currentTime = previewWavesurfer.getCurrentTime();
+                document.getElementById('preview-current-time').textContent = formatTime(currentTime);
+            });
+            
+            // Update play/pause button when playback ends
+            previewWavesurfer.on('finish', function() {
+                const playPauseBtn = document.getElementById('preview-play-pause');
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            });
+            
+            // Handle errors
+            previewWavesurfer.on('error', function(err) {
+                console.error('Preview WaveSurfer error:', err);
+                
+                // Reset WaveSurfer state on error
+                previewWavesurfer.isReady = false;
+                
+                // Hide the audio preview container
+                document.getElementById('audio-preview-container').classList.add('d-none');
+                
+                // Try to recover by recreating WaveSurfer
+                setTimeout(() => {
+                    if (uploadedVoiceFile) {
+                        console.log('Trying to recover from error by reloading audio');
+                        initPreviewWavesurfer();
+                        const fileURL = URL.createObjectURL(uploadedVoiceFile);
+                        previewWavesurfer.load(fileURL);
+                    }
+                }, 1000);
+            });
+        }
+        
+        // Helper function to format time (seconds to MM:SS)
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secondsRemaining = Math.round(seconds) % 60;
+            return minutes + ':' + (secondsRemaining < 10 ? '0' : '') + secondsRemaining;
+        }
+        
+        // Load saved voices
+        loadSavedVoices();
+        
+        // Handle saved voice selection
+        savedVoicesSelect.addEventListener('change', function() {
+            selectedVoiceId = this.value;
+            if (selectedVoiceId) {
+                uploadedVoiceFile = null;
+                voiceUpload.value = '';
+                
+                // Hide the filename container if it's visible
+                const filenameContainer = document.querySelector('.voice-upload-filename');
+                if (filenameContainer) {
+                    filenameContainer.classList.add('d-none');
+                }
+                
+                // First, make the preview container visible immediately
+                const previewContainer = document.getElementById('audio-preview-container');
+                previewContainer.classList.remove('d-none');
+                
+                // Load the selected voice for preview
+                if (selectedVoiceId) {
+                    fetch('/get_saved_voices')
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success && data.voices) {
+                                const selectedVoice = data.voices.find(voice => voice.id == selectedVoiceId);
+                                if (selectedVoice && selectedVoice.audio_url) {
+                                    // Short delay to ensure DOM is updated before WaveSurfer tries to render
+                                    setTimeout(() => {
+                                        // Initialize WaveSurfer and load the audio
+                                        initPreviewWavesurfer();
+                                        previewWavesurfer.load(selectedVoice.audio_url);
+                                        console.log('Saved voice loaded into WaveSurfer:', selectedVoice.audio_url);
+                                    }, 50);
+                                }
+                            }
+                        })
+                        .catch(error => console.error('Error loading saved voice for preview:', error));
+                }
+            } else {
+                // Hide the audio preview if no voice is selected
+                document.getElementById('audio-preview-container').classList.add('d-none');
+            }
+        });
+        
+        // Handle voice file upload
+        voiceUpload.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                uploadedVoiceFile = this.files[0];
+                selectedVoiceId = null;
+                savedVoicesSelect.value = '';
+                
+                // Show filename
+                const filenameContainer = document.querySelector('.voice-upload-filename');
+                const filenameSpan = document.getElementById('upload-filename');
+                if (filenameSpan && filenameContainer) {
+                    filenameSpan.textContent = this.files[0].name;
+                    filenameContainer.classList.remove('d-none');
+                }
+                
+                // First, make the preview container visible immediately
+                const previewContainer = document.getElementById('audio-preview-container');
+                previewContainer.classList.remove('d-none');
+                
+                // Short delay to ensure DOM is updated before WaveSurfer tries to render
+                setTimeout(() => {
+                    // Preview the uploaded audio file
+                    const fileURL = URL.createObjectURL(this.files[0]);
+                    initPreviewWavesurfer();
+                    previewWavesurfer.load(fileURL);
+                    
+                    console.log('Audio file loaded into WaveSurfer:', fileURL);
+                }, 50);
+            }
+        });
+        
+        // Handle clear upload button
+        const clearUploadBtn = document.getElementById('clear-upload');
+        if (clearUploadBtn) {
+            clearUploadBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Clear the file input
+                voiceUpload.value = '';
+                uploadedVoiceFile = null;
+                
+                // Hide the filename container
+                const filenameContainer = document.querySelector('.voice-upload-filename');
+                if (filenameContainer) {
+                    filenameContainer.classList.add('d-none');
+                }
+                
+                // Hide the audio preview
+                document.getElementById('audio-preview-container').classList.add('d-none');
+                
+                // Reset the WaveSurfer instance
+                if (previewWavesurfer) {
+                    previewWavesurfer.empty();
+                }
+            });
+        }
+        
+        // Handle character tag clicks
+        document.querySelectorAll('.character-tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                const character = this.getAttribute('data-character');
+                loadCharacterChat(character);
+            });
+        });
+        
+        // Handle search button click
+        searchBtn.addEventListener('click', function() {
+            searchCharacter();
+        });
+        
+        // Handle Enter key in search input
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchCharacter();
+            }
+        });
+        
+        // Handle send button click
+        sendBtn.addEventListener('click', function() {
+            sendMessage();
+        });
+        
+        // Handle Enter key in chat input (Shift+Enter for new line)
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        // Handle clear chat button click
+        clearChatBtn.addEventListener('click', function() {
+            clearChat();
+        });
+        
+        // Function to generate speech for a message
+        function generateSpeech(button, messageText, messageContainer) {
+            console.log('Generate speech called'); // Debug log
+            
+            // Check if already generating speech
+            if (isSpeechGenerating) {
+                alert('Please wait for the current voice generation to complete');
+                return;
+            }
+            
+            // Check if a voice is selected or uploaded
+            if (!selectedVoiceId && !uploadedVoiceFile) {
+                alert('Please select or upload a voice reference');
+                return;
+            }
+            
+            // Set flag to prevent multiple generations
+            isSpeechGenerating = true;
+            
+            // Disable all speech buttons
+            document.querySelectorAll('.speech-btn').forEach(btn => {
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+            });
+            
+            // Show loading state on this button
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            
+            // Create or clear audio container
+            let audioContainer = messageContainer.querySelector('.audio-container');
+            if (!audioContainer) {
+                audioContainer = document.createElement('div');
+                audioContainer.className = 'audio-container mt-2';
+                messageContainer.appendChild(audioContainer);
+            } else {
+                audioContainer.innerHTML = '';
+            }
+            
+            // Add loading indicator
+            const loadingIndicator = document.createElement('div');
+            loadingIndicator.className = 'audio-loading d-flex align-items-center';
+            loadingIndicator.innerHTML = `
+                <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <small>正在生成语音...</small>
+            `;
+            audioContainer.appendChild(loadingIndicator);
+            
+            // Get rate value
+            const rateSelect = document.getElementById('rate-select');
+            console.log('Rate selector element:', rateSelect);
+            const selectedRate = rateSelect ? rateSelect.value : '1.0';
+            console.log('Selected rate value:', selectedRate);
+            
+            // Prepare data for the request
+            const formData = new FormData();
+            
+            if (uploadedVoiceFile) {
+                // If using uploaded file
+                formData.append('reference_audio', uploadedVoiceFile);
+                formData.append('text', messageText);
+                formData.append('song_mode', false);
+                formData.append('emotion', emotionSelect.value);
+                formData.append('rate', selectedRate);
+                
+                console.log('Sending file upload request'); // Debug log
+                fetch('/character-chat-tts', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => handleTtsResponse(response, audioContainer, button))
+                .catch(error => handleTtsError(error, audioContainer, button))
+                .finally(() => {
+                    // Reset generation flag
+                    isSpeechGenerating = false;
+                    
+                    // Re-enable all speech buttons
+                    document.querySelectorAll('.speech-btn').forEach(btn => {
+                        btn.disabled = false;
+                        btn.style.opacity = '';
+                    });
+                });
+            } else {
+                // If using saved voice
+                console.log('Sending saved voice request, voice_id:', selectedVoiceId); // Debug log
+                fetch('/character-chat-tts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        voice_id: selectedVoiceId,
+                        text: messageText,
+                        song_mode: false,
+                        emotion: emotionSelect.value,
+                        rate: selectedRate
+                    })
+                })
+                .then(response => handleTtsResponse(response, audioContainer, button))
+                .catch(error => handleTtsError(error, audioContainer, button))
+                .finally(() => {
+                    // Reset generation flag
+                    isSpeechGenerating = false;
+                    
+                    // Re-enable all speech buttons
+                    document.querySelectorAll('.speech-btn').forEach(btn => {
+                        btn.disabled = false;
+                        btn.style.opacity = '';
+                    });
+                });
+            }
+        }
+        
+        // Handle TTS API response
+        function handleTtsResponse(response, audioContainer, button) {
+            return response.json().then(data => {
+                console.log('TTS API response:', data);  // Debug log
+                
+                // Clear loading indicator
+                audioContainer.innerHTML = '';
+                
+                // Reset button icon only (not enabling - that happens in finally())
+                button.innerHTML = '<i class="fas fa-volume-up"></i>';
+                
+                if (response.ok && data.success) {
+                    // Create a unique ID for this waveform
+                    const waveformId = 'waveform-' + Date.now();
+                    console.log('Created waveform ID:', waveformId);  // Debug log
+                    
+                    // Create waveform container
+                    const waveformContainer = document.createElement('div');
+                    waveformContainer.id = waveformId;
+                    waveformContainer.className = 'waveform-container';
+                    audioContainer.appendChild(waveformContainer);
+                    
+                    // Create audio controls
+                    const audioControls = document.createElement('div');
+                    audioControls.className = 'audio-controls';
+                    
+                    // Create play/pause button
+                    const playPauseBtn = document.createElement('button');
+                    playPauseBtn.className = 'play-pause-btn';
+                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    audioControls.appendChild(playPauseBtn);
+                    
+                    // Create time display
+                    const timeDisplay = document.createElement('span');
+                    timeDisplay.className = 'time-display';
+                    timeDisplay.textContent = '0:00 / 0:00';
+                    audioControls.appendChild(timeDisplay);
+                    
+                    audioContainer.appendChild(audioControls);
+                    
+                    // Add fallback audio element in case WaveSurfer fails
+                    const fallbackAudio = document.createElement('audio');
+                    fallbackAudio.style.display = 'none';
+                    fallbackAudio.controls = true;
+                    fallbackAudio.src = data.audio_url;
+                    audioContainer.appendChild(fallbackAudio);
+                    
+                    console.log('Initializing WaveSurfer for element:', waveformId);  // Debug log
+                    
+                    // Make sure the element exists in the DOM before initializing WaveSurfer
+                    if (!document.getElementById(waveformId)) {
+                        console.error('Container not found:', waveformId);
+                        
+                        // Show fallback audio player
+                        fallbackAudio.style.display = 'block';
+                        return;
+                    }
+                    
+                    try {
+                        // Initialize WaveSurfer
+                        const wavesurfer = WaveSurfer.create({
+                            container: '#' + waveformId,
+                            waveColor: '#4ECDC4',
+                            progressColor: '#FF6B6B',
+                            cursorColor: '#2C3E50',
+                            barWidth: 2,
+                            barRadius: 3,
+                            cursorWidth: 1,
+                            height: 70,
+                            barGap: 3,
+                            normalize: true,
+                            backend: 'WebAudio'
+                        });
+                        
+                        console.log('Loading audio URL:', data.audio_url);  // Debug log
+                        
+                        // Load audio file
+                        wavesurfer.load(data.audio_url);
+                        
+                        // Add event listeners
+                        wavesurfer.on('ready', function() {
+                            console.log('WaveSurfer ready, duration:', wavesurfer.getDuration());  // Debug log
+                            
+                            // Format time display
+                            const formatTime = (seconds) => {
+                                const minutes = Math.floor(seconds / 60);
+                                const secondsRemainder = Math.round(seconds) % 60;
+                                const paddedSeconds = secondsRemainder.toString().padStart(2, '0');
+                                return `${minutes}:${paddedSeconds}`;
+                            };
+                            
+                            // Update time display
+                            const duration = wavesurfer.getDuration();
+                            timeDisplay.textContent = `0:00 / ${formatTime(duration)}`;
+                            
+                            // Auto-play when ready
+                            wavesurfer.play();
+                            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                            
+                            // Update time display during playback
+                            wavesurfer.on('audioprocess', function() {
+                                const currentTime = wavesurfer.getCurrentTime();
+                                timeDisplay.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
+                            });
+                            
+                            // Update button when playback finishes
+                            wavesurfer.on('finish', function() {
+                                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                            });
+                        });
+                        
+                        // Error handling
+                        wavesurfer.on('error', function(err) {
+                            console.error('WaveSurfer error:', err);
+                            
+                            // Show fallback audio player
+                            fallbackAudio.style.display = 'block';
+                            
+                            const errorDiv = document.createElement('div');
+                            errorDiv.className = 'alert alert-danger py-1 px-2 mt-1 mb-0';
+                            errorDiv.style.fontSize = '0.8rem';
+                            errorDiv.textContent = '音频可视化加载失败，使用标准播放器';
+                            audioContainer.appendChild(errorDiv);
+                        });
+                        
+                        // Play/pause button functionality
+                        playPauseBtn.addEventListener('click', function() {
+                            wavesurfer.playPause();
+                            if (wavesurfer.isPlaying()) {
+                                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                            } else {
+                                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                            }
+                        });
+                    } catch (e) {
+                        console.error('WaveSurfer initialization error:', e);
+                        
+                        // Show fallback audio player
+                        fallbackAudio.style.display = 'block';
+                        
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'alert alert-warning py-1 px-2 mt-1 mb-0';
+                        errorDiv.style.fontSize = '0.8rem';
+                        errorDiv.textContent = '音频可视化初始化失败，使用标准播放器';
+                        audioContainer.appendChild(errorDiv);
+                    }
+                    
+                } else {
+                    // Show error message
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'alert alert-danger py-1 px-2 mt-1 mb-0';
+                    errorDiv.style.fontSize = '0.8rem';
+                    errorDiv.textContent = data.error || '生成语音失败';
+                    audioContainer.appendChild(errorDiv);
+                    
+                }
+                
+                // No auto-scrolling when generating speech for previous messages
+            });
+        }
+        
+        // Handle TTS API error
+        function handleTtsError(error, audioContainer, button) {
+            console.error('Error generating speech:', error);
+            
+            // Clear loading indicator
+            audioContainer.innerHTML = '';
+            
+            // Reset button icon only (not enabling - that happens in finally())
+            button.innerHTML = '<i class="fas fa-volume-up"></i>';
+            
+            // Show error message
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'alert alert-danger py-1 px-2 mt-1 mb-0';
+            errorDiv.style.fontSize = '0.8rem';
+            errorDiv.textContent = '生成语音请求失败: ' + error.message;
+            audioContainer.appendChild(errorDiv);
+            
+            // No auto-scrolling when generating speech for previous messages
+        }
+        
+        // Function to scroll to bottom of chat messages
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Function for animated scrolling to ensure welcome message is visible
+        function smoothScrollToBottom() {
+            // Delay slightly to ensure the message is rendered
+            setTimeout(() => {
+                // Get the chat input element - this is what we want to position
+                const chatInput = document.getElementById('chat-input');
+                const chatInputContainer = document.querySelector('.chat-input-container');
+                
+                if (chatInput && chatInputContainer) {
+                    // Calculate the position needed to place input at 1/4 from bottom
+                    const chatInputPosition = chatInputContainer.getBoundingClientRect();
+                    const windowHeight = window.innerHeight;
+                    
+                    // Calculate scroll position that would place input at 1/4 from the bottom
+                    const targetScrollPosition = window.pageYOffset + chatInputPosition.top - (windowHeight * 0.75);
+                    
+                    // Scroll with smooth animation
+                    window.scrollTo({
+                        top: targetScrollPosition,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Double-check scroll position after a bit longer delay
+                    setTimeout(() => {
+                        window.scrollTo({
+                            top: targetScrollPosition,
+                            behavior: 'auto'
+                        });
+                        
+                        // Focus on the input
+                        chatInput.focus();
+                    }, 500);
+                } else {
+                    // Fallback to regular scroll if elements not found
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+            }, 100);
+        }
+        
+        // Function to search for a character
+        function searchCharacter() {
+            const characterName = searchInput.value.trim();
+            
+            if (!characterName) {
+                alert('Please enter a character name');
+                return;
+            }
+            
+            // Show loading
+            searchBtn.disabled = true;
+            searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Searching...';
+            
+            // Make API request
+            fetch('/search_character', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ title: characterName })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                
+                if (data && data.length > 0) {
+                    const result = data[0];
+                    currentCharacter = characterName;
+                    characterDescription = result.body;
+                    
+                    // Update character info
+                    characterNameHeader.textContent = '角色：' + characterName;
+                    characterDescriptionDiv.innerHTML = characterDescription;
+                    characterInfo.classList.add('active');
+                    
+                    // Reset chat
+                    chatMessages.innerHTML = '';
+                    
+                    // Add welcome message
+                    const welcomeMessage = `Hello Dreamer! I'm ${characterName}, nice to meet you! Let's start our voice chat!`;
+                    addAIMessage(welcomeMessage);
+                    
+                    // Enable chat controls
+                    chatInput.disabled = false;
+                    sendBtn.disabled = false;
+                    clearChatBtn.disabled = false;
+                    
+                    // Focus on input
+                    chatInput.focus();
+                    
+                    // Scroll to ensure welcome message is visible with animation
+                    smoothScrollToBottom();
+                    
+                    // Load chat history from database
+                    loadCharacterChatHistory(characterName);
+                }
+            })
+            .catch(error => {
+                console.error('Error searching character:', error);
+                alert('搜索角色时出错，请重试');
+            })
+            .finally(() => {
+                // Reset search button
+                searchBtn.disabled = false;
+                searchBtn.innerHTML = '<i class="fas fa-search me-2"></i>Search';
+            });
+        }
+        
+        // Function to load a character's chat history
+        function loadCharacterChat(characterName) {
+            currentCharacter = characterName;
+            
+            // Update UI
+            searchInput.value = characterName;
+            characterNameHeader.textContent = '角色：' + characterName;
+            characterInfo.classList.add('active');
+            
+            // Get character chat history from database
+            fetch('/get-character-chat-history', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ character_name: characterName })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update character description
+                characterDescription = data.description;
+                characterDescriptionDiv.innerHTML = characterDescription;
+                
+                // Clear current chat
+                chatMessages.innerHTML = '';
+                
+                // Load chat history
+                const history = data.history || [];
+                
+                // If there's no chat history, show welcome message
+                if (history.length === 0) {
+                    const welcomeMessage = `Hello Dreamer! I'm ${characterName}, nice to meet you! Let's start our voice chat!`;
+                    addAIMessage(welcomeMessage);
+                    
+                    // Ensure welcome message is visible
+                    smoothScrollToBottom();
+                } else {
+                    // Load existing chat history
+                    history.forEach(msg => {
+                        if (msg.role === 'user') {
+                            addUserMessage(msg.content);
+                        } else if (msg.role === 'assistant') {
+                            addAIMessage(msg.content);
+                        }
+                    });
+                }
+                
+                // Enable chat controls
+                chatInput.disabled = false;
+                sendBtn.disabled = false;
+                clearChatBtn.disabled = false;
+                
+                // Focus on input
+                chatInput.focus();
+                
+                // Scroll to bottom
+                scrollToBottom();
+            })
+            .catch(error => {
+                console.error('Error loading character chat:', error);
+                alert('加载聊天历史时出错，请重试');
+            });
+        }
+        
+        // Function to load character chat history
+        function loadCharacterChatHistory(characterName) {
+            fetch('/get-character-chat-history', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ character_name: characterName })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display chat history
+                const history = data.history || [];
+                
+                // Clear current messages before displaying history
+                chatMessages.innerHTML = '';
+                
+                // If there's no chat history, show welcome message
+                if (history.length === 0) {
+                    const welcomeMessage = `Hello Dreamer! I'm ${characterName}, nice to meet you! Let's start our voice chat!`;
+                    addAIMessage(welcomeMessage);
+                    
+                    // Ensure welcome message is visible
+                    smoothScrollToBottom();
+                } else {
+                    // Load existing chat history
+                    history.forEach(msg => {
+                        if (msg.role === 'user') {
+                            addUserMessage(msg.content);
+                        } else if (msg.role === 'assistant') {
+                            addAIMessage(msg.content);
+                        }
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error loading chat history:', error);
+            });
+        }
+        
+        // Function to send a message
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            
+            if (!message || !currentCharacter) {
+                return;
+            }
+            
+            // Disable input and send button
+            chatInput.disabled = true;
+            sendBtn.disabled = true;
+            
+            // Add user message to chat
+            addUserMessage(message);
+            
+            // Clear input
+            chatInput.value = '';
+            
+            // Add loading indicator
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message message-ai loading-message';
+            loadingDiv.innerHTML = `
+                <i class="fas fa-comment"></i>
+                <div class="loading-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            `;
+            chatMessages.appendChild(loadingDiv);
+            scrollToBottom();
+            
+            // Send to API
+            fetch('/character-chat-db', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    character_name: currentCharacter,
+                    story_content: characterDescription,
+                    message: message
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Remove loading indicator
+                if (loadingDiv && chatMessages.contains(loadingDiv)) {
+                    chatMessages.removeChild(loadingDiv);
+                }
+                
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                
+                // Add AI response
+                addAIMessage(data.response);
+            })
+            .catch(error => {
+                console.error('Error sending message:', error);
+                
+                // Remove loading indicator
+                if (loadingDiv && chatMessages.contains(loadingDiv)) {
+                    chatMessages.removeChild(loadingDiv);
+                }
+                
+                // Show error
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'message message-ai';
+                errorDiv.textContent = '发送消息时出错，请重试';
+                chatMessages.appendChild(errorDiv);
+                scrollToBottom();
+            })
+            .finally(() => {
+                // Re-enable input and send button
+                chatInput.disabled = false;
+                sendBtn.disabled = false;
+                chatInput.focus();
+            });
+        }
+        
+        // Function to add user message to chat
+        function addUserMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message message-user';
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            
+            const messageText = document.createElement('div');
+            messageText.className = 'message-text';
+            messageText.textContent = message;
+            
+            messageContent.appendChild(messageText);
+            messageDiv.appendChild(messageContent);
+            chatMessages.appendChild(messageDiv);
+            
+            scrollToBottom();
+        }
+        
+        // Function to add AI message to chat
+        function addAIMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message message-ai';
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            
+            const messageText = document.createElement('div');
+            messageText.className = 'message-text';
+            
+            // Use marked for markdown parsing if available
+            if (window.marked) {
+                messageText.innerHTML = marked.parse(message);
+            } else {
+                messageText.innerHTML = message;
+            }
+            
+            // Add message actions
+            const messageActions = document.createElement('div');
+            messageActions.className = 'message-actions';
+            
+            const copyButton = document.createElement('button');
+            copyButton.className = 'copy-btn';
+            copyButton.innerHTML = '<i class="fas fa-copy"></i>';
+            copyButton.title = 'Copy Content';
+            copyButton.onclick = function() {
+                copyToClipboard(message);
+                this.classList.add('copied');
+                setTimeout(() => {
+                    this.classList.remove('copied');
+                }, 2000);
+            };
+            
+            const shareButton = document.createElement('button');
+            shareButton.className = 'share-btn';
+            shareButton.innerHTML = '<i class="fas fa-share-alt"></i>';
+            shareButton.title = 'Share to Forum';
+            shareButton.onclick = function() {
+                shareToForum(message);
+            };
+            
+            const speechButton = document.createElement('button');
+            speechButton.className = 'speech-btn';
+            speechButton.innerHTML = '<i class="fas fa-volume-up"></i>';
+            speechButton.title = 'Generate Voice';
+            speechButton.onclick = function() {
+                generateSpeech(this, message, messageContent);
+            };
+            
+            messageActions.appendChild(copyButton);
+            messageActions.appendChild(shareButton);
+            messageActions.appendChild(speechButton);
+            
+            messageContent.appendChild(messageText);
+            messageContent.appendChild(messageActions);
+            messageDiv.appendChild(messageContent);
+            chatMessages.appendChild(messageDiv);
+            
+            scrollToBottom();
+        }
+        
+        // Function to clear chat
+        function clearChat() {
+            if (!currentCharacter) return;
+            
+            if (confirm('Are you sure you want to clear the chat history with ' + currentCharacter + '? This action cannot be undone.')) {
+                fetch('/clear-character-chat-db', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ character_name: currentCharacter })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        chatMessages.innerHTML = '';
+                        alert('聊天记录已清空');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error clearing chat:', error);
+                    alert('清空聊天记录时出错，请重试');
+                });
+            }
+        }
+        
+        // Utility functions
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text)
+                .catch(err => console.error('Failed to copy text: ', err));
+        }
+        
+        function shareToForum(content) {
+            sessionStorage.setItem('sharedContent', content);
+            window.location.href = '/forum/create';
+        }
+        
+        // Function to load saved voices from the server
+        function loadSavedVoices() {
+            fetch('/get_saved_voices')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.voices && data.voices.length > 0) {
+                        // Clear current options (except the default one)
+                        while (savedVoicesSelect.options.length > 1) {
+                            savedVoicesSelect.remove(1);
+                        }
+                        
+                        // Add options for each saved voice
+                        data.voices.forEach(voice => {
+                            const option = document.createElement('option');
+                            option.value = voice.id;
+                            option.textContent = voice.transcription.substring(0, 30) + 
+                                               (voice.transcription.length > 30 ? '...' : '');
+                            savedVoicesSelect.appendChild(option);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading saved voices:', error);
+                });
+        }
+        
+        // Function to check membership status and update UI accordingly
+        function checkMembershipStatus() {
+            console.log("Checking membership status...");
+            
+            // Show a subtle loading indicator in the nav bar
+            const membershipIndicator = document.getElementById('membershipIndicator');
+            if (membershipIndicator) {
+                membershipIndicator.innerHTML = '<i class="fas fa-sync-alt fa-spin me-1"></i> 加载中...';
+                membershipIndicator.classList.remove('d-none');
+            }
+            
+            // Fetch the membership status from the server
+            fetch('/get_membership_status', {
+                method: 'GET',
+                headers: {
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache',
+                    'Expires': '0'
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Server responded with status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Set global variable for membership status
+                    window.hasMembership = data.has_membership;
+                    hasMembership = data.has_membership;
+                    console.log("Membership status retrieved successfully:", window.hasMembership ? "MEMBER" : "FREE USER");
+                    
+                    // Update the membership display in nav bar and modals
+                    if (typeof updateMembershipDisplay === 'function') {
+                        updateMembershipDisplay(data.has_membership, data.days_remaining);
+                    } else {
+                        // Use our fallback function if the global one isn't available
+                        updateMembershipUI(data.has_membership, data.days_remaining);
+                    }
+                } else {
+                    console.error("Server returned success: false when checking membership");
+                    window.hasMembership = false;
+                    hasMembership = false;
+                    
+                    // Update UI to show non-member status
+                    if (typeof updateMembershipDisplay === 'function') {
+                        updateMembershipDisplay(false, 0);
+                    } else {
+                        updateMembershipUI(false, 0);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error checking membership status:', error);
+                
+                // Try one more time after a short delay
+                setTimeout(() => {
+                    console.log("Retrying membership status check...");
+                    fetch('/get_membership_status', {
+                        method: 'GET',
+                        headers: {
+                            'Cache-Control': 'no-cache, no-store, must-revalidate',
+                            'Pragma': 'no-cache',
+                            'Expires': '0'
+                        },
+                        credentials: 'same-origin'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.hasMembership = data.has_membership;
+                            hasMembership = data.has_membership;
+                            console.log("Membership status retrieved on retry:", window.hasMembership ? "MEMBER" : "FREE USER");
+                            
+                            // Update the membership display
+                            if (typeof updateMembershipDisplay === 'function') {
+                                updateMembershipDisplay(data.has_membership, data.days_remaining);
+                            } else {
+                                updateMembershipUI(data.has_membership, data.days_remaining);
+                            }
+                        } else {
+                            throw new Error("Server returned success: false on retry");
+                        }
+                    })
+                    .catch(retryError => {
+                        console.error('Error on retry:', retryError);
+                        // Default to non-member in case of error
+                        window.hasMembership = false;
+                        hasMembership = false;
+                        console.log("Setting default membership status to FREE USER due to error");
+                        
+                        // Update UI to show non-member status as fallback
+                        if (typeof updateMembershipDisplay === 'function') {
+                            updateMembershipDisplay(false, 0);
+                        } else {
+                            updateMembershipUI(false, 0);
+                        }
+                    });
+                }, 1000);
+            });
+        }
+        
+        // Function to manually refresh membership status and update UI
+        function manualRefreshMembership() {
+            // Clear any cached status
+            window.hasMembership = undefined;
+            hasMembership = undefined;
+            
+            // Show loading indicator in a small alert
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-info py-2 px-3 position-fixed top-0 start-50 translate-middle-x mt-5';
+            alertDiv.style.zIndex = '9999';
+            alertDiv.innerHTML = '<span class="spinner-border spinner-border-sm text-primary me-2" role="status" aria-hidden="true"></span> 正在刷新会员状态...';
+            document.body.appendChild(alertDiv);
+            
+            // Directly fetch membership status from server
+            fetch('/get_membership_status', {
+                method: 'GET',
+                headers: {
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache',
+                    'Expires': '0'
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Server responded with status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Update global variable for membership status
+                    window.hasMembership = data.has_membership;
+                    hasMembership = data.has_membership;
+                    console.log("Membership status refreshed manually:", window.hasMembership ? "MEMBER" : "FREE USER");
+                    
+                    // Remove loading indicator
+                    document.body.removeChild(alertDiv);
+                    
+                    // Use the base.html updateMembershipDisplay function to update the UI
+                    if (typeof updateMembershipDisplay === 'function') {
+                        updateMembershipDisplay(data.has_membership, data.days_remaining);
+                    } else {
+                        // Directly update membership UI if the function isn't available
+                        updateMembershipUI(data.has_membership, data.days_remaining);
+                    }
+                    
+                    // Show membership status to user
+                    if (data.has_membership) {
+                        alert(`会员状态刷新成功：您的会员有效期还剩 ${data.days_remaining} 天`);
+                    } else {
+                        alert('会员状态刷新成功：您当前不是会员用户');
+                    }
+                    
+                    // Update all other UI elements
+                    if (typeof window.globalCheckMembershipStatus === 'function') {
+                        window.globalCheckMembershipStatus();
+                    }
+                } else {
+                    throw new Error("Server returned success: false when checking membership");
+                }
+            })
+            .catch(error => {
+                console.error('Error refreshing membership status:', error);
+                // Remove loading indicator
+                document.body.removeChild(alertDiv);
+                alert('刷新会员状态失败，请稍后重试');
+            });
+        }
+        
+        // Backup function to update membership UI elements if updateMembershipDisplay isn't available
+        function updateMembershipUI(hasMembership, daysRemaining) {
+            const membershipIndicator = document.getElementById('membershipIndicator');
+            const activateMembership = document.getElementById('activateMembership');
+            const membershipStatusDisplay = document.getElementById('membershipStatusDisplay');
+            const btnMembership = document.querySelector('.btn-membership');
+            
+            if (hasMembership) {
+                // Update nav button
+                if (membershipIndicator) {
+                    membershipIndicator.innerHTML = `<i class="fas fa-crown text-warning me-1"></i> Membership: ${daysRemaining} days`;
+                    membershipIndicator.classList.remove('d-none');
+                }
+                if (activateMembership) {
+                    activateMembership.classList.add('d-none');
+                }
+                if (btnMembership) {
+                    btnMembership.classList.add('active');
+                }
+                
+                // Update modal content
+                if (membershipStatusDisplay) {
+                    membershipStatusDisplay.innerHTML = `
+                        <div class="text-center mb-4">
+                            <div class="display-1 text-warning mb-2">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <h4 class="mb-2">Membership Activated</h4>
+                            <div class="bg-light rounded py-2 px-3 d-inline-block">
+                                <i class="fas fa-calendar-alt me-2 text-primary"></i>
+                                Days Remaining: <span class="fw-bold text-primary">${daysRemaining}</span> days
+                            </div>
+                        </div>
+                    `;
+                }
+            } else {
+                // Update nav button for non-members
+                if (membershipIndicator) {
+                    membershipIndicator.classList.add('d-none');
+                }
+                if (activateMembership) {
+                    activateMembership.classList.remove('d-none');
+                }
+                if (btnMembership) {
+                    btnMembership.classList.remove('active');
+                }
+                
+                // Update modal content for non-members
+                if (membershipStatusDisplay) {
+                    membershipStatusDisplay.innerHTML = `
+                        <div class="text-center mb-4">
+                            <h4 class="mb-3">Membership Special Offer: $5.99/month</h4>
+                            <p class="text-muted">Activate membership to enjoy unlimited access to all services without point restrictions</p>
+                        </div>
+                    `;
+                }
+            }
+        }
+    });
+</script>
+{% endblock %} 
